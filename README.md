@@ -14,4 +14,4 @@ Tässä lauseessa esiintyvä **_sana_** on sekä lihavoitu että kursivoitu (no,
 
 [Linkki tiedostoon gitlog.txt](https://github.com/tspaanan/shoplist-gener/blob/main/laskarit/viikko1/gitlog.txt)
 
-Tämä muutos on tehty paikallisessa repossa. Sitä ei ole työnnetty etärepoon.
+Tämä muutos on tehty paikallisessa repossa. Sitä ei ole työnnetty etärepoon (ennen kuin nyt).
