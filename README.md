@@ -11,4 +11,5 @@ Tässä lauseessa esiintyvä **_sana_** on sekä lihavoitu että kursivoitu (no,
 ### Viikko 1
 
 [Linkki tiedostoon komentorivi.txt](https://github.com/tspaanan/shoplist-gener/blob/main/laskarit/viikko1/komentorivi.txt)
+
 [Linkki tiedostoon gitlog.txt](https://github.com/tspaanan/shoplist-gener/blob/main/laskarit/viikko1/gitlog.txt)
