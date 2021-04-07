@@ -4,13 +4,15 @@
 
 [Linkki harjoitustyön työaikakirjanpitoon](https://github.com/tspaanan/shoplist-gener/blob/main/dokumentaatio/ty%C3%B6aikakirjanpito.md)
 
-## ALAOTSIKKO
-
-Tässä lauseessa esiintyvä **sana** on lihavoitu.
-Tässä lauseessa esiintyvä *sana* on kursivoitu.
-Tässä lauseessa esiintyvä **_sana_** on sekä lihavoitu että kursivoitu (no, ainakin GitHubin Markdown-tyylioppaan mukaan sen pitäisi olla—ja onhan se).
-
 ## LASKARITEHTÄVÄT
+
+### Viikko 3
+
+[Linkki Monopoli-pelin luokkakaavioon](https://github.com/tspaanan/shoplist-gener/blob/main/laskarit/viikko3/Monopoli.png)
+
+[Linkki Koneen sekvenssikaavioon](https://github.com/tspaanan/shoplist-gener/blob/main/laskarit/viikko3/Kone.png)
+
+[Linkki HSL-sekvenssikaavioon](https://github.com/tspaanan/shoplist-gener/blob/main/laskarit/viikko3/HSL.png)
 
 ### Viikko 2
 
