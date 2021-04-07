@@ -4,3 +4,5 @@ Pvm   | Tunnit	| Aihe
 26.3 | 2 | vaatimusmäärittelyn laatiminen
 26.3 | 1 | harjoitustyön koodaamista
 27.3 | 2 | harjoitustyön koodaamista
+ 2.4 | 2 | harjoitustyön arkkitehtuurin suunnittelua
+ 7.4 | 3 | harjoitustyön koodaamista
