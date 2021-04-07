@@ -10,4 +10,20 @@ public class Ingredient {
         this.unit = unit;
         this.requestedQuantity = null;
     }
+
+    public Ingredient(String name, Unit unit, Integer quantity) {
+        this(name, unit);
+        this.setRequestedQuantity(quantity);
+    }
+
+    public String getName() {return this.name;}
+
+    public void setRequestedQuantity(Integer quantity) {
+        this.requestedQuantity = quantity;
+    }
+
+    @Override
+    public String toString() {
+        return this.name + ", " + String.valueOf(this.requestedQuantity) + " " + this.unit.toString().toLowerCase();
+    }
 }

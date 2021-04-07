@@ -34,6 +34,12 @@ public class UI {
                     for (List<String> l : menu) {
                         System.out.println(l.get(0));
                     }
+                    System.out.println("\nShopping list generated: ");
+                    for (List<String> l : menu) {
+                        for (int i = 2; i < l.size(); i++) {
+                            System.out.println(l.get(i));
+                        }
+                    }
                 } catch (Exception e) {
                     // TODO Change this auto-generated catch block
                     e.printStackTrace();
@@ -45,7 +51,7 @@ public class UI {
 
     private void choices() {
         System.out.println("Print a line (debug option): press 0");
-        System.out.println("Print Week's Menu: press 1");
+        System.out.println("Print Week's Menu and shopping list: press 1");
         System.out.println("Exit: press 5");
     }
 }

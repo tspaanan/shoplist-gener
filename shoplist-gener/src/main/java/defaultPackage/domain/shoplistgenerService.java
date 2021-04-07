@@ -19,6 +19,10 @@ public class shoplistgenerService {
             ArrayList<String> recToString = new ArrayList<String>();
             recToString.add(rec.getName());
             recToString.add(rec.getInstructions());
+            List<Ingredient> ingredients = rec.getIngredients();
+            for (Ingredient ing : ingredients) {
+                recToString.add(ing.toString());
+            }
             menuToString.add(recToString);
         }
         return menuToString;
