@@ -19,6 +19,6 @@ public class Recipe {
 
     @Override
     public String toString() {
-        return this.name + ", " + this.instructions;
+        return "***" + this.name + "***\n\n" + this.instructions;
     }
 }

@@ -10,13 +10,13 @@ public class CreateTestData {
             db.setAutoCommit(false);
             Statement s = db.createStatement();
             s.execute("CREATE TABLE recipes (id INTEGER PRIMARY KEY,"
-                     + "name TEXT, instructions TEXT)");
+                     + "name TEXT UNIQUE, instructions TEXT)");
             s.execute("CREATE TABLE ingredients (id INTEGER PRIMARY KEY,"
-                     + "name TEXT, unit TEXT)");
+                     + "name TEXT UNIQUE, unit TEXT)");
             s.execute("CREATE TABLE ingredientsInRecipes (id INTEGER PRIMARY KEY,"
-                     + "recipe_id INTEGER, ingredient_id INTEGER, quantity INTEGER)");
+                     + "recipe_id INTEGER REFERENCES recipes, ingredient_id INTEGER REFERENCES ingredients, quantity INTEGER)");
             s.execute("CREATE TABLE ingredientsInKitchen (id INTEGER PRIMARY KEY,"
-                     + "ingredient_id INTEGER, quantity INTEGER)");
+                     + "ingredient_id INTEGER REFERENCES ingredients, quantity INTEGER)");
             db.commit();
             
             for (int i = 1; i <= 100; i++) {
