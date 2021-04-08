@@ -21,7 +21,7 @@ public class UI {
 
     public void start() {
         while (true) {
-            System.out.println("Choose from the following: ");
+            System.out.println("\nChoose from the following: ");
             this.choices();
             String choice = this.scanner.nextLine();
 

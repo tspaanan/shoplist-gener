@@ -1,5 +1,9 @@
 /laskarit/viikko2/Maksukortti/target
 /laskarit/viikko2/Unicafe/target
 /laskarit/viikko2/Unicafe/.vscode
-/shoplist-gener/target
-/shoplist-gener/Test.db
+target
+Test.db
+.classpath
+.project
+.settings/
+.vscode/
