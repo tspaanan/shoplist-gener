@@ -12,6 +12,10 @@
 
 ## Ohjelman testaaminen
 Automaattiset testit:
-```mvn test```
+```
+mvn test
+```
 Jacoco-raportin luominen:
-```mvn test jacoco:report```
+```
+mvn test jacoco:report
+```
