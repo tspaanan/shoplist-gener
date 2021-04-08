@@ -41,6 +41,7 @@ public class shoplistgenerDAOsqlite implements shoplistgenerDAO {
                 ingsInList.add(ingObject);
             }
             // r.getString("name"); // mystic sqlite error only once with the line below: "ResultSet was closed", couldn't reproduce ever again: TODO more exception handling! 
+            // "ResultSet was closed" spotted for 2nd time! need to investigate, happend very rarely
             Recipe rec = new Recipe(r.getString("name"), r.getString("instructions"), ingsInList);
             menu.add(rec);
         }
