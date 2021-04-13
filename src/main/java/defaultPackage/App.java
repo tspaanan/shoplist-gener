@@ -2,6 +2,7 @@ package defaultPackage;
 
 //GUI:
 import defaultPackage.ui.UIJavaFX;
+import java.lang.System;
 
 //debug
 import java.io.File;
@@ -31,6 +32,12 @@ public class App
         //userInterface.start();
 
         //GUI:
-        UIJavaFX.main(args);
+        try {
+            UIJavaFX.main(args);
+        } catch (UnsupportedOperationException e) {
+            System.out.println("JavaFX GUI in use: this program cannot be run over ssh "
+                            + "connection, please use vdi.helsinki.fi to test");
+            System.exit(1);
+        }
     }
 }
