@@ -1,7 +1,6 @@
 package defaultPackage.domain;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -72,8 +71,6 @@ public class shoplistgenerService {
                 this.shoppingList.add(ing);
             }
         }
-        //List<Ingredient> ingredientsSorted = this.sortIngredients();
-        //for (Ingredient ing : ingredientsSorted) {menuToString.add(ing.toString());}
         return menuInString.toString();
     }
 
@@ -92,15 +89,12 @@ public class shoplistgenerService {
         List<Recipe> menu = this.daoHandler.fetchMenu(7);
         List<Ingredient> ingredientsAll = new ArrayList<Ingredient>();
         for (Recipe rec : menu) {
-            //System.out.println(rec);
-            //ArrayList<String> recToString = new ArrayList<String>();
             menuToString.add(rec.getName()); //recipe instructions are not included at this point
             //recToString.add(rec.getInstructions());
             List<Ingredient> ingredients = rec.getIngredients();
             for (Ingredient ing : ingredients) {
                 ingredientsAll.add(ing);
             }
-            //menuToString.add(recToString);
         }
         List<Ingredient> ingredientsSorted = this.sortIngredients(ingredientsAll);
         menuToString.add("");
@@ -113,7 +107,6 @@ public class shoplistgenerService {
                                                 //.distinct() not useful here
                                                 .sorted()
                                                 .collect(Collectors.toCollection(ArrayList::new));
-        //System.out.println(ingredientsSorted.size());
         List<Ingredient> combinedIngredients = new ArrayList<Ingredient>();
         Ingredient previous = new Ingredient("", Unit.CL, 0);
         for (int i = 1; i < ingredientsSorted.size(); i++) {
@@ -135,17 +128,6 @@ public class shoplistgenerService {
         if (!ingredientsSorted.get(ingredientsSorted.size() - 1).equals(combinedIngredients.get(combinedIngredients.size() - 1))) {
             combinedIngredients.add(ingredientsSorted.get(ingredientsSorted.size() - 1));
         }
-        //Iterator<Ingredient> iteratorFirst = ingredientsSorted.iterator();
-        //Iterator<Ingredient> iteratorSecond = ingredientsSorted.iterator();
-        //iteratorSecond.next();
-        //while (iteratorSecond.hasNext()) {
-            //Ingredient first = iteratorFirst.next();
-            //Ingredient second = iteratorSecond.next();
-            //if (first.equals(second)) {
-                //Ingredient combinedIng = new Ingredient(first.getName(), first.getUnit(), first.getRequestedQuantity() + second.getRequestedQuantity());
-                //combinedIngredients.add(combinedIng);
-                //iteratorFirst.remove();
-            //}
         return combinedIngredients;
     }
 }

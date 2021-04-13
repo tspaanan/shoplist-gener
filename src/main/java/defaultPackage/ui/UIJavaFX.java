@@ -10,8 +10,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -71,7 +69,6 @@ public class UIJavaFX extends Application {
             }
         });
 
-        //FlowPane buttonPlacement = new FlowPane();
         HBox labelPlacement = new HBox();
         labelPlacement.setSpacing(10);
         labelPlacement.setPadding(new Insets(10,300,10,10));
@@ -90,7 +87,7 @@ public class UIJavaFX extends Application {
         BorderPane elementPlacement = new BorderPane();
         elementPlacement.setRight(labelPlacement);
         elementPlacement.setLeft(buttonPlacement);
-        elementPlacement.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
+        elementPlacement.setBackground(new Background(new BackgroundFill(Color.WHITESMOKE, null, null)));
         
         Scene viewPort = new Scene(elementPlacement);
         //viewPort.setFill(Color.BLACK); //does nothing?

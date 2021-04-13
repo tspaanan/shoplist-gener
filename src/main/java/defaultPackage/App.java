@@ -1,13 +1,16 @@
 package defaultPackage;
 
-import java.io.File;
-import java.util.Scanner;
-import defaultPackage.dao.*;
-import defaultPackage.domain.shoplistgenerService;
+//GUI:
 import defaultPackage.ui.UIJavaFX;
 
 //debug
+import java.io.File;
 import defaultPackage.CreateTestData;
+
+//TUI:
+//import java.util.Scanner;
+//import defaultPackage.dao.*;
+//import defaultPackage.domain.shoplistgenerService;
 
 public class App 
 {
@@ -24,7 +27,6 @@ public class App
         //Scanner scanner = new Scanner(System.in);
         //shoplistgenerDAO sqliteHandler = new shoplistgenerDAOsqlite();
         //shoplistgenerService domainHandler = new shoplistgenerService(sqliteHandler);
-        //
         //UI userInterface = new UI(scanner, domainHandler);
         //userInterface.start();
 
