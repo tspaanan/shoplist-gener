@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Scanner;
 import defaultPackage.dao.*;
 import defaultPackage.domain.shoplistgenerService;
+import defaultPackage.ui.UIJavaFX;
 
 //debug
 import defaultPackage.CreateTestData;
@@ -19,10 +20,15 @@ public class App
             System.out.println("Test data created.");
         }
 
-        Scanner scanner = new Scanner(System.in);
-        shoplistgenerDAO sqliteHandler = new shoplistgenerDAOsqlite();
-        shoplistgenerService domainHandler = new shoplistgenerService(sqliteHandler);
-        UI userInterface = new UI(scanner, domainHandler);
-        userInterface.start();
+        //TUI:
+        //Scanner scanner = new Scanner(System.in);
+        //shoplistgenerDAO sqliteHandler = new shoplistgenerDAOsqlite();
+        //shoplistgenerService domainHandler = new shoplistgenerService(sqliteHandler);
+        //
+        //UI userInterface = new UI(scanner, domainHandler);
+        //userInterface.start();
+
+        //GUI:
+        UIJavaFX.main(args);
     }
 }

@@ -9,9 +9,11 @@ import defaultPackage.dao.shoplistgenerDAO;
 
 public class shoplistgenerService {
     private shoplistgenerDAO daoHandler;
+    private List<Ingredient> shoppingList;
 
     public shoplistgenerService(shoplistgenerDAO daoHandler) {
         this.daoHandler = daoHandler;
+        this.shoppingList = new ArrayList<Ingredient>();
     }
 
     public List<String> fetchRecipe(String name) throws Exception {
@@ -33,7 +35,35 @@ public class shoplistgenerService {
         }
     }
 
-    public List<String> fetchMenu() throws Exception {
+    public String fetchCourses() throws Exception {
+        StringBuilder menuInString = new StringBuilder();
+        List<Recipe> menu = this.daoHandler.fetchMenu(7);
+        this.shoppingList.clear();
+        for (Recipe rec : menu) {
+            menuInString.append(rec.getName());
+            menuInString.append("\n"); //recipe instructions are not included at this point
+            //recToString.add(rec.getInstructions());
+            List<Ingredient> ingredients = rec.getIngredients();
+            for (Ingredient ing : ingredients) {
+                this.shoppingList.add(ing);
+            }
+        }
+        //List<Ingredient> ingredientsSorted = this.sortIngredients();
+        //for (Ingredient ing : ingredientsSorted) {menuToString.add(ing.toString());}
+        return menuInString.toString();
+    }
+
+    public String fetchShoppingList() {
+        List<Ingredient> shoppingListSorted = this.sortIngredients(this.shoppingList);
+        StringBuilder shoppingListinString = new StringBuilder();
+        for (Ingredient ing : shoppingListSorted) {
+            shoppingListinString.append(ing.toString());
+            shoppingListinString.append("\n");
+        }
+        return shoppingListinString.toString();
+    }
+    
+    public List<String> fetchMenuTUI() throws Exception {
         List<String> menuToString = new ArrayList<String>();
         List<Recipe> menu = this.daoHandler.fetchMenu(7);
         List<Ingredient> ingredientsAll = new ArrayList<Ingredient>();

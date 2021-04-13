@@ -26,7 +26,7 @@ public class UI {
 
             if (choice.equals("1")) {
                 try {
-                    List<String> menu = this.domainHandler.fetchMenu();
+                    List<String> menu = this.domainHandler.fetchMenuTUI();
                     System.out.println("\nCourses for the next week are the following: ");
                     for (String l : menu) {
                         System.out.println(l);
