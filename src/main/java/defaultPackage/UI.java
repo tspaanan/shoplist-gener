@@ -43,10 +43,10 @@ public class UI {
                 String recipeChoice = this.scanner.nextLine();
                 try {
                     if (recipeChoice.equals("")) {
-                        List<String> allRecipes = this.domainHandler.fetchRecipe("");
+                        List<String> allRecipes = this.domainHandler.fetchRecipeTUI("");
                         for (String recipeName : allRecipes) System.out.println(recipeName);
                     } else {
-                        List<String> recipe = this.domainHandler.fetchRecipe(recipeChoice);
+                        List<String> recipe = this.domainHandler.fetchRecipeTUI(recipeChoice);
                         for (String recipePart : recipe) System.out.println(recipePart);
                     }
                 } catch (Exception e) {System.out.println("Another mystery: put exception handling away from here!");}

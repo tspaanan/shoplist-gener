@@ -30,8 +30,8 @@ public class shopListgenerServiceTest {
     }
 
     @Test
-    public void fetchMenuReturnsListOfStrings() throws Exception {
-        assertTrue(object.fetchMenu() instanceof List<?>);
+    public void fetchCoursesReturnsString() throws Exception {
+        assertTrue(object.fetchCourses() instanceof String);
         //TODO: more useful tests once DAOFake is up and running
     }
 

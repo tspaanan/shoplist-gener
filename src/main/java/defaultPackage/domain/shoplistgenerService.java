@@ -16,7 +16,20 @@ public class shoplistgenerService {
         this.shoppingList = new ArrayList<Ingredient>();
     }
 
-    public List<String> fetchRecipe(String name) throws Exception {
+    public String fetchRecipe(String name) throws Exception {
+        if (name.equals("")) {
+            List<String> recipeNames = this.daoHandler.fetchAllRecipes();
+            StringBuilder recipeNamesInString = new StringBuilder();
+            for (String recName : recipeNames) {
+                recipeNamesInString.append(recName);
+                recipeNamesInString.append("\n");
+            }
+            return recipeNamesInString.toString();
+        }
+        return "";
+    }
+    
+    public List<String> fetchRecipeTUI(String name) throws Exception {
         if (name.equals("")) {
             List<String> recipeNames = this.daoHandler.fetchAllRecipes();
             return recipeNames;
@@ -38,7 +51,7 @@ public class shoplistgenerService {
     public String fetchCourses() throws Exception {
         StringBuilder menuInString = new StringBuilder();
         List<Recipe> menu = this.daoHandler.fetchMenu(7);
-        this.shoppingList.clear();
+        this.shoppingList.clear(); //empty private variable between menu fetches
         for (Recipe rec : menu) {
             menuInString.append(rec.getName());
             menuInString.append("\n"); //recipe instructions are not included at this point
