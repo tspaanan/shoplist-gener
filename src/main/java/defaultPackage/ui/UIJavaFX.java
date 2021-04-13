@@ -6,6 +6,7 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
@@ -32,9 +33,9 @@ public class UIJavaFX extends Application {
     public void start(Stage window) {
         window.setTitle("shoplist-gener");
         
-        Label listMenu = new Label("Menu:\n");
-        Label listShoppingList = new Label("Shopping List:\n");
-        Label listAllRecipes = new Label("All Recipes:\n");
+        Label listMenu = new Label();
+        Label listShoppingList = new Label();
+        Label listRecipes = new Label();
 
         Button wholeMenu = new Button("Print Week's Menu and shopping list");
         wholeMenu.setOnAction((event) -> {
@@ -53,9 +54,20 @@ public class UIJavaFX extends Application {
         Button allRecipes = new Button("Print All Recipes");
         allRecipes.setOnAction((event) -> {
             try {
-                listAllRecipes.setText(domainHandler.fetchRecipe(""));
+                listRecipes.setText(domainHandler.fetchRecipe(""));
             } catch (Exception e) {
-                listAllRecipes.setText("Exception occured (but shouldn't have)");
+                listRecipes.setText("Exception occured (but shouldn't have)");
+            }
+        });
+
+        TextField searchText = new TextField("...use exact name (for now)");
+        Button searchRecipes = new Button("Search for a recipe");
+        searchRecipes.setOnAction((event) -> {
+            try {
+                String searchString = searchText.getText();
+                listRecipes.setText(domainHandler.fetchRecipe(searchString));
+            } catch (Exception e) {
+                listRecipes.setText("error: no recipe by that name");
             }
         });
 
@@ -68,10 +80,12 @@ public class UIJavaFX extends Application {
         
         buttonPlacement.getChildren().add(wholeMenu);
         buttonPlacement.getChildren().add(allRecipes);
+        buttonPlacement.getChildren().add(searchText);
+        buttonPlacement.getChildren().add(searchRecipes);
 
         labelPlacement.getChildren().add(listMenu);
         labelPlacement.getChildren().add(listShoppingList);
-        labelPlacement.getChildren().add(listAllRecipes);
+        labelPlacement.getChildren().add(listRecipes);
 
         BorderPane elementPlacement = new BorderPane();
         elementPlacement.setRight(labelPlacement);
