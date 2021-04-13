@@ -7,3 +7,4 @@ Pvm   | Tunnit	| Aihe
  2.4 | 2 | harjoitustyön arkkitehtuurin suunnittelua
  7.4 | 3 | harjoitustyön koodaamista
  8.4 | 8 | harjoitustyön koodaamista
+13.4 | 7 | harjoitustyön koodaamista
