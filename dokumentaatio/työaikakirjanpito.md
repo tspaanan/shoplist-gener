@@ -8,3 +8,5 @@ Pvm   | Tunnit	| Aihe
  7.4 | 3 | harjoitustyön koodaamista
  8.4 | 8 | harjoitustyön koodaamista
 13.4 | 7 | harjoitustyön koodaamista
+16.4 | 2 | refaktorointia ja arkkitehtuurin dokumentointi
+16.4 | 3 | harjoitustyön koodaamista
