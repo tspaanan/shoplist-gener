@@ -1,5 +1,6 @@
 package shoplistgener.domain;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,6 +14,21 @@ public class ShoplistgenerService {
     public ShoplistgenerService(ShoplistgenerDAO daoHandler) {
         this.daoHandler = daoHandler;
         this.shoppingList = new ArrayList<Ingredient>();
+    }
+
+    public boolean addRecipe(List<String> recipeParts) {
+        List<Ingredient> ingredients = new ArrayList<Ingredient>();
+        for (int i = 2; i < recipeParts.size(); i++ ) {
+            String[] ingParts = recipeParts.get(i).split(";");
+            ingredients.add(new Ingredient(ingParts[0], Unit.valueOf(ingParts[1].toUpperCase()), Integer.valueOf(ingParts[2])));
+        }
+        Recipe newRecipe = new Recipe(recipeParts.get(0), recipeParts.get(1), ingredients);
+        try {
+            this.daoHandler.addRecipe(newRecipe);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public String fetchRecipe(String name) throws Exception {

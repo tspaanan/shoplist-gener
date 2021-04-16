@@ -12,9 +12,43 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
     public ShoplistgenerDAOsqlite() {
         try {
             this.db = DriverManager.getConnection("jdbc:sqlite:Test.db"); //TODO: database name is still hardcoded
+            this.db.setAutoCommit(false);
         } catch (SQLException e) {
             System.out.println("SQLException:" + e.getMessage());
         }
+    }
+
+    public void addRecipe(Recipe newRecipe) throws SQLException {
+        //add information for recipes table
+        String insert = "INSERT INTO recipes (name,instructions) VALUES ('" + newRecipe.getName() + "','" 
+                        + newRecipe.getInstructions() + "')";
+        Statement s = this.db.createStatement();
+        s.executeUpdate(insert);
+        this.db.commit();
+
+        //add information for ingredients table
+        for (Ingredient ing : newRecipe.getIngredients()) {
+            String insertIng = "INSERT INTO ingredients (name, unit) VALUES ('" + ing.getName() + "','"
+                            + ing.getUnit().toString().toLowerCase() + "')";
+            s.executeUpdate(insertIng);
+        }
+        this.db.commit();
+
+        //add information for ingredientsInRecipes table
+        PreparedStatement p = this.db.prepareStatement("SELECT id FROM recipes WHERE name=?");
+        p.setString(1, newRecipe.getName());
+        ResultSet r = p.executeQuery();
+        String recipe_id = r.getString("id");
+        for (Ingredient ing : newRecipe.getIngredients()) {
+            PreparedStatement pIng = this.db.prepareStatement("SELECT id FROM ingredients WHERE name=?");
+            pIng.setString(1, ing.getName());
+            ResultSet rIng = pIng.executeQuery();
+            String ingredient_id = rIng.getString("id");
+            String ingInRecipeInsert = "INSERT INTO ingredientsInRecipes (recipe_id,ingredient_id,quantity) VALUES ("
+                                    + recipe_id + "," + ingredient_id + "," + ing.getRequestedQuantity().toString() + ")";
+            s.executeUpdate(ingInRecipeInsert);
+        }
+        this.db.commit();
     }
 
     public List<Recipe> fetchMenu(int days) throws SQLException {

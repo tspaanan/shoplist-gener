@@ -2,6 +2,10 @@ package shoplistgener.ui;
 
 import shoplistgener.dao.*;
 import shoplistgener.domain.ShoplistgenerService;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
@@ -53,6 +57,10 @@ public class UIJavaFX extends Application {
         allRecipes.setOnAction((event) -> {
             try {
                 listRecipes.setText(domainHandler.fetchRecipe(""));
+                //debug
+                //List<String> testList = new ArrayList<String>();
+                //testList.add("uusi_resepti"); testList.add("Uudet_ohjeet"); testList.add("000;dl;222");
+                //domainHandler.addRecipe(testList);
             } catch (Exception e) {
                 listRecipes.setText("Exception occured (but shouldn't have)");
             }
@@ -69,6 +77,25 @@ public class UIJavaFX extends Application {
             }
         });
 
+        Button addRecipe = new Button("Add a new recipe");
+
+        //temporary fields
+        TextField newRecipeName = new TextField("Recipe name");
+        TextField newRecipeInstructions = new TextField("Instructions for the recipe");
+        HBox newRecipeFields = new HBox();
+        newRecipeFields.setSpacing(10);
+        newRecipeFields.getChildren().addAll(newRecipeName, newRecipeInstructions);
+        
+        addRecipe.setOnAction((event) -> {
+            List<String> newRecipeParts = new ArrayList<String>();
+            newRecipeParts.add(newRecipeName.getText());
+            newRecipeParts.add(newRecipeInstructions.getText());
+            newRecipeParts.add("ingNimi;dl;22");
+            if (!domainHandler.addRecipe(newRecipeParts)) {
+                listRecipes.setText("error in adding recipe");
+            };
+        });
+
         HBox labelPlacement = new HBox();
         labelPlacement.setSpacing(10);
         labelPlacement.setPadding(new Insets(10,300,10,10));
@@ -79,6 +106,10 @@ public class UIJavaFX extends Application {
         buttonPlacement.getChildren().add(allRecipes);
         buttonPlacement.getChildren().add(searchText);
         buttonPlacement.getChildren().add(searchRecipes);
+        buttonPlacement.getChildren().add(addRecipe);
+
+        //temporary placement
+        buttonPlacement.getChildren().add(newRecipeFields);
 
         labelPlacement.getChildren().add(listMenu);
         labelPlacement.getChildren().add(listShoppingList);
