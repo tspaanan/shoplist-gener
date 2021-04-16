@@ -6,6 +6,8 @@
 
 [Linkki harjoitustyön työaikakirjanpitoon](https://github.com/tspaanan/shoplist-gener/blob/main/dokumentaatio/ty%C3%B6aikakirjanpito.md)
 
+[Linkki harjoitustyön arkkitehtuurikuvaukseen](https://github.com/tspaanan/shoplist-gener/blob/main/dokumentaatio/arkkitehtuuri.md)
+
 ## Ohjelman suoritus
 
 ```mvn compile exec:java -Dexec.mainClass=defaultPackage.App```
