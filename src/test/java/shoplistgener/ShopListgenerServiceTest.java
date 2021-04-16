@@ -1,27 +1,27 @@
-package defaultPackage;
+package shoplistgener;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import defaultPackage.dao.shoplistgenerDAOsqlite;
-import defaultPackage.domain.Ingredient;
-import defaultPackage.domain.Unit;
-import defaultPackage.domain.shoplistgenerService;
+import shoplistgener.dao.ShoplistgenerDAOsqlite;
+import shoplistgener.domain.Ingredient;
+import shoplistgener.domain.Unit;
+import shoplistgener.domain.ShoplistgenerService;
 
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class shopListgenerServiceTest {
-    shoplistgenerService object;
+public class ShopListgenerServiceTest {
+    ShoplistgenerService object;
     Ingredient one;
     Ingredient two;
     List<Ingredient> listOne;
 
     @Before
     public void setUp() {
-        object = new shoplistgenerService(new shoplistgenerDAOsqlite());
+        object = new ShoplistgenerService(new ShoplistgenerDAOsqlite());
         //TODO: change parameter to DAOFake
         one = new Ingredient("name1", Unit.CL, 2);
         two = new Ingredient("name2", Unit.DL, 3);

@@ -1,9 +1,9 @@
-package defaultPackage.dao;
+package shoplistgener.dao;
 
 import java.util.*;
-import defaultPackage.domain.Recipe;
+import shoplistgener.domain.Recipe;
 
-public interface shoplistgenerDAO {
+public interface ShoplistgenerDAO {
     List<String> fetchAllRecipes() throws Exception;
     List<Recipe> fetchMenu(int days) throws Exception;
     Recipe fetchRecipe(String name) throws Exception;

@@ -1,15 +1,15 @@
-package defaultPackage;
+package shoplistgener;
 
 import java.util.List;
 import java.util.Scanner;
-import defaultPackage.domain.shoplistgenerService;
+import shoplistgener.domain.ShoplistgenerService;
 
 public class UI {
     
     private Scanner scanner;
-    private shoplistgenerService domainHandler;
+    private ShoplistgenerService domainHandler;
 
-    public UI(Scanner scanner, shoplistgenerService domainHandler) {
+    public UI(Scanner scanner, ShoplistgenerService domainHandler) {
         this.scanner = scanner;
         this.domainHandler = domainHandler;
     }

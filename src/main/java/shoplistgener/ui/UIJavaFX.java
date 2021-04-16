@@ -1,7 +1,7 @@
-package defaultPackage.ui;
+package shoplistgener.ui;
 
-import defaultPackage.dao.*;
-import defaultPackage.domain.shoplistgenerService;
+import shoplistgener.dao.*;
+import shoplistgener.domain.ShoplistgenerService;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
@@ -18,13 +18,13 @@ import javafx.stage.Stage;
 
 public class UIJavaFX extends Application {
     
-    private shoplistgenerDAO sqliteHandler;
-    private shoplistgenerService domainHandler;
+    private ShoplistgenerDAO sqliteHandler;
+    private ShoplistgenerService domainHandler;
 
     @Override
     public void init() {
-    sqliteHandler = new shoplistgenerDAOsqlite(); //should this DAO be injected to domainHandler at all?
-    domainHandler = new shoplistgenerService(sqliteHandler);
+    sqliteHandler = new ShoplistgenerDAOsqlite(); //should this DAO be injected to domainHandler at all?
+    domainHandler = new ShoplistgenerService(sqliteHandler);
     }
     
     @Override

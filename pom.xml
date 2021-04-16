@@ -5,10 +5,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>defaultGroupId</groupId>
-  <artifactId>shoplist-gener</artifactId>
+  <artifactId>shoplistgener</artifactId>
   <version>1.0-SNAPSHOT</version>
 
-  <name>shoplist-gener</name>
+  <name>shoplistgener</name>
   <!-- FIXME change it to the project's website -->
   <url>http://www.example.com</url>
 
@@ -59,6 +59,19 @@
                 </goals>
             </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>2.17</version>
+        <configuration>
+          <configLocation>checkstyle.xml</configLocation>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <version>2.5</version>
       </plugin>
     </plugins>
     <pluginManagement><!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->

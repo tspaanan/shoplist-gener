@@ -1,4 +1,4 @@
-package defaultPackage;
+package shoplistgener;
 
 import java.util.Random;
 import java.sql.*;

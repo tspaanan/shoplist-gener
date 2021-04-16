@@ -1,15 +1,15 @@
-package defaultPackage.dao;
+package shoplistgener.dao;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import defaultPackage.domain.*;
+import shoplistgener.domain.*;
 import java.util.Random;
 
-public class shoplistgenerDAOsqlite implements shoplistgenerDAO {
+public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
     private Connection db;
 
-    public shoplistgenerDAOsqlite() {
+    public ShoplistgenerDAOsqlite() {
         try {
             this.db = DriverManager.getConnection("jdbc:sqlite:Test.db"); //TODO: database name is still hardcoded
         } catch (SQLException e) {
@@ -47,7 +47,9 @@ public class shoplistgenerDAOsqlite implements shoplistgenerDAO {
         PreparedStatement p = this.db.prepareStatement("SELECT name FROM recipes");
         ResultSet r = p.executeQuery();
         List<String> recipeNames = new ArrayList<String>();
-        while (r.next()) {recipeNames.add(r.getString("name"));}
+        while (r.next()) {
+            recipeNames.add(r.getString("name"));
+        }
         return recipeNames;
     }
 

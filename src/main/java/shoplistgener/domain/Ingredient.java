@@ -1,4 +1,4 @@
-package defaultPackage.domain;
+package shoplistgener.domain;
 
 public class Ingredient implements Comparable<Ingredient> {
     private String name;
@@ -16,9 +16,17 @@ public class Ingredient implements Comparable<Ingredient> {
         this.setRequestedQuantity(quantity);
     }
 
-    public String getName() {return this.name;}
-    public Unit getUnit() {return this.unit;}
-    public Integer getRequestedQuantity() {return this.requestedQuantity;}
+    public String getName() {
+        return this.name;
+    }
+
+    public Unit getUnit() {
+        return this.unit;
+    }
+
+    public Integer getRequestedQuantity() {
+        return this.requestedQuantity;
+    }
 
     public void setRequestedQuantity(Integer quantity) {
         this.requestedQuantity = quantity;
@@ -30,8 +38,12 @@ public class Ingredient implements Comparable<Ingredient> {
 
     @Override
     public boolean equals(Object other) {
-        if (this == other) {return true;}
-        if (!(other instanceof Ingredient)) {return false;}
+        if (this == other) {
+            return true;
+        }
+        if (!(other instanceof Ingredient)) {
+            return false;
+        }
         Ingredient otherIngredient = (Ingredient) other;
         if (this.name.equals(otherIngredient.name)) {
             return true;

@@ -1,16 +1,16 @@
-package defaultPackage.domain;
+package shoplistgener.domain;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import defaultPackage.dao.shoplistgenerDAO;
+import shoplistgener.dao.ShoplistgenerDAO;
 
-public class shoplistgenerService {
-    private shoplistgenerDAO daoHandler;
+public class ShoplistgenerService {
+    private ShoplistgenerDAO daoHandler;
     private List<Ingredient> shoppingList;
 
-    public shoplistgenerService(shoplistgenerDAO daoHandler) {
+    public ShoplistgenerService(ShoplistgenerDAO daoHandler) {
         this.daoHandler = daoHandler;
         this.shoppingList = new ArrayList<Ingredient>();
     }
@@ -43,8 +43,7 @@ public class shoplistgenerService {
         if (name.equals("")) {
             List<String> recipeNames = this.daoHandler.fetchAllRecipes();
             return recipeNames;
-        }
-        else {
+        } else {
             name = name.trim().toLowerCase();
             Recipe rec = this.daoHandler.fetchRecipe(name);
             List<String> recipeInList = new ArrayList<String>();
@@ -98,7 +97,9 @@ public class shoplistgenerService {
         }
         List<Ingredient> ingredientsSorted = this.sortIngredients(ingredientsAll);
         menuToString.add("");
-        for (Ingredient ing : ingredientsSorted) {menuToString.add(ing.toString());}
+        for (Ingredient ing : ingredientsSorted) {
+            menuToString.add(ing.toString());
+        }
         return menuToString;
     }
 
@@ -110,20 +111,20 @@ public class shoplistgenerService {
         List<Ingredient> combinedIngredients = new ArrayList<Ingredient>();
         Ingredient previous = new Ingredient("", Unit.CL, 0);
         for (int i = 1; i < ingredientsSorted.size(); i++) {
-            if (ingredientsSorted.get(i).equals(ingredientsSorted.get(i-1))) {
+            if (ingredientsSorted.get(i).equals(ingredientsSorted.get(i - 1))) {
                 if (ingredientsSorted.get(i).equals(previous)) {
                     combinedIngredients.get(combinedIngredients.size() - 1).setRequestedQuantity(ingredientsSorted.get(i).getRequestedQuantity() + combinedIngredients.get(combinedIngredients.size() - 1).getRequestedQuantity());
                     //maybe fix the above line so more readable
                     continue;
                 }
-                combinedIngredients.add(Ingredient.combineIngredients(ingredientsSorted.get(i), ingredientsSorted.get(i-1)));
-                previous = ingredientsSorted.get(i-1);
-            }
-            else {
+                combinedIngredients.add(Ingredient.combineIngredients(ingredientsSorted.get(i), ingredientsSorted.get(i - 1)));
+                previous = ingredientsSorted.get(i - 1);
+            } else {
                 if (!combinedIngredients.contains(ingredientsSorted.get(i - 1))) {
-                    combinedIngredients.add(ingredientsSorted.get(i - 1));}
+                    combinedIngredients.add(ingredientsSorted.get(i - 1));
                 }
             }
+        }
         // add the last ingredient only if not duplicate
         if (!ingredientsSorted.get(ingredientsSorted.size() - 1).equals(combinedIngredients.get(combinedIngredients.size() - 1))) {
             combinedIngredients.add(ingredientsSorted.get(ingredientsSorted.size() - 1));

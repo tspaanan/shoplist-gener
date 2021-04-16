@@ -1,4 +1,4 @@
-package defaultPackage;
+package shoplistgener;
 
 import static org.junit.Assert.assertTrue;
 

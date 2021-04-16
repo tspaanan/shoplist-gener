@@ -1,4 +1,4 @@
-package defaultPackage.domain;
+package shoplistgener.domain;
 
 import java.util.List;
 
@@ -13,9 +13,17 @@ public class Recipe {
         this.ingredients = ingredients;
     }
 
-    public String getName() {return this.name;}
-    public String getInstructions() {return this.instructions;}
-    public List<Ingredient> getIngredients() {return this.ingredients;}
+    public String getName() {
+        return this.name;
+    }
+    
+    public String getInstructions() {
+        return this.instructions;
+    }
+
+    public List<Ingredient> getIngredients() {
+        return this.ingredients;
+    }
 
     @Override
     public String toString() {

@@ -1,22 +1,20 @@
-package defaultPackage;
+package shoplistgener;
 
 //GUI:
-import defaultPackage.ui.UIJavaFX;
+import shoplistgener.ui.UIJavaFX;
 import java.lang.System;
 
 //debug
 import java.io.File;
-import defaultPackage.CreateTestData;
+import shoplistgener.CreateTestData;
 
 //TUI:
 //import java.util.Scanner;
 //import defaultPackage.dao.*;
 //import defaultPackage.domain.shoplistgenerService;
 
-public class App 
-{
-    public static void main( String[] args )
-    {
+public class App {
+    public static void main(String[] args) {
         //debug
         if (!new File("Test.db").isFile()) {
             System.out.println("Creating test data...");
