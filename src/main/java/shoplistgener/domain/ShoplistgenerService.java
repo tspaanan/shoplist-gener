@@ -21,7 +21,7 @@ public class ShoplistgenerService {
 
     public boolean addRecipe(List<String> recipeParts) {
         List<Ingredient> ingredients = new ArrayList<Ingredient>();
-        for (int i = 2; i < recipeParts.size(); i++ ) {
+        for (int i = 2; i < recipeParts.size(); i++) {
             String[] ingParts = recipeParts.get(i).split(";");
             ingredients.add(new Ingredient(ingParts[0], Unit.valueOf(ingParts[1].toUpperCase()), Integer.valueOf(ingParts[2])));
         }

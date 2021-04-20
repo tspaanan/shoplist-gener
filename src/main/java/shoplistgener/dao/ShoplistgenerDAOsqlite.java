@@ -53,14 +53,14 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
         PreparedStatement p = this.db.prepareStatement("SELECT id FROM recipes WHERE name=?");
         p.setString(1, newRecipe.getName());
         ResultSet r = p.executeQuery();
-        String recipe_id = r.getString("id");
+        String recipeId = r.getString("id");
         for (Ingredient ing : newRecipe.getIngredients()) {
             PreparedStatement pIng = this.db.prepareStatement("SELECT id FROM ingredients WHERE name=?");
             pIng.setString(1, ing.getName());
             ResultSet rIng = pIng.executeQuery();
-            String ingredient_id = rIng.getString("id");
+            String ingredientId = rIng.getString("id");
             String ingInRecipeInsert = "INSERT INTO ingredientsInRecipes (recipe_id,ingredient_id,quantity) VALUES ("
-                                    + recipe_id + "," + ingredient_id + "," + ing.getRequestedQuantity().toString() + ")";
+                                    + recipeId + "," + ingredientId + "," + ing.getRequestedQuantity().toString() + ")";
             s.executeUpdate(ingInRecipeInsert);
         }
         this.db.commit();
