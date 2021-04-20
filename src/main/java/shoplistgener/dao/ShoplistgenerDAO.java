@@ -9,4 +9,5 @@ public interface ShoplistgenerDAO {
     List<Recipe> fetchMenu(int days) throws Exception;
     Recipe fetchRecipe(String name) throws Exception;
     void removeRecipe(String name) throws Exception;
+    Recipe fetchRandomRecipe() throws Exception;
 }

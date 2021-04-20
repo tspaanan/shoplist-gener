@@ -25,6 +25,18 @@ public class Recipe {
         return this.ingredients;
     }
 
+    public void setName(String changedName) {
+        this.name = changedName;
+    }
+
+    public void setInstructions(String changedInstructions) {
+        this.instructions = changedInstructions;
+    }
+
+    public void setIngredients(List<Ingredient> changedIngredients) {
+        this.ingredients = changedIngredients;
+    }
+
     @Override
     public String toString() {
         return "***" + this.name + "***\n\n" + this.instructions;

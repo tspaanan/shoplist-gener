@@ -43,6 +43,15 @@ public class UIJavaFX extends Application {
         window.setTitle("shoplist-gener");
         
         Label listMenu = new Label();
+        ObservableList<String> menuItems = FXCollections.observableArrayList();
+        ListView<String> menuItemView = new ListView<String>(menuItems);
+        menuItemView.setPrefSize(100, 50);
+        menuItemView.setVisible(false);
+        Button changeCourse = new Button("Change selected course");
+        changeCourse.setVisible(false);
+        HBox menuPlacement = new HBox();
+        menuPlacement.getChildren().addAll(menuItemView, changeCourse);
+
         Label listShoppingList = new Label();
         Label listRecipes = new Label();
         Button removeRecipe = new Button("Remove this recipe");
@@ -55,10 +64,13 @@ public class UIJavaFX extends Application {
                 String newShoppingList = domainHandler.fetchShoppingList();
                 listMenu.setText("Menu:\n" + newCourses);
                 listShoppingList.setText("Shopping List:\n" + newShoppingList);
+                menuItems.setAll(listMenu.getText().split("\\n"));
+                menuItemView.setVisible(true);
+                changeCourse.setVisible(true);
+                //System.out.println(menuItems.toString());
             } catch (Exception e) {
-                    listMenu.setText("\n\nMysterious 'ResultSet was closed' error just happened. Not to worry:\n"
+                    listShoppingList.setText("\n\nMysterious 'ResultSet was closed' error just happened. Not to worry:\n"
                                         + "simply make your choice again: it has never occurred twice in a row...");
-                    listShoppingList.setText("");
             }
         });
 
@@ -109,7 +121,8 @@ public class UIJavaFX extends Application {
         buttonPlacement.getChildren().add(searchRecipes);
         buttonPlacement.getChildren().add(addRecipe);
 
-        labelPlacement.getChildren().add(listMenu);
+        //labelPlacement.getChildren().add(listMenu);
+        labelPlacement.getChildren().add(menuPlacement);
         labelPlacement.getChildren().add(listShoppingList);
         labelPlacement.getChildren().add(listRecipes);
         labelPlacement.getChildren().add(removeRecipe);
@@ -182,6 +195,21 @@ public class UIJavaFX extends Application {
                             + " " + listView.getSelectionModel().getSelectedItem().toString().toLowerCase();
             listOfNewIngredients.add(new Ingredient(newIngredientName.getText(), Unit.valueOf(listView.getSelectionModel().getSelectedItem().toString()), Integer.parseInt(newIngredientQuantity.getText())));
             newIngredientsInList.setText(newList);
+        });
+
+        changeCourse.setOnAction((event) -> {
+            try {
+                String changedCourse = menuItemView.getSelectionModel().getSelectedItem().toString();
+                String changedMenu = domainHandler.changeCourse(changedCourse);
+                String changedShoppinglist = domainHandler.fetchShoppingList();
+                listMenu.setText("Menu:\n" + changedMenu);
+                listShoppingList.setText("Shopping List:\n" + changedShoppinglist);
+                menuItems.setAll(listMenu.getText().split("\\n"));
+            } catch (Exception e) {
+                listMenu.setText("\n\nMysterious 'ResultSet was closed' error just happened. Not to worry:\n"
+                                    + "simply make your choice again: it has never occurred twice in a row...");
+                listShoppingList.setText("");
+            }
         });
         
         window.setScene(mainScene);

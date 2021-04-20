@@ -12,6 +12,7 @@ import shoplistgener.dao.ShoplistgenerDAO;
 public class ShoplistgenerService {
     private ShoplistgenerDAO daoHandler;
     private List<Ingredient> shoppingList;
+    private List<Recipe> recipeList;
 
     public ShoplistgenerService(ShoplistgenerDAO daoHandler) {
         this.daoHandler = daoHandler;
@@ -88,10 +89,26 @@ public class ShoplistgenerService {
     }
 
     public String fetchCourses() throws Exception {
+        //StringBuilder menuInString = new StringBuilder();
+        this.recipeList = this.daoHandler.fetchMenu(7);
+        //this.shoppingList.clear(); //empty private variable between menu fetches
+        //for (Recipe rec : this.recipeList) {
+            //menuInString.append(rec.getName());
+            //menuInString.append("\n"); //recipe instructions are not included at this point
+            ////recToString.add(rec.getInstructions());
+            //List<Ingredient> ingredients = rec.getIngredients();
+            //for (Ingredient ing : ingredients) {
+                //this.shoppingList.add(ing);
+            //}
+        //}
+        //return menuInString.toString();
+        return this.buildMenuIntoString();
+    }
+
+    private String buildMenuIntoString() {
+        this.shoppingList.clear(); //shoppingList is always built anew following changes in recipeList
         StringBuilder menuInString = new StringBuilder();
-        List<Recipe> menu = this.daoHandler.fetchMenu(7);
-        this.shoppingList.clear(); //empty private variable between menu fetches
-        for (Recipe rec : menu) {
+        for (Recipe rec : this.recipeList) {
             menuInString.append(rec.getName());
             menuInString.append("\n"); //recipe instructions are not included at this point
             //recToString.add(rec.getInstructions());
@@ -101,6 +118,18 @@ public class ShoplistgenerService {
             }
         }
         return menuInString.toString();
+    }
+    
+    public String changeCourse(String name) throws Exception {
+        Recipe newRecipe = this.daoHandler.fetchRandomRecipe();
+        for (Recipe recipe : this.recipeList) {
+            if (recipe.getName().equals(name)) {
+                recipe.setName(newRecipe.getName());
+                recipe.setInstructions(newRecipe.getInstructions());
+                recipe.setIngredients(newRecipe.getIngredients());
+            }
+        }
+        return this.buildMenuIntoString();
     }
 
     public String fetchShoppingList() {

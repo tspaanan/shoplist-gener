@@ -67,14 +67,15 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
     }
 
     public List<Recipe> fetchMenu(int days) throws SQLException {
-        Random rand = new Random();
+        //Random rand = new Random();
         List<Recipe> menu = new ArrayList<Recipe>();
-        PreparedStatement c = this.db.prepareStatement("SELECT COUNT(*) FROM recipes");
-        Integer recipesNo = Integer.parseInt(c.executeQuery().getString("COUNT(*)")); //TODO: use getInt() instead
+        //PreparedStatement c = this.db.prepareStatement("SELECT COUNT(*) FROM recipes");
+        //Integer recipesNo = Integer.parseInt(c.executeQuery().getString("COUNT(*)"));
         for (int i = 0; i < days; i++) {
             PreparedStatement p = this.db.prepareStatement("SELECT id,name,instructions,visible FROM recipes WHERE id=?");
             //fetch recipes one at a time, maybe all at the same time instead?
-            Integer randRecipeNo = rand.nextInt(recipesNo + 1);
+            //Integer randRecipeNo = rand.nextInt(recipesNo + 1);
+            Integer randRecipeNo = this.randomNumberForRecipes();
             p.setString(1, String.valueOf(randRecipeNo));
             ResultSet r = p.executeQuery();
             //if randomly selected removed recipe, simply make another random selection instead
@@ -89,12 +90,26 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
         return menu;
     }
 
+    private int randomNumberForRecipes() throws SQLException {
+        Random rand = new Random();
+        PreparedStatement c = this.db.prepareStatement("SELECT COUNT(*) FROM recipes");
+        int recipesNo = c.executeQuery().getInt("COUNT(*)");
+        return rand.nextInt(recipesNo) + 1;
+    }
+
     public Recipe fetchRecipe(String name) throws SQLException {
         PreparedStatement p = this.db.prepareStatement("SELECT id,name,instructions FROM recipes WHERE name=? AND visible=TRUE");
         p.setString(1, name);
         ResultSet r = p.executeQuery();
         List<Ingredient> ingsInList = this.fetchIngredients(r.getInt("id"));
         return new Recipe(r.getString("name"), r.getString("instructions"), ingsInList);
+    }
+
+    public Recipe fetchRandomRecipe() throws SQLException {
+        PreparedStatement p = this.db.prepareStatement("SELECT name FROM recipes WHERE id=?");
+        p.setString(1, String.valueOf(randomNumberForRecipes()));
+        ResultSet r = p.executeQuery();
+        return this.fetchRecipe(r.getString("name"));
     }
 
     public List<String> fetchAllRecipes() throws SQLException {
