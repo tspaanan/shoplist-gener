@@ -45,6 +45,8 @@ public class UIJavaFX extends Application {
         Label listMenu = new Label();
         Label listShoppingList = new Label();
         Label listRecipes = new Label();
+        Button removeRecipe = new Button("Remove this recipe");
+        removeRecipe.setVisible(false);
 
         Button wholeMenu = new Button("Print Week's Menu and shopping list");
         wholeMenu.setOnAction((event) -> {
@@ -64,10 +66,7 @@ public class UIJavaFX extends Application {
         allRecipes.setOnAction((event) -> {
             try {
                 listRecipes.setText(domainHandler.fetchRecipe(""));
-                //debug
-                //List<String> testList = new ArrayList<String>();
-                //testList.add("uusi_resepti"); testList.add("Uudet_ohjeet"); testList.add("000;dl;222");
-                //domainHandler.addRecipe(testList);
+                removeRecipe.setVisible(false);
             } catch (Exception e) {
                 listRecipes.setText("Exception occured (but shouldn't have)");
             }
@@ -79,8 +78,20 @@ public class UIJavaFX extends Application {
             try {
                 String searchString = searchText.getText();
                 listRecipes.setText(domainHandler.fetchRecipe(searchString));
+                removeRecipe.setVisible(true);
             } catch (Exception e) {
                 listRecipes.setText("error: no recipe by that name");
+            }
+        });
+
+        removeRecipe.setOnAction((event) -> {
+            try {
+                domainHandler.removeRecipe(searchText.getText());
+                listRecipes.setText("Recipe was removed!");
+                removeRecipe.setVisible(false);
+            } catch (Exception e) {
+                listRecipes.setText("error: recipe could not be removed");
+                removeRecipe.setVisible(false);
             }
         });
 
@@ -101,6 +112,7 @@ public class UIJavaFX extends Application {
         labelPlacement.getChildren().add(listMenu);
         labelPlacement.getChildren().add(listShoppingList);
         labelPlacement.getChildren().add(listRecipes);
+        labelPlacement.getChildren().add(removeRecipe);
 
         BorderPane elementPlacement = new BorderPane();
         elementPlacement.setRight(labelPlacement);
@@ -114,7 +126,6 @@ public class UIJavaFX extends Application {
         newRecipeFields.setSpacing(10);
         newRecipeFields.getChildren().addAll(newRecipeName, newRecipeInstructions);
         Label newIngredientsInList = new Label();
-        //newRecipeFields.getChildren().add(newIngredientsInList);
         List<Ingredient> listOfNewIngredients = new ArrayList<Ingredient>(); //mietitään Ingredient-olion käyttöä vielä tässä
 
         TextField newIngredientName = new TextField("Ingredient name");

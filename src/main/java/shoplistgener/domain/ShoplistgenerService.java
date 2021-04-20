@@ -161,4 +161,8 @@ public class ShoplistgenerService {
         }
         return combinedIngredients;
     }
+
+    public void removeRecipe(String name) throws Exception {
+        this.daoHandler.removeRecipe(name);
+    }
 }

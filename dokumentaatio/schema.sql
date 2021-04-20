@@ -1,7 +1,8 @@
 CREATE TABLE recipes (
 	id INTEGER PRIMARY KEY,
 	name TEXT UNIQUE,
-	instructions TEXT
+	instructions TEXT,
+	visible BOOLEAN
 );
 
 CREATE TABLE ingredients (

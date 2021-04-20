@@ -10,7 +10,7 @@ public class CreateTestData {
             db.setAutoCommit(false);
             Statement s = db.createStatement();
             s.execute("CREATE TABLE recipes (id INTEGER PRIMARY KEY,"
-                     + "name TEXT UNIQUE, instructions TEXT)");
+                     + "name TEXT UNIQUE, instructions TEXT, visible BOOLEAN)");
             s.execute("CREATE TABLE ingredients (id INTEGER PRIMARY KEY,"
                      + "name TEXT UNIQUE, unit TEXT)");
             s.execute("CREATE TABLE ingredientsInRecipes (id INTEGER PRIMARY KEY,"
@@ -20,8 +20,8 @@ public class CreateTestData {
             db.commit();
             
             for (int i = 1; i <= 100; i++) {
-                String insert = "INSERT INTO recipes (name,instructions) VALUES ('recipe#" + String.valueOf(i) 
-                                + "','default_instructions_for_this_recipe')";
+                String insert = "INSERT INTO recipes (name,instructions,visible) VALUES ('recipe#" + String.valueOf(i) 
+                                + "','default_instructions_for_this_recipe',TRUE)";
                 s.execute(insert);
             }
             db.commit();

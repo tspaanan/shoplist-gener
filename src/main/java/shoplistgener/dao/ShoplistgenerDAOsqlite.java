@@ -19,7 +19,7 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
     }
 
     public void addRecipe(Recipe newRecipe) throws Exception {
-        //check for duplicate recipe names
+        //check for duplicate recipe names, TODO: clashes with removed recipe names
         PreparedStatement cs = this.db.prepareStatement("SELECT 1 FROM recipes WHERE name='" + newRecipe.getName() + "'");
         ResultSet ch = cs.executeQuery();
         if (ch.next()) {
@@ -29,8 +29,8 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
         }
   
         //add information for recipes table
-        String insert = "INSERT INTO recipes (name,instructions) VALUES ('" + newRecipe.getName() + "','" 
-                        + newRecipe.getInstructions() + "')";
+        String insert = "INSERT INTO recipes (name,instructions,visible) VALUES ('" + newRecipe.getName() + "','" 
+                        + newRecipe.getInstructions() + "',TRUE)";
         Statement s = this.db.createStatement();
         s.executeUpdate(insert);
         this.db.commit();
@@ -72,11 +72,16 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
         PreparedStatement c = this.db.prepareStatement("SELECT COUNT(*) FROM recipes");
         Integer recipesNo = Integer.parseInt(c.executeQuery().getString("COUNT(*)")); //TODO: use getInt() instead
         for (int i = 0; i < days; i++) {
-            PreparedStatement p = this.db.prepareStatement("SELECT id,name,instructions FROM recipes WHERE id=?");
+            PreparedStatement p = this.db.prepareStatement("SELECT id,name,instructions,visible FROM recipes WHERE id=?");
             //fetch recipes one at a time, maybe all at the same time instead?
             Integer randRecipeNo = rand.nextInt(recipesNo + 1);
             p.setString(1, String.valueOf(randRecipeNo));
             ResultSet r = p.executeQuery();
+            //if randomly selected removed recipe, simply make another random selection instead
+            if (r.getString("visible").equals("0")) {
+                i--;
+                continue;
+            }
             List<Ingredient> ingsInList = this.fetchIngredients(randRecipeNo);
             Recipe rec = new Recipe(r.getString("name"), r.getString("instructions"), ingsInList);
             menu.add(rec);
@@ -85,7 +90,7 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
     }
 
     public Recipe fetchRecipe(String name) throws SQLException {
-        PreparedStatement p = this.db.prepareStatement("SELECT id,name,instructions FROM recipes WHERE name=?");
+        PreparedStatement p = this.db.prepareStatement("SELECT id,name,instructions FROM recipes WHERE name=? AND visible=TRUE");
         p.setString(1, name);
         ResultSet r = p.executeQuery();
         List<Ingredient> ingsInList = this.fetchIngredients(r.getInt("id"));
@@ -93,7 +98,7 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
     }
 
     public List<String> fetchAllRecipes() throws SQLException {
-        PreparedStatement p = this.db.prepareStatement("SELECT name FROM recipes");
+        PreparedStatement p = this.db.prepareStatement("SELECT name FROM recipes WHERE visible=TRUE");
         ResultSet r = p.executeQuery();
         List<String> recipeNames = new ArrayList<String>();
         while (r.next()) {
@@ -113,5 +118,12 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
             ingsInList.add(ingObject);
         }
         return ingsInList;
+    }
+
+    public void removeRecipe(String name) throws Exception {
+        PreparedStatement p = this.db.prepareStatement("UPDATE recipes SET visible=FALSE WHERE name=?");
+        p.setString(1, name);
+        p.executeUpdate();
+        this.db.commit();
     }
 }
