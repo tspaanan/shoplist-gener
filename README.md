@@ -10,7 +10,9 @@
 
 ## Ohjelman suoritus
 
-```mvn compile exec:java -Dexec.mainClass=defaultPackage.App```
+```
+mvn compile exec:java -Dexec.mainClass=shoplistgener.App
+```
 
 ## Ohjelman testaaminen
 Automaattiset testit:
@@ -20,4 +22,8 @@ mvn test
 Jacoco-raportin luominen:
 ```
 mvn test jacoco:report
+```
+Checkstyle-raportin luominen:
+```
+mvn jxr:jxr checkstyle:checkstyle
 ```

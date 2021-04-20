@@ -12,11 +12,11 @@ Sovelluksella on vain yksi käyttäjärooli. _Normaali käyttäjä_ voi muokata 
 
 - käyttäjä voi napin painalluksella luoda valmiin ruokalistan koko viikoksi, ja siihen kuuluvan kauppalistan **[perustoteutus OK]**
 	- ruokalista ja kauppalista on myös muotoiltu tulostusvalmiiksi, tai ne voidaan lähettää pikaviestimellä kännykkään
-	- käyttäjä voi myös arpoa tai valita halutuille päiville uudet ruokalajit
+	- käyttäjä voi myös arpoa tai valita halutuille päiville uudet ruokalajit **[halutun reseptin arpominen uudestaan: perustoteutus OK]** **[Viikko 4: uusi ominaisuus]**
 
 - käyttäjä voi tarkastella ruokalistaan kuuluvien ruokalajien reseptejä **[perustoteutus OK]**
 
-- käyttäjä voi lisätä tai poistaa reseptejä tietokannasta, tai etsiä hakukriteerien mukaisia reseptejä (esimerkiksi antamalla kourallinen ainesosia löydetään reseptejä, joihin nämä ainesosat voidaan käyttää)
+- käyttäjä voi lisätä tai poistaa reseptejä tietokannasta, tai etsiä hakukriteerien mukaisia reseptejä (esimerkiksi antamalla kourallinen ainesosia löydetään reseptejä, joihin nämä ainesosat voidaan käyttää) **[reseptien lisäys ja poistaminen: perustoteutus OK]** **[Viikko 4: uusi ominaisuus]**
 
 - käyttäjä voi lisätä resepteihin tageja, joita voidaan käyttää resepteihin liittyvissä hauissa sekä ruokalistan luomisprosessin muokkaamisessa
 
