@@ -18,22 +18,37 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
         }
     }
 
-    public void addRecipe(Recipe newRecipe) throws SQLException {
+    public void addRecipe(Recipe newRecipe) throws Exception {
+        //check for duplicate recipe names
+        PreparedStatement cs = this.db.prepareStatement("SELECT 1 FROM recipes WHERE name='" + newRecipe.getName() + "'");
+        ResultSet ch = cs.executeQuery();
+        if (ch.next()) {
+            //throw new RecipeNameExists();
+            //maybe code my own Exception class?
+            throw new UnsupportedOperationException();
+        }
+  
         //add information for recipes table
         String insert = "INSERT INTO recipes (name,instructions) VALUES ('" + newRecipe.getName() + "','" 
                         + newRecipe.getInstructions() + "')";
         Statement s = this.db.createStatement();
         s.executeUpdate(insert);
         this.db.commit();
-
+        
         //add information for ingredients table
         for (Ingredient ing : newRecipe.getIngredients()) {
+            //before adding, check if ingredient already exists
+            PreparedStatement ci = this.db.prepareStatement("SELECT 1 FROM ingredients WHERE name='" + ing.getName() + "'");
+            ResultSet ciResults = ci.executeQuery();
+            if (ciResults.next()) {
+                continue;
+            }
             String insertIng = "INSERT INTO ingredients (name, unit) VALUES ('" + ing.getName() + "','"
                             + ing.getUnit().toString().toLowerCase() + "')";
             s.executeUpdate(insertIng);
         }
         this.db.commit();
-
+        
         //add information for ingredientsInRecipes table
         PreparedStatement p = this.db.prepareStatement("SELECT id FROM recipes WHERE name=?");
         p.setString(1, newRecipe.getName());

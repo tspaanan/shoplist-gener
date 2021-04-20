@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.sqlite.SQLiteException;
+
 import shoplistgener.dao.ShoplistgenerDAO;
 
 public class ShoplistgenerService {
@@ -26,7 +28,18 @@ public class ShoplistgenerService {
         try {
             this.daoHandler.addRecipe(newRecipe);
             return true;
+        } catch (SQLiteException el) { //TODO: tämä on hoidettu toisella tavalla DAOn toimesta, voinee poistaa kokonaan
+            if (el.getErrorCode() == 19) {
+                // errorCode 19 refers to UNIQUE-constraint violation, which is expected with ingredients
+                return true;
+            }
+            return false;
+        } catch (UnsupportedOperationException uoe) {
+            //this exception is raised if a recipe by that name already exists
+            return false;
         } catch (Exception e) {
+            System.out.println("tämä exc laukesi!");
+            e.printStackTrace();
             return false;
         }
     }
@@ -41,7 +54,8 @@ public class ShoplistgenerService {
             }
             return recipeNamesInString.toString();
         } else {
-            name = name.trim().toLowerCase();
+            name = name.trim();
+            //.toLowerCase();
             Recipe rec = this.daoHandler.fetchRecipe(name);
             StringBuilder recInString = new StringBuilder();
             recInString.append("\n***" + rec.getName() + "***\n\n");

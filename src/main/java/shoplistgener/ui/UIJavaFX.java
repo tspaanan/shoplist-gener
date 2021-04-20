@@ -1,19 +1,26 @@
 package shoplistgener.ui;
 
 import shoplistgener.dao.*;
+import shoplistgener.domain.Ingredient;
 import shoplistgener.domain.ShoplistgenerService;
+import shoplistgener.domain.Unit;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -79,23 +86,6 @@ public class UIJavaFX extends Application {
 
         Button addRecipe = new Button("Add a new recipe");
 
-        //temporary fields
-        TextField newRecipeName = new TextField("Recipe name");
-        TextField newRecipeInstructions = new TextField("Instructions for the recipe");
-        HBox newRecipeFields = new HBox();
-        newRecipeFields.setSpacing(10);
-        newRecipeFields.getChildren().addAll(newRecipeName, newRecipeInstructions);
-        
-        addRecipe.setOnAction((event) -> {
-            List<String> newRecipeParts = new ArrayList<String>();
-            newRecipeParts.add(newRecipeName.getText());
-            newRecipeParts.add(newRecipeInstructions.getText());
-            newRecipeParts.add("ingNimi;dl;22");
-            if (!domainHandler.addRecipe(newRecipeParts)) {
-                listRecipes.setText("error in adding recipe");
-            };
-        });
-
         HBox labelPlacement = new HBox();
         labelPlacement.setSpacing(10);
         labelPlacement.setPadding(new Insets(10,300,10,10));
@@ -108,9 +98,6 @@ public class UIJavaFX extends Application {
         buttonPlacement.getChildren().add(searchRecipes);
         buttonPlacement.getChildren().add(addRecipe);
 
-        //temporary placement
-        buttonPlacement.getChildren().add(newRecipeFields);
-
         labelPlacement.getChildren().add(listMenu);
         labelPlacement.getChildren().add(listShoppingList);
         labelPlacement.getChildren().add(listRecipes);
@@ -120,10 +107,73 @@ public class UIJavaFX extends Application {
         elementPlacement.setLeft(buttonPlacement);
         elementPlacement.setBackground(new Background(new BackgroundFill(Color.WHITESMOKE, null, null)));
         
-        Scene viewPort = new Scene(elementPlacement);
-        //viewPort.setFill(Color.BLACK); //does nothing?
+        // addRecipeScene-komponentit
+        TextField newRecipeName = new TextField("Recipe name");
+        TextField newRecipeInstructions = new TextField("Instructions for the recipe");
+        HBox newRecipeFields = new HBox();
+        newRecipeFields.setSpacing(10);
+        newRecipeFields.getChildren().addAll(newRecipeName, newRecipeInstructions);
+        Label newIngredientsInList = new Label();
+        //newRecipeFields.getChildren().add(newIngredientsInList);
+        List<Ingredient> listOfNewIngredients = new ArrayList<Ingredient>(); //mietitään Ingredient-olion käyttöä vielä tässä
+
+        TextField newIngredientName = new TextField("Ingredient name");
+        TextField newIngredientQuantity = new TextField("Ingredient quantity");
+        ObservableList<Unit> newIngredientUnit = FXCollections.observableArrayList(Unit.values());
+        ListView<Unit> listView = new ListView<Unit>(newIngredientUnit);
+        listView.setPrefSize(80, 30);
+        Button addNewIngredient = new Button("Add new ingredient");
+        Button addNewRecipeButton = new Button("Add new recipe");
+        HBox newIngredientFields = new HBox();
+        newIngredientFields.getChildren().addAll(newIngredientName, newIngredientQuantity, listView);
+        GridPane addRecipeSceneGridpane = new GridPane();
+        addRecipeSceneGridpane.add(newRecipeFields, 2, 1);
+        addRecipeSceneGridpane.add(newIngredientFields, 2, 2);
+        addRecipeSceneGridpane.add(addNewIngredient, 2, 3);
+        addRecipeSceneGridpane.add(addNewRecipeButton, 3, 3);
+        addRecipeSceneGridpane.add(newIngredientsInList, 2, 4);
+        addRecipeSceneGridpane.setAlignment(Pos.CENTER_LEFT);
         
-        window.setScene(viewPort);
+        Scene mainScene = new Scene(elementPlacement);
+        //viewPort.setFill(Color.BLACK); //does nothing?
+        Scene addRecipeScene = new Scene(addRecipeSceneGridpane);
+        
+        addRecipe.setOnAction((event) -> {
+           window.setScene(addRecipeScene); 
+            newIngredientsInList.setText("\nIngredients:");
+            listOfNewIngredients.clear();
+        });
+        
+        addNewRecipeButton.setOnAction((event) -> {
+            List<String> newRecipeParts = new ArrayList<String>();
+            newRecipeParts.add(newRecipeName.getText());
+            newRecipeParts.add(newRecipeInstructions.getText());
+            for (Ingredient ing : listOfNewIngredients) {
+                newRecipeParts.add(ing.getName() + ";" + ing.getUnit().toString().toLowerCase() + ";" + ing.getRequestedQuantity());
+            }
+            boolean bTarkistus = domainHandler.addRecipe(newRecipeParts);
+            //TODO: siisti tätä
+            if (!bTarkistus) {
+                listRecipes.setText("error in adding recipe");
+            } else {
+                try {
+                listRecipes.setText(domainHandler.fetchRecipe(newRecipeParts.get(0)));
+                } catch (Exception e) {
+                    listRecipes.setText("error fetching recipe after successful creation");
+                }
+            };
+            window.setScene(mainScene);
+        });
+
+        addNewIngredient.setOnAction((event) -> {
+            String oldList = newIngredientsInList.getText();
+            String newList = oldList + "\n" + newIngredientName.getText() + " " + newIngredientQuantity.getText()
+                            + " " + listView.getSelectionModel().getSelectedItem().toString().toLowerCase();
+            listOfNewIngredients.add(new Ingredient(newIngredientName.getText(), Unit.valueOf(listView.getSelectionModel().getSelectedItem().toString()), Integer.parseInt(newIngredientQuantity.getText())));
+            newIngredientsInList.setText(newList);
+        });
+        
+        window.setScene(mainScene);
         window.show();
     }
 
