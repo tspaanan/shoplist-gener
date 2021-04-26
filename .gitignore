@@ -7,4 +7,5 @@ Test.db
 .project
 .settings/
 .vscode/
-/shoplist-gener/
+.*
+/dokumentaatio/*.bak

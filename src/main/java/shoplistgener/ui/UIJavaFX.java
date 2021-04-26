@@ -1,22 +1,36 @@
 package shoplistgener.ui;
 
+import shoplistgener.CreateTestData;
 import shoplistgener.dao.*;
 import shoplistgener.domain.Ingredient;
 import shoplistgener.domain.ShoplistgenerService;
 import shoplistgener.domain.Unit;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.nio.CharBuffer;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.Properties;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
@@ -29,17 +43,31 @@ import javafx.stage.Stage;
 
 public class UIJavaFX extends Application {
     
+    private String databaseName;
     private ShoplistgenerDAO sqliteHandler;
     private ShoplistgenerService domainHandler;
 
     @Override
-    public void init() {
-    sqliteHandler = new ShoplistgenerDAOsqlite(); //should this DAO be injected to domainHandler at all?
-    domainHandler = new ShoplistgenerService(sqliteHandler);
+    public void init() throws Exception {
+        Properties properties = new Properties();
+        properties.load(new FileInputStream("config.properties"));
+        
+        //debug
+        System.out.println(properties.getProperty("databaseName"));
+        if (properties.getProperty("databaseName").isEmpty()) {
+            System.out.println("tyhjä");
+        }
+        if (!new File(properties.getProperty("databaseName")).isFile()) {
+            System.out.println("Ei tiedostoa");
+        }
+        
+        databaseName = properties.getProperty("databaseName");
+        sqliteHandler = new ShoplistgenerDAOsqlite(properties.getProperty("databaseName")); //should this DAO be injected to domainHandler at all?
+        domainHandler = new ShoplistgenerService(sqliteHandler);
     }
     
     @Override
-    public void start(Stage window) {
+    public void start(Stage window) throws Exception {
         window.setTitle("shoplist-gener");
         
         Label listMenu = new Label();
@@ -214,6 +242,33 @@ public class UIJavaFX extends Application {
         
         window.setScene(mainScene);
         window.show();
+
+        TextInputDialog setDatabaseNameDialog = new TextInputDialog("Test.db");
+        setDatabaseNameDialog.setTitle("Set Database Name");
+        setDatabaseNameDialog.setHeaderText("No Database Found: Set New Database");
+        setDatabaseNameDialog.setContentText("Provide new name for database");
+        Alert chooseDatabasePopulationDialog = new Alert(AlertType.CONFIRMATION);
+        chooseDatabasePopulationDialog.setTitle("Choose How to Populate Database");
+        chooseDatabasePopulationDialog.setHeaderText("Database is Currently Empty");
+        chooseDatabasePopulationDialog.setContentText("Choose to populate database with test data or start with an empty database");
+        ButtonType testDataBT = new ButtonType("Test Data");
+        ButtonType emptyBT = new ButtonType("Empty Database");
+        chooseDatabasePopulationDialog.getButtonTypes().setAll(testDataBT, emptyBT);
+        while (databaseName.isEmpty() || !new File(databaseName).isFile()) {
+            Optional<String> newDatabaseName = setDatabaseNameDialog.showAndWait();
+            if (newDatabaseName.isPresent()) {
+                databaseName = newDatabaseName.get();
+                sqliteHandler = new ShoplistgenerDAOsqlite(databaseName);
+                domainHandler = new ShoplistgenerService(sqliteHandler);
+                FileWriter databaseNameWriter = new FileWriter(new File("config.properties"));
+                databaseNameWriter.write("databaseName=" + databaseName);
+                databaseNameWriter.close();
+                Optional<ButtonType> chosenBT = chooseDatabasePopulationDialog.showAndWait();
+                if (chosenBT.get() == testDataBT) {
+                    CreateTestData.createRandomTestData(databaseName);
+                }
+            }
+        }
     }
 
     public static void main(String[] args) {

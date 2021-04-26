@@ -5,8 +5,8 @@ import shoplistgener.ui.UIJavaFX;
 import java.lang.System;
 
 //debug
-import java.io.File;
-import shoplistgener.CreateTestData;
+//import java.io.File;
+//import shoplistgener.CreateTestData;
 
 //TUI:
 //import java.util.Scanner;
@@ -16,11 +16,11 @@ import shoplistgener.CreateTestData;
 public class App {
     public static void main(String[] args) {
         //debug
-        if (!new File("Test.db").isFile()) {
-            System.out.println("Creating test data...");
-            CreateTestData.createSomeData();
-            System.out.println("Test data created.");
-        }
+        //if (!new File("Test.db").isFile()) {
+            //System.out.println("Creating test data...");
+            //CreateTestData.createSomeData();
+            //System.out.println("Test data created.");
+        //}
 
         //TUI:
         //Scanner scanner = new Scanner(System.in);
@@ -36,6 +36,8 @@ public class App {
             System.out.println("JavaFX GUI in use: this program cannot be run over ssh "
                             + "connection, please use vdi.helsinki.fi to test");
             System.exit(1);
+        } catch (Exception u) {
+            System.out.println("Another exception occurred: " + u.getMessage());
         }
     }
 }

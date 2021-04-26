@@ -1,5 +1,8 @@
 package shoplistgener.dao;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,12 +12,31 @@ import java.util.Random;
 public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
     private Connection db;
 
-    public ShoplistgenerDAOsqlite() {
-        try {
-            this.db = DriverManager.getConnection("jdbc:sqlite:Test.db"); //TODO: database name is still hardcoded
-            this.db.setAutoCommit(false);
-        } catch (SQLException e) {
-            System.out.println("SQLException:" + e.getMessage());
+    public ShoplistgenerDAOsqlite(String databaseName) {
+        if (!databaseName.isEmpty()) {
+            String schemaInString = "";
+            try {
+                this.db = DriverManager.getConnection("jdbc:sqlite:" + databaseName);
+                this.db.setAutoCommit(false);
+                Path filePath = Path.of("./dokumentaatio/schema.sql"); //schema.sql -muotoilu osoittautui hankalaksi, joten nyt komennot ovat kukin omalla rivillään
+                schemaInString = Files.readString(filePath);
+            } catch (SQLException e) {
+                System.out.println("SQLException:" + e.getMessage());
+            } catch (IOException i) {
+                System.out.println("IOException:" + i.getMessage());
+            }
+            try {
+            Statement s = this.db.createStatement();
+                for (String tableCreation : schemaInString.split(";")) {
+                    System.out.print(tableCreation);
+                    s.execute(tableCreation);
+                    this.db.commit(); //jdbc-ajuri ei suostu sulkemaan transaktiota kerralla kaksi riviä alapuolella, vaikka sen pitäisi
+                    //joten jokainen CREATE TABLE -komento tehdään sitten erikseen
+                }
+            //this.db.commit();
+            } catch (SQLException e) {
+
+            }
         }
     }
 

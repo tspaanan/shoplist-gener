@@ -3,7 +3,7 @@ package shoplistgener.domain;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+//import java.util.stream.Collectors;
 
 import org.sqlite.SQLiteException;
 
@@ -133,7 +133,7 @@ public class ShoplistgenerService {
     }
 
     public String fetchShoppingList() {
-        List<Ingredient> shoppingListSorted = this.sortIngredients(this.shoppingList);
+        List<Ingredient> shoppingListSorted = Ingredient.sortIngredients(this.shoppingList);
         StringBuilder shoppingListinString = new StringBuilder();
         for (Ingredient ing : shoppingListSorted) {
             shoppingListinString.append(ing.toString());
@@ -154,41 +154,12 @@ public class ShoplistgenerService {
                 ingredientsAll.add(ing);
             }
         }
-        List<Ingredient> ingredientsSorted = this.sortIngredients(ingredientsAll);
+        List<Ingredient> ingredientsSorted = Ingredient.sortIngredients(ingredientsAll);
         menuToString.add("");
         for (Ingredient ing : ingredientsSorted) {
             menuToString.add(ing.toString());
         }
         return menuToString;
-    }
-
-    public List<Ingredient> sortIngredients(List<Ingredient> ingredients) {
-        List<Ingredient> ingredientsSorted = ingredients.stream()
-                                                //.distinct() not useful here
-                                                .sorted()
-                                                .collect(Collectors.toCollection(ArrayList::new));
-        List<Ingredient> combinedIngredients = new ArrayList<Ingredient>();
-        Ingredient previous = new Ingredient("", Unit.CL, 0);
-        for (int i = 1; i < ingredientsSorted.size(); i++) {
-            if (ingredientsSorted.get(i).equals(ingredientsSorted.get(i - 1))) {
-                if (ingredientsSorted.get(i).equals(previous)) {
-                    combinedIngredients.get(combinedIngredients.size() - 1).setRequestedQuantity(ingredientsSorted.get(i).getRequestedQuantity() + combinedIngredients.get(combinedIngredients.size() - 1).getRequestedQuantity());
-                    //maybe fix the above line so more readable
-                    continue;
-                }
-                combinedIngredients.add(Ingredient.combineIngredients(ingredientsSorted.get(i), ingredientsSorted.get(i - 1)));
-                previous = ingredientsSorted.get(i - 1);
-            } else {
-                if (!combinedIngredients.contains(ingredientsSorted.get(i - 1))) {
-                    combinedIngredients.add(ingredientsSorted.get(i - 1));
-                }
-            }
-        }
-        // add the last ingredient only if not duplicate
-        if (!ingredientsSorted.get(ingredientsSorted.size() - 1).equals(combinedIngredients.get(combinedIngredients.size() - 1))) {
-            combinedIngredients.add(ingredientsSorted.get(ingredientsSorted.size() - 1));
-        }
-        return combinedIngredients;
     }
 
     public void removeRecipe(String name) throws Exception {

@@ -1,5 +1,9 @@
 package shoplistgener.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class Ingredient implements Comparable<Ingredient> {
     private String name;
     private Unit unit;
@@ -64,5 +68,34 @@ public class Ingredient implements Comparable<Ingredient> {
     @Override
     public int compareTo(Ingredient other) {
         return this.name.compareTo(other.name);
+    }
+    
+    public static List<Ingredient> sortIngredients(List<Ingredient> ingredients) {
+        List<Ingredient> ingredientsSorted = ingredients.stream()
+                                                //.distinct() not useful here
+                                                .sorted()
+                                                .collect(Collectors.toCollection(ArrayList::new));
+        List<Ingredient> combinedIngredients = new ArrayList<Ingredient>();
+        Ingredient previous = new Ingredient("", Unit.CL, 0);
+        for (int i = 1; i < ingredientsSorted.size(); i++) {
+            if (ingredientsSorted.get(i).equals(ingredientsSorted.get(i - 1))) {
+                if (ingredientsSorted.get(i).equals(previous)) {
+                    combinedIngredients.get(combinedIngredients.size() - 1).setRequestedQuantity(ingredientsSorted.get(i).getRequestedQuantity() + combinedIngredients.get(combinedIngredients.size() - 1).getRequestedQuantity());
+                    //maybe fix the above line so more readable
+                    continue;
+                }
+                combinedIngredients.add(Ingredient.combineIngredients(ingredientsSorted.get(i), ingredientsSorted.get(i - 1)));
+                previous = ingredientsSorted.get(i - 1);
+            } else {
+                if (!combinedIngredients.contains(ingredientsSorted.get(i - 1))) {
+                    combinedIngredients.add(ingredientsSorted.get(i - 1));
+                }
+            }
+        }
+        // add the last ingredient only if not duplicate
+        if (!ingredientsSorted.get(ingredientsSorted.size() - 1).equals(combinedIngredients.get(combinedIngredients.size() - 1))) {
+            combinedIngredients.add(ingredientsSorted.get(ingredientsSorted.size() - 1));
+        }
+        return combinedIngredients;
     }
 }
