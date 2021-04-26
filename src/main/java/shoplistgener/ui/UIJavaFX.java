@@ -24,6 +24,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.Alert.AlertType;
@@ -34,6 +35,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -83,7 +85,9 @@ public class UIJavaFX extends Application {
         menuPlacement.setVisible(false);
 
         Label listShoppingList = new Label();
-        Label listRecipes = new Label();
+        //Label listRecipes = new Label();
+        ScrollPane listRecipes = new ScrollPane(); //stays visible for now
+        listRecipes.setFitToWidth(true); //does nothing?
         Button removeRecipe = new Button("Remove this recipe");
         removeRecipe.setVisible(false);
 
@@ -103,7 +107,7 @@ public class UIJavaFX extends Application {
                 //this ResultSet was closed error has been dealt with    
                 //listShoppingList.setText("\n\nMysterious 'ResultSet was closed' error just happened. Not to worry:\n"
                 //                        + "simply make your choice again: it has never occurred twice in a row...");
-                listRecipes.setText("no recipes in database");
+                listRecipes.setContent(new Text("no recipes in database"));
                 System.out.println(e.getMessage());
             }
         });
@@ -113,13 +117,13 @@ public class UIJavaFX extends Application {
             try {
                 String allRecipesFetched = domainHandler.fetchRecipe("");
                 if (allRecipesFetched.equals("All Recipes:\n\n")) {
-                    listRecipes.setText("no recipes in database");
+                    listRecipes.setContent(new Text("no recipes in database"));
                 } else {
-                    listRecipes.setText(allRecipesFetched);
+                    listRecipes.setContent(new Text(allRecipesFetched));
                 }
                 removeRecipe.setVisible(false);
             } catch (Exception e) {
-                listRecipes.setText("Exception occured (but shouldn't have)");
+                listRecipes.setContent(new Text("Exception occured (but shouldn't have)"));
             }
         });
 
@@ -128,20 +132,20 @@ public class UIJavaFX extends Application {
         searchRecipes.setOnAction((event) -> {
             try {
                 String searchString = searchText.getText();
-                listRecipes.setText(domainHandler.fetchRecipe(searchString));
+                listRecipes.setContent(new Text(domainHandler.fetchRecipe(searchString)));
                 removeRecipe.setVisible(true);
             } catch (Exception e) {
-                listRecipes.setText("error: no recipe by that name");
+                listRecipes.setContent(new Text("error: no recipe by that name"));
             }
         });
 
         removeRecipe.setOnAction((event) -> {
             try {
                 domainHandler.removeRecipe(searchText.getText());
-                listRecipes.setText("Recipe was removed!");
+                listRecipes.setContent(new Text("Recipe was removed!"));
                 removeRecipe.setVisible(false);
             } catch (Exception e) {
-                listRecipes.setText("error: recipe could not be removed");
+                listRecipes.setContent(new Text("error: recipe could not be removed"));
                 removeRecipe.setVisible(false);
             }
         });
@@ -217,12 +221,12 @@ public class UIJavaFX extends Application {
             boolean bTarkistus = domainHandler.addRecipe(newRecipeParts);
             //TODO: siisti tätä
             if (!bTarkistus) {
-                listRecipes.setText("error in adding recipe");
+                listRecipes.setContent(new Text("error in adding recipe"));
             } else {
                 try {
-                listRecipes.setText(domainHandler.fetchRecipe(newRecipeParts.get(0)));
+                listRecipes.setContent(new Text(domainHandler.fetchRecipe(newRecipeParts.get(0))));
                 } catch (Exception e) {
-                    listRecipes.setText("error fetching recipe after successful creation");
+                    listRecipes.setContent(new Text("error fetching recipe after successful creation"));
                 }
             };
             window.setScene(mainScene);
