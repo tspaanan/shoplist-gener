@@ -133,6 +133,9 @@ public class ShoplistgenerService {
     }
 
     public String fetchShoppingList() {
+        if (this.shoppingList.isEmpty()) {
+            return "";
+        }
         List<Ingredient> shoppingListSorted = Ingredient.sortIngredients(this.shoppingList);
         StringBuilder shoppingListinString = new StringBuilder();
         for (Ingredient ing : shoppingListSorted) {

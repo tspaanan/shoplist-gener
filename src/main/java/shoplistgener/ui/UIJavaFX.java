@@ -53,13 +53,13 @@ public class UIJavaFX extends Application {
         properties.load(new FileInputStream("config.properties"));
         
         //debug
-        System.out.println(properties.getProperty("databaseName"));
-        if (properties.getProperty("databaseName").isEmpty()) {
-            System.out.println("tyhjä");
-        }
-        if (!new File(properties.getProperty("databaseName")).isFile()) {
-            System.out.println("Ei tiedostoa");
-        }
+        //System.out.println(properties.getProperty("databaseName"));
+        //if (properties.getProperty("databaseName").isEmpty()) {
+            //System.out.println("tyhjä");
+        //}
+        //if (!new File(properties.getProperty("databaseName")).isFile()) {
+            //System.out.println("Ei tiedostoa");
+        //}
         
         databaseName = properties.getProperty("databaseName");
         sqliteHandler = new ShoplistgenerDAOsqlite(properties.getProperty("databaseName")); //should this DAO be injected to domainHandler at all?
@@ -75,7 +75,7 @@ public class UIJavaFX extends Application {
         ListView<String> menuItemView = new ListView<String>(menuItems);
         menuItemView.setPrefSize(100, 50);
         menuItemView.setVisible(false);
-        Button changeCourse = new Button("Change selected course");
+        Button changeCourse = new Button("Randomize selected course");
         changeCourse.setVisible(false);
         HBox menuPlacement = new HBox();
         menuPlacement.getChildren().addAll(menuItemView, changeCourse);
@@ -97,15 +97,23 @@ public class UIJavaFX extends Application {
                 changeCourse.setVisible(true);
                 //System.out.println(menuItems.toString());
             } catch (Exception e) {
-                    listShoppingList.setText("\n\nMysterious 'ResultSet was closed' error just happened. Not to worry:\n"
-                                        + "simply make your choice again: it has never occurred twice in a row...");
+                //this ResultSet was closed error has been dealt with    
+                //listShoppingList.setText("\n\nMysterious 'ResultSet was closed' error just happened. Not to worry:\n"
+                //                        + "simply make your choice again: it has never occurred twice in a row...");
+                listRecipes.setText("no recipes in database");
+                System.out.println(e.getMessage());
             }
         });
 
         Button allRecipes = new Button("Print All Recipes");
         allRecipes.setOnAction((event) -> {
             try {
-                listRecipes.setText(domainHandler.fetchRecipe(""));
+                String allRecipesFetched = domainHandler.fetchRecipe("");
+                if (allRecipesFetched.equals("All Recipes:\n\n")) {
+                    listRecipes.setText("no recipes in database");
+                } else {
+                    listRecipes.setText(allRecipesFetched);
+                }
                 removeRecipe.setVisible(false);
             } catch (Exception e) {
                 listRecipes.setText("Exception occured (but shouldn't have)");

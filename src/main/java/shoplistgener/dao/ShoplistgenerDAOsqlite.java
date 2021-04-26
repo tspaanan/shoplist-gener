@@ -28,7 +28,7 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
             try {
             Statement s = this.db.createStatement();
                 for (String tableCreation : schemaInString.split(";")) {
-                    System.out.print(tableCreation);
+                    //System.out.print(tableCreation);
                     s.execute(tableCreation);
                     this.db.commit(); //jdbc-ajuri ei suostu sulkemaan transaktiota kerralla kaksi riviä alapuolella, vaikka sen pitäisi
                     //joten jokainen CREATE TABLE -komento tehdään sitten erikseen
@@ -88,16 +88,20 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
         this.db.commit();
     }
 
-    public List<Recipe> fetchMenu(int days) throws SQLException {
+    public List<Recipe> fetchMenu(int days) throws Exception {
         //Random rand = new Random();
         List<Recipe> menu = new ArrayList<Recipe>();
+
         //PreparedStatement c = this.db.prepareStatement("SELECT COUNT(*) FROM recipes");
         //Integer recipesNo = Integer.parseInt(c.executeQuery().getString("COUNT(*)"));
         for (int i = 0; i < days; i++) {
             PreparedStatement p = this.db.prepareStatement("SELECT id,name,instructions,visible FROM recipes WHERE id=?");
             //fetch recipes one at a time, maybe all at the same time instead?
             //Integer randRecipeNo = rand.nextInt(recipesNo + 1);
-            Integer randRecipeNo = this.randomNumberForRecipes();
+            int randRecipeNo = this.randomNumberForRecipes();
+            if (randRecipeNo == -1) {
+                break;
+            }
             p.setString(1, String.valueOf(randRecipeNo));
             ResultSet r = p.executeQuery();
             //if randomly selected removed recipe, simply make another random selection instead
@@ -116,6 +120,15 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
         Random rand = new Random();
         PreparedStatement c = this.db.prepareStatement("SELECT COUNT(*) FROM recipes");
         int recipesNo = c.executeQuery().getInt("COUNT(*)");
+        //edge case check: if 0 rows in recipes table
+        if (recipesNo == 0) {
+            return -1;
+        }
+        //edge case check: if 0 rows in recipes table with visible=TRUE
+        c = this.db.prepareStatement("SELECT COUNT(*) FROM recipes WHERE visible=TRUE");
+        if (c.executeQuery().getInt("COUNT(*)") == 0) {
+            return -1;
+        }
         return rand.nextInt(recipesNo) + 1;
     }
 
