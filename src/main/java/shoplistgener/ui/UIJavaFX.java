@@ -8,11 +8,7 @@ import shoplistgener.domain.Unit;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.FileWriter;
-import java.nio.CharBuffer;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -74,11 +70,17 @@ public class UIJavaFX extends Application {
         ObservableList<String> menuItems = FXCollections.observableArrayList();
         ListView<String> menuItemView = new ListView<String>(menuItems);
         menuItemView.setPrefSize(100, 50);
-        menuItemView.setVisible(false);
-        Button changeCourse = new Button("Randomize selected course");
-        changeCourse.setVisible(false);
+        //menuItemView.setVisible(false);
+        Button randomizeCourse = new Button("Randomize selected course");
+        //randomizeCourse.setVisible(false);
+        Button changeCourse = new Button("Replace selected course");
+        //changeCourse.setVisible(false);
+        TextField changeCourseSearchField = new TextField("choose new course (exact name for now)");
         HBox menuPlacement = new HBox();
-        menuPlacement.getChildren().addAll(menuItemView, changeCourse);
+        VBox menuPlacement2ndColumn = new VBox();
+        menuPlacement.getChildren().addAll(menuItemView, menuPlacement2ndColumn);
+        menuPlacement2ndColumn.getChildren().addAll(randomizeCourse, changeCourse, changeCourseSearchField);
+        menuPlacement.setVisible(false);
 
         Label listShoppingList = new Label();
         Label listRecipes = new Label();
@@ -93,8 +95,9 @@ public class UIJavaFX extends Application {
                 listMenu.setText("Menu:\n" + newCourses);
                 listShoppingList.setText("Shopping List:\n" + newShoppingList);
                 menuItems.setAll(listMenu.getText().split("\\n"));
-                menuItemView.setVisible(true);
-                changeCourse.setVisible(true);
+                //menuItemView.setVisible(true);
+                //randomizeCourse.setVisible(true);
+                menuPlacement.setVisible(true);
                 //System.out.println(menuItems.toString());
             } catch (Exception e) {
                 //this ResultSet was closed error has been dealt with    
@@ -233,19 +236,24 @@ public class UIJavaFX extends Application {
             newIngredientsInList.setText(newList);
         });
 
+        randomizeCourse.setOnAction((event) -> {
+            this.changeSingleCourse(true, menuItemView, listMenu, listShoppingList, menuItems, changeCourseSearchField);
+            //try {
+               //§String changedCourse = menuItemView.getSelectionModel().getSelectedItem().toString();
+               //§String changedMenu = domainHandler.changeCourse(changedCourse);
+               //§String changedShoppinglist = domainHandler.fetchShoppingList();
+               //§listMenu.setText("Menu:\n" + changedMenu);
+               //§listShoppingList.setText("Shopping List:\n" + changedShoppinglist);
+               //§menuItems.setAll(listMenu.getText().split("\\n"));
+            //} catch (Exception e) {
+               //§listMenu.setText("\n\nMysterious 'ResultSet was closed' error just happened. Not to worry:\n"
+                                   //§+ "simply make your choice again: it has never occurred twice in a row...");
+               //§listShoppingList.setText("");
+            //§}
+        });
+
         changeCourse.setOnAction((event) -> {
-            try {
-                String changedCourse = menuItemView.getSelectionModel().getSelectedItem().toString();
-                String changedMenu = domainHandler.changeCourse(changedCourse);
-                String changedShoppinglist = domainHandler.fetchShoppingList();
-                listMenu.setText("Menu:\n" + changedMenu);
-                listShoppingList.setText("Shopping List:\n" + changedShoppinglist);
-                menuItems.setAll(listMenu.getText().split("\\n"));
-            } catch (Exception e) {
-                listMenu.setText("\n\nMysterious 'ResultSet was closed' error just happened. Not to worry:\n"
-                                    + "simply make your choice again: it has never occurred twice in a row...");
-                listShoppingList.setText("");
-            }
+            this.changeSingleCourse(false, menuItemView, listMenu, listShoppingList, menuItems, changeCourseSearchField);
         });
         
         window.setScene(mainScene);
@@ -276,6 +284,26 @@ public class UIJavaFX extends Application {
                     CreateTestData.createRandomTestData(databaseName);
                 }
             }
+        }
+    }
+
+    private void changeSingleCourse(boolean randomized, ListView<String> menuItemView, Label listMenu, Label listShoppingList, ObservableList<String> menuItems, TextField changeCourseTextField) {
+        try {
+            String changedCourse = menuItemView.getSelectionModel().getSelectedItem().toString();
+            String changedMenu = "";
+            if (randomized) {
+                changedMenu = domainHandler.changeCourse(changedCourse, randomized, "");
+            } else {
+                changedMenu = domainHandler.changeCourse(changedCourse, randomized, changeCourseTextField.getText());
+            }
+            String changedShoppinglist = domainHandler.fetchShoppingList();
+            listMenu.setText("Menu:\n" + changedMenu);
+            listShoppingList.setText("Shopping List:\n" + changedShoppinglist);
+            menuItems.setAll(listMenu.getText().split("\\n"));
+        } catch (Exception e) {
+            listMenu.setText("\n\nMysterious 'ResultSet was closed' error just happened. Not to worry:\n"
+                                + "simply make your choice again: it has never occurred twice in a row...");
+            listShoppingList.setText("");
         }
     }
 

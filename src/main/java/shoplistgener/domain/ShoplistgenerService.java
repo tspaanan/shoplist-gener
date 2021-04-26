@@ -120,10 +120,15 @@ public class ShoplistgenerService {
         return menuInString.toString();
     }
     
-    public String changeCourse(String name) throws Exception {
-        Recipe newRecipe = this.daoHandler.fetchRandomRecipe();
+    public String changeCourse(String originalName, boolean randomized, String replacedName) throws Exception {
+        Recipe newRecipe = new Recipe("", "", new ArrayList<Ingredient>());
+        if (randomized) {
+            newRecipe = this.daoHandler.fetchRandomRecipe();
+        } else {
+            newRecipe = this.daoHandler.fetchRecipe(replacedName);
+        }
         for (Recipe recipe : this.recipeList) {
-            if (recipe.getName().equals(name)) {
+            if (recipe.getName().equals(originalName)) {
                 recipe.setName(newRecipe.getName());
                 recipe.setInstructions(newRecipe.getInstructions());
                 recipe.setIngredients(newRecipe.getIngredients());
