@@ -14,6 +14,7 @@
 mvn compile exec:java -Dexec.mainClass=shoplistgener.App
 ```
 **Vaihtoehtoisesti:**
+
 jar-paketin generointi:
 ```
 mvn package

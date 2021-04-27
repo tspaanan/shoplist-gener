@@ -9,3 +9,4 @@ Test.db
 .vscode/
 .*
 /dokumentaatio/*.bak
+/src/main/java/shoplistgener/UI.java
