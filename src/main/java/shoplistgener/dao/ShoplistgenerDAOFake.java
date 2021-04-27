@@ -66,4 +66,9 @@ public class ShoplistgenerDAOFake implements ShoplistgenerDAO {
         
     }
 
+    @Override
+    public void insertTestData() {
+
+    }
+
 }

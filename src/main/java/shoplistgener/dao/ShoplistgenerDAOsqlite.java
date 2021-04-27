@@ -236,7 +236,7 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
                 s.execute(insert);
             }
             Random r = new Random();
-            String[] units = {"dl","ml","g","pcs","cl","kg"};
+            String[] units = {"dl", "ml", "g", "pcs", "cl", "kg"};
             for (int i = 1; i <= 50; i++) {
                 String unit = units[r.nextInt(6)];
                 String insert = "INSERT INTO ingredients (name,unit) VALUES ('ingredient#" + String.valueOf(i)
@@ -246,15 +246,15 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
             for (int i = 1; i <= 100; i++) {
                 for (int j = 1; j <= 5; j++) {
                     String insert = "INSERT INTO ingredientsInRecipes (recipe_id,ingredient_id,quantity) "
-                                    + "VALUES (" + String.valueOf(i) + "," + String.valueOf(r.nextInt(50)+1)
-                                    + "," + String.valueOf(r.nextInt(9)+1) + ")";
+                                    + "VALUES (" + String.valueOf(i) + "," + String.valueOf(r.nextInt(50) + 1)
+                                    + "," + String.valueOf(r.nextInt(9) + 1) + ")";
                     s.execute(insert);
                 }
             }
             for (int i = 1; i <= 20; i++) {
                 String insert = "INSERT INTO ingredientsInKitchen (ingredient_id,quantity) VALUES "
-                                + "(" + String.valueOf(r.nextInt(50)+1) + ","
-                                + String.valueOf(r.nextInt(9)+1) + ")";
+                                + "(" + String.valueOf(r.nextInt(50) + 1) + ","
+                                + String.valueOf(r.nextInt(9) + 1) + ")";
                 s.execute(insert);
             }
             db.commit();

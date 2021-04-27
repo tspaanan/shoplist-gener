@@ -5,12 +5,10 @@ import org.junit.Test;
 
 import shoplistgener.domain.Ingredient;
 import shoplistgener.domain.Recipe;
-import shoplistgener.domain.Unit;
 
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class RecipeTest {
     Recipe one;

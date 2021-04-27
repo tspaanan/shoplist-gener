@@ -29,7 +29,7 @@ public class ShoplistgenerDAOsqliteTest {
     @Before
     public void setUp() throws Exception {
         object = new ShoplistgenerDAOsqlite("unittestDatabase.db");
-        CreateTestData.createRandomTestData("unittestDatabase.db");
+        object.insertTestData();
         Connection db = DriverManager.getConnection("jdbc:sqlite:unittestDatabase.db");
         s = db.createStatement();
         one = new Recipe("name1", "instructions1", new ArrayList<Ingredient>());
