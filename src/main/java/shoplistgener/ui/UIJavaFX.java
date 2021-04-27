@@ -2,10 +2,7 @@ package shoplistgener.ui;
 
 import shoplistgener.CreateTestData;
 import shoplistgener.dao.*;
-import shoplistgener.domain.Ingredient;
-import shoplistgener.domain.Recipe;
-import shoplistgener.domain.ShoplistgenerService;
-import shoplistgener.domain.Unit;
+import shoplistgener.domain.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -50,16 +47,6 @@ public class UIJavaFX extends Application {
     public void init() throws Exception {
         Properties properties = new Properties();
         properties.load(new FileInputStream("config.properties"));
-        
-        //debug
-        //System.out.println(properties.getProperty("databaseName"));
-        //if (properties.getProperty("databaseName").isEmpty()) {
-            //System.out.println("tyhjä");
-        //}
-        //if (!new File(properties.getProperty("databaseName")).isFile()) {
-            //System.out.println("Ei tiedostoa");
-        //}
-        
         databaseName = properties.getProperty("databaseName");
         sqliteHandler = new ShoplistgenerDAOsqlite(properties.getProperty("databaseName")); //should this DAO be injected to domainHandler at all?
         domainHandler = new ShoplistgenerService(sqliteHandler);
@@ -69,32 +56,57 @@ public class UIJavaFX extends Application {
     public void start(Stage window) throws Exception {
         window.setTitle("shoplist-gener");
         
+        //mainScene components
         Label listMenu = new Label();
         ObservableList<String> menuItems = FXCollections.observableArrayList();
         ListView<String> menuItemView = new ListView<String>(menuItems);
         menuItemView.setPrefSize(100, 50);
-        //menuItemView.setVisible(false);
         Button randomizeCourse = new Button("Randomize selected course");
-        //randomizeCourse.setVisible(false);
         Button changeCourse = new Button("Replace selected course");
-        //changeCourse.setVisible(false);
         TextField changeCourseSearchField = new TextField("choose new course (exact name for now)");
+        Label listShoppingList = new Label();
+        ScrollPane listRecipes = new ScrollPane(); //stays visible for now, although ugly
+        listRecipes.setFitToWidth(true); //does nothing?
+        Button modifyRecipe = new Button("Modify this recipe");
+        modifyRecipe.setVisible(false);
+        Button wholeMenu = new Button("Print Week's Menu and shopping list");
+        Button allRecipes = new Button("Print All Recipes");
+        TextField searchText = new TextField("...use exact name (for now)");
+        Button searchRecipes = new Button("Search for a recipe");
+        Button removeRecipe = new Button("Remove this recipe");
+        removeRecipe.setVisible(false);
+        Button addRecipe = new Button("Add a new recipe");
+        
+        //mainScene placement components
         HBox menuPlacement = new HBox();
         VBox menuPlacement2ndColumn = new VBox();
         menuPlacement.getChildren().addAll(menuItemView, menuPlacement2ndColumn);
         menuPlacement2ndColumn.getChildren().addAll(randomizeCourse, changeCourse, changeCourseSearchField);
         menuPlacement.setVisible(false);
-
-        Label listShoppingList = new Label();
-        //Label listRecipes = new Label();
-        ScrollPane listRecipes = new ScrollPane(); //stays visible for now
-        listRecipes.setFitToWidth(true); //does nothing?
-        Button removeRecipe = new Button("Remove this recipe");
-        removeRecipe.setVisible(false);
-        Button modifyRecipe = new Button("Modify this recipe");
-        modifyRecipe.setVisible(false);
-
-        Button wholeMenu = new Button("Print Week's Menu and shopping list");
+        HBox labelPlacement = new HBox();
+        labelPlacement.setSpacing(10);
+        labelPlacement.setPadding(new Insets(10,300,10,10));
+        VBox buttonPlacement = new VBox();
+        buttonPlacement.setSpacing(10);
+        buttonPlacement.getChildren().add(wholeMenu);
+        buttonPlacement.getChildren().add(allRecipes);
+        buttonPlacement.getChildren().add(searchText);
+        buttonPlacement.getChildren().add(searchRecipes);
+        buttonPlacement.getChildren().add(addRecipe);
+        labelPlacement.getChildren().add(menuPlacement);
+        labelPlacement.getChildren().add(listShoppingList);
+        labelPlacement.getChildren().add(listRecipes);
+        VBox recipeModifications = new VBox();
+        recipeModifications.getChildren().addAll(removeRecipe, modifyRecipe);
+        labelPlacement.getChildren().add(recipeModifications);
+        
+        //mainScene parent component
+        BorderPane elementPlacement = new BorderPane();
+        elementPlacement.setRight(labelPlacement);
+        elementPlacement.setLeft(buttonPlacement);
+        elementPlacement.setBackground(new Background(new BackgroundFill(Color.WHITESMOKE, null, null)));
+        
+        //lambdas for mainScene button presses
         wholeMenu.setOnAction((event) -> {
             try {
                 String newCourses = domainHandler.fetchCourses();
@@ -102,20 +114,13 @@ public class UIJavaFX extends Application {
                 listMenu.setText("Menu:\n" + newCourses);
                 listShoppingList.setText("Shopping List:\n" + newShoppingList);
                 menuItems.setAll(listMenu.getText().split("\\n"));
-                //menuItemView.setVisible(true);
-                //randomizeCourse.setVisible(true);
                 menuPlacement.setVisible(true);
-                //System.out.println(menuItems.toString());
             } catch (Exception e) {
-                //this ResultSet was closed error has been dealt with    
-                //listShoppingList.setText("\n\nMysterious 'ResultSet was closed' error just happened. Not to worry:\n"
-                //                        + "simply make your choice again: it has never occurred twice in a row...");
                 listRecipes.setContent(new Text("no recipes in database"));
                 System.out.println(e.getMessage());
             }
         });
 
-        Button allRecipes = new Button("Print All Recipes");
         allRecipes.setOnAction((event) -> {
             try {
                 String allRecipesFetched = domainHandler.fetchRecipe("");
@@ -131,8 +136,6 @@ public class UIJavaFX extends Application {
             }
         });
 
-        TextField searchText = new TextField("...use exact name (for now)");
-        Button searchRecipes = new Button("Search for a recipe");
         searchRecipes.setOnAction((event) -> {
             try {
                 String searchString = searchText.getText();
@@ -157,45 +160,20 @@ public class UIJavaFX extends Application {
             }
         });
 
-        Button addRecipe = new Button("Add a new recipe");
+        randomizeCourse.setOnAction((event) -> {
+            this.changeSingleCourse(true, menuItemView, listMenu, listShoppingList, menuItems, changeCourseSearchField);
+        });
 
-        HBox labelPlacement = new HBox();
-        labelPlacement.setSpacing(10);
-        labelPlacement.setPadding(new Insets(10,300,10,10));
-        VBox buttonPlacement = new VBox();
-        buttonPlacement.setSpacing(10);
+        changeCourse.setOnAction((event) -> {
+            this.changeSingleCourse(false, menuItemView, listMenu, listShoppingList, menuItems, changeCourseSearchField);
+        });
         
-        buttonPlacement.getChildren().add(wholeMenu);
-        buttonPlacement.getChildren().add(allRecipes);
-        buttonPlacement.getChildren().add(searchText);
-        buttonPlacement.getChildren().add(searchRecipes);
-        buttonPlacement.getChildren().add(addRecipe);
-
-        //labelPlacement.getChildren().add(listMenu);
-        labelPlacement.getChildren().add(menuPlacement);
-        labelPlacement.getChildren().add(listShoppingList);
-        labelPlacement.getChildren().add(listRecipes);
-        VBox recipeModifications = new VBox();
-        recipeModifications.getChildren().addAll(removeRecipe, modifyRecipe);
-        labelPlacement.getChildren().add(recipeModifications);
-        
-
-        BorderPane elementPlacement = new BorderPane();
-        elementPlacement.setRight(labelPlacement);
-        elementPlacement.setLeft(buttonPlacement);
-        elementPlacement.setBackground(new Background(new BackgroundFill(Color.WHITESMOKE, null, null)));
-        
-        // addRecipeScene-komponentit
+        //addRecipeScene components
         TextField newRecipeName = new TextField("Recipe name");
         TextField newRecipeInstructions = new TextField("Instructions for the recipe");
-        HBox newRecipeFields = new HBox();
-        newRecipeFields.setSpacing(10);
-        newRecipeFields.getChildren().addAll(newRecipeName, newRecipeInstructions);
-        //Label newIngredientsInList = new Label();
         ObservableList<String> ingredientItems = FXCollections.observableArrayList();
         ListView<String> ingredientItemView = new ListView<String>(ingredientItems);
-        List<Ingredient> listOfNewIngredients = new ArrayList<Ingredient>(); //mietitään Ingredient-olion käyttöä vielä tässä
-
+        List<Ingredient> listOfNewIngredients = new ArrayList<Ingredient>(); //TODO: decide whether to use Ingredient-object at all in UI or restrict its use for domain
         TextField newIngredientName = new TextField("Ingredient name");
         TextField newIngredientQuantity = new TextField("Ingredient quantity");
         ObservableList<Unit> newIngredientUnit = FXCollections.observableArrayList(Unit.values());
@@ -207,6 +185,11 @@ public class UIJavaFX extends Application {
         addNewRecipeButton.setVisible(false);
         Button modifyExistingRecipeButton = new Button("Modify recipe");
         modifyExistingRecipeButton.setVisible(false);
+        
+        //addRecipeScene placement components
+        HBox newRecipeFields = new HBox();
+        newRecipeFields.setSpacing(10);
+        newRecipeFields.getChildren().addAll(newRecipeName, newRecipeInstructions);
         HBox newIngredientFields = new HBox();
         newIngredientFields.getChildren().addAll(newIngredientName, newIngredientQuantity, listView);
         GridPane addRecipeSceneGridpane = new GridPane();
@@ -219,14 +202,14 @@ public class UIJavaFX extends Application {
         addRecipeSceneGridpane.add(removeSelectedIngredient, 2, 6);
         addRecipeSceneGridpane.setAlignment(Pos.CENTER);
         
+        //scene objects
         Scene mainScene = new Scene(elementPlacement);
-        //viewPort.setFill(Color.BLACK); //does nothing?
         Scene addRecipeScene = new Scene(addRecipeSceneGridpane);
         
+        //lambdas for scene changes
         addRecipe.setOnAction((event) -> {
             addNewRecipeButton.setVisible(true);
             window.setScene(addRecipeScene); 
-            //newIngredientsInList.setText("\nIngredients:");
             ingredientItems.clear();
             ingredientItems.add("Ingredients:"); //TODO: put this into component header instead
             listOfNewIngredients.clear();
@@ -234,29 +217,25 @@ public class UIJavaFX extends Application {
         
         modifyRecipe.setOnAction((event) -> {
             try {
-                //String[] modifiableRecipeList = domainHandler.fetchRecipe(searchText.getText()).split("\n");
                 Recipe modifiableRecipe = domainHandler.fetchRecipeObject(searchText.getText());
                 newRecipeName.setText(modifiableRecipe.getName());
                 newRecipeInstructions.setText(modifiableRecipe.getInstructions());
-                //newIngredientsInList.setText("\nIngredients:");
                 ingredientItems.clear();
                 ingredientItems.add("Ingredients:"); //TODO: put this into component header instead
                 listOfNewIngredients.clear();
                 for (Ingredient ing : modifiableRecipe.getIngredients()) {
                     listOfNewIngredients.add(ing);
-                    //String oldText = newIngredientsInList.getText();
-                    //String newText = oldText + "\n" + ing.getName() + " " + Integer.valueOf(ing.getRequestedQuantity()) + " " + ing.getUnit().toString().toLowerCase();
-                    //newIngredientsInList.setText(newText);
                     ingredientItems.add(ing.getName() + " " + Integer.valueOf(ing.getRequestedQuantity()) + " " + ing.getUnit().toString().toLowerCase());
                 }
                 modifyExistingRecipeButton.setVisible(true);
                 newRecipeName.setEditable(false);
                 window.setScene(addRecipeScene);
             } catch (Exception e) {
-
+                System.out.println(e.getMessage());
             }
         });
 
+        //lambdas for addRecipeScene button presses
         addNewRecipeButton.setOnAction((event) -> {
             List<String> newRecipeParts = new ArrayList<String>();
             newRecipeParts.add(newRecipeName.getText());
@@ -265,7 +244,7 @@ public class UIJavaFX extends Application {
                 newRecipeParts.add(ing.getName() + ";" + ing.getUnit().toString().toLowerCase() + ";" + ing.getRequestedQuantity());
             }
             boolean bTarkistus = domainHandler.addRecipe(newRecipeParts);
-            //TODO: siisti tätä
+            //TODO: clean up this mess!
             if (!bTarkistus) {
                 listRecipes.setContent(new Text("error in adding recipe"));
             } else {
@@ -306,12 +285,8 @@ public class UIJavaFX extends Application {
         });
 
         addNewIngredient.setOnAction((event) -> {
-            //String oldList = newIngredientsInList.getText();
-            //String newList = oldList + "\n" + newIngredientName.getText() + " " + newIngredientQuantity.getText()
-                            //+ " " + listView.getSelectionModel().getSelectedItem().toString().toLowerCase();
             ingredientItems.add(newIngredientName.getText() + " " + newIngredientQuantity.getText() + " " + listView.getSelectionModel().getSelectedItem().toString().toLowerCase());
             listOfNewIngredients.add(new Ingredient(newIngredientName.getText(), Unit.valueOf(listView.getSelectionModel().getSelectedItem().toString()), Integer.parseInt(newIngredientQuantity.getText())));
-            //newIngredientsInList.setText(newList);
         });
 
         removeSelectedIngredient.setOnAction((event) -> {
@@ -319,30 +294,12 @@ public class UIJavaFX extends Application {
             ingredientItems.remove(ingIndexNo);
             listOfNewIngredients.remove(ingIndexNo - 1);
         });
-
-        randomizeCourse.setOnAction((event) -> {
-            this.changeSingleCourse(true, menuItemView, listMenu, listShoppingList, menuItems, changeCourseSearchField);
-            //try {
-               //§String changedCourse = menuItemView.getSelectionModel().getSelectedItem().toString();
-               //§String changedMenu = domainHandler.changeCourse(changedCourse);
-               //§String changedShoppinglist = domainHandler.fetchShoppingList();
-               //§listMenu.setText("Menu:\n" + changedMenu);
-               //§listShoppingList.setText("Shopping List:\n" + changedShoppinglist);
-               //§menuItems.setAll(listMenu.getText().split("\\n"));
-            //} catch (Exception e) {
-               //§listMenu.setText("\n\nMysterious 'ResultSet was closed' error just happened. Not to worry:\n"
-                                   //§+ "simply make your choice again: it has never occurred twice in a row...");
-               //§listShoppingList.setText("");
-            //§}
-        });
-
-        changeCourse.setOnAction((event) -> {
-            this.changeSingleCourse(false, menuItemView, listMenu, listShoppingList, menuItems, changeCourseSearchField);
-        });
         
+        //window commands
         window.setScene(mainScene);
         window.show();
 
+        //database related dialog windows
         TextInputDialog setDatabaseNameDialog = new TextInputDialog("Test.db");
         setDatabaseNameDialog.setTitle("Set Database Name");
         setDatabaseNameDialog.setHeaderText("No Database Found: Set New Database");
@@ -354,6 +311,9 @@ public class UIJavaFX extends Application {
         ButtonType testDataBT = new ButtonType("Test Data");
         ButtonType emptyBT = new ButtonType("Empty Database");
         chooseDatabasePopulationDialog.getButtonTypes().setAll(testDataBT, emptyBT);
+        
+        //ensure that a valid database exists before the program can be used
+        //TODO: decide whether the lines below belong to domain or here
         while (databaseName.isEmpty() || !new File(databaseName).isFile()) {
             Optional<String> newDatabaseName = setDatabaseNameDialog.showAndWait();
             if (newDatabaseName.isPresent()) {
@@ -371,7 +331,9 @@ public class UIJavaFX extends Application {
         }
     }
 
-    private void changeSingleCourse(boolean randomized, ListView<String> menuItemView, Label listMenu, Label listShoppingList, ObservableList<String> menuItems, TextField changeCourseTextField) {
+    //TODO: this method might be (at least partially) moved to domain
+    private void changeSingleCourse(boolean randomized, ListView<String> menuItemView, Label listMenu,
+                                    Label listShoppingList, ObservableList<String> menuItems, TextField changeCourseTextField) {
         try {
             String changedCourse = menuItemView.getSelectionModel().getSelectedItem().toString();
             String changedMenu = "";
@@ -385,8 +347,7 @@ public class UIJavaFX extends Application {
             listShoppingList.setText("Shopping List:\n" + changedShoppinglist);
             menuItems.setAll(listMenu.getText().split("\\n"));
         } catch (Exception e) {
-            listMenu.setText("\n\nMysterious 'ResultSet was closed' error just happened. Not to worry:\n"
-                                + "simply make your choice again: it has never occurred twice in a row...");
+            listMenu.setText("\nException occured");
             listShoppingList.setText("");
         }
     }

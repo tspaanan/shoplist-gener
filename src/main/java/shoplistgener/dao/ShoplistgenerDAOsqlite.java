@@ -1,12 +1,13 @@
 package shoplistgener.dao;
 
+import shoplistgener.domain.*;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import shoplistgener.domain.*;
 import java.util.Random;
 
 public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
@@ -18,7 +19,8 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
             try {
                 this.db = DriverManager.getConnection("jdbc:sqlite:" + databaseName);
                 this.db.setAutoCommit(false);
-                Path filePath = Path.of("./dokumentaatio/schema.sql"); //schema.sql -muotoilu osoittautui hankalaksi, joten nyt komennot ovat kukin omalla rivillään
+                Path filePath = Path.of("./dokumentaatio/schema.sql"); //traditional schema.sql format was too hard to parse correctly, so atm all
+                //CREATE TABLE commands are on their own lines
                 schemaInString = Files.readString(filePath);
             } catch (SQLException e) {
                 System.out.println("SQLException:" + e.getMessage());
@@ -28,10 +30,8 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
             try {
                 Statement s = this.db.createStatement();
                 for (String tableCreation : schemaInString.split(";")) {
-                    //System.out.print(tableCreation);
                     s.execute(tableCreation);
-                    this.db.commit(); //jdbc-ajuri ei suostu sulkemaan transaktiota kerralla kaksi riviä alapuolella, vaikka sen pitäisi
-                    //joten jokainen CREATE TABLE -komento tehdään sitten erikseen
+                    this.db.commit(); //jdbc driver fails to commit all changes at once (line 36 below), so every change is committed here as its own transaction instead
                 }
             //this.db.commit();
             } catch (SQLException e) {
@@ -47,7 +47,7 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
         ResultSet ch = cs.executeQuery();
         if (ch.next()) {
             //throw new RecipeNameExists();
-            //maybe code my own Exception class?
+            //IDEA: maybe code my own Exception class?
             throw new UnsupportedOperationException();
         }
   
@@ -91,6 +91,7 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
 
     public void modifyRecipe(Recipe modifiedRecipe) throws Exception {
         //update instructions, TODO: parametrization!
+        //TODO: refactor with duplicate code from addRecipe above
         PreparedStatement p = this.db.prepareStatement("UPDATE recipes SET instructions=? WHERE name='" + modifiedRecipe.getName() + "'");
         p.setString(1, modifiedRecipe.getInstructions());
         p.executeUpdate();
@@ -119,10 +120,6 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
         this.db.commit();
         
         //add information for ingredientsInRecipes table
-        //PreparedStatement cip = this.db.prepareStatement("SELECT id FROM recipes WHERE name=?");
-        //cip.setString(1, modifiedRecipe.getName());
-        //ResultSet r = cip.executeQuery();
-        //String recipeId = r.getString("id");
         for (Ingredient ing : modifiedRecipe.getIngredients()) {
             PreparedStatement pIng = this.db.prepareStatement("SELECT id FROM ingredients WHERE name=?");
             pIng.setString(1, ing.getName());
@@ -136,15 +133,10 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
     }
 
     public List<Recipe> fetchMenu(int days) throws Exception {
-        //Random rand = new Random();
         List<Recipe> menu = new ArrayList<Recipe>();
-
-        //PreparedStatement c = this.db.prepareStatement("SELECT COUNT(*) FROM recipes");
-        //Integer recipesNo = Integer.parseInt(c.executeQuery().getString("COUNT(*)"));
         for (int i = 0; i < days; i++) {
             PreparedStatement p = this.db.prepareStatement("SELECT id,name,instructions,visible FROM recipes WHERE id=?");
-            //fetch recipes one at a time, maybe all at the same time instead?
-            //Integer randRecipeNo = rand.nextInt(recipesNo + 1);
+            //fetch recipes one at a time, maybe all could be fetched at the same time instead?
             int randRecipeNo = this.randomNumberForRecipes();
             if (randRecipeNo == -1) {
                 break;

@@ -75,6 +75,7 @@ public class Ingredient implements Comparable<Ingredient> {
         if (ingredients.size() <= 1) {
             return ingredients;
         }
+        //TODO: change this stream into one-line sorted()
         List<Ingredient> ingredientsSorted = ingredients.stream()
                                                 //.distinct() not useful here
                                                 .sorted()
@@ -85,7 +86,7 @@ public class Ingredient implements Comparable<Ingredient> {
             if (ingredientsSorted.get(i).equals(ingredientsSorted.get(i - 1))) {
                 if (ingredientsSorted.get(i).equals(previous)) {
                     combinedIngredients.get(combinedIngredients.size() - 1).setRequestedQuantity(ingredientsSorted.get(i).getRequestedQuantity() + combinedIngredients.get(combinedIngredients.size() - 1).getRequestedQuantity());
-                    //maybe fix the above line so more readable
+                    //TODO: fix the above line so that it can be understood by non-machines
                     continue;
                 }
                 combinedIngredients.add(Ingredient.combineIngredients(ingredientsSorted.get(i), ingredientsSorted.get(i - 1)));
@@ -96,7 +97,7 @@ public class Ingredient implements Comparable<Ingredient> {
                 }
             }
         }
-        // add the last ingredient only if not duplicate
+        //add the last ingredient only if not duplicate
         if (!ingredientsSorted.get(ingredientsSorted.size() - 1).equals(combinedIngredients.get(combinedIngredients.size() - 1))) {
             combinedIngredients.add(ingredientsSorted.get(ingredientsSorted.size() - 1));
         }

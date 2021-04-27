@@ -1,11 +1,7 @@
 package shoplistgener.domain;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-//import java.util.stream.Collectors;
-
-import org.sqlite.SQLiteException;
 
 import shoplistgener.dao.ShoplistgenerDAO;
 
@@ -56,7 +52,7 @@ public class ShoplistgenerService {
             return recipeNamesInString.toString();
         } else {
             name = name.trim();
-            //.toLowerCase();
+            //.toLowerCase(); IDEA: maybe everything in the database should be lowercase, and domain could change them to be grammatically correct before passing them to UI
             Recipe rec = this.daoHandler.fetchRecipe(name);
             StringBuilder recInString = new StringBuilder();
             recInString.append("\n***" + rec.getName() + "***\n\n");
@@ -79,19 +75,7 @@ public class ShoplistgenerService {
     }
     
     public String fetchCourses() throws Exception {
-        //StringBuilder menuInString = new StringBuilder();
         this.recipeList = this.daoHandler.fetchMenu(7);
-        //this.shoppingList.clear(); //empty private variable between menu fetches
-        //for (Recipe rec : this.recipeList) {
-            //menuInString.append(rec.getName());
-            //menuInString.append("\n"); //recipe instructions are not included at this point
-            ////recToString.add(rec.getInstructions());
-            //List<Ingredient> ingredients = rec.getIngredients();
-            //for (Ingredient ing : ingredients) {
-                //this.shoppingList.add(ing);
-            //}
-        //}
-        //return menuInString.toString();
         return this.buildMenuIntoString();
     }
 
@@ -100,7 +84,8 @@ public class ShoplistgenerService {
         StringBuilder menuInString = new StringBuilder();
         for (Recipe rec : this.recipeList) {
             menuInString.append(rec.getName());
-            menuInString.append("\n"); //recipe instructions are not included at this point
+            menuInString.append("\n");
+            //recipe instructions are not included at this point
             //recToString.add(rec.getInstructions());
             List<Ingredient> ingredients = rec.getIngredients(); //TODO: move this ingredients-related functionality somewhere else, maybe?
             for (Ingredient ing : ingredients) {
