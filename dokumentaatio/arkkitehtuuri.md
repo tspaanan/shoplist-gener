@@ -11,5 +11,5 @@
 ## Toiminnallisuus
 
 ### Sekvenssikaavio
-<img src="https://github.com/tspaanan/shoplist-gener/blob/main/dokumentaatio/Sekvenssikaavio.jpg">
+<img src="https://github.com/tspaanan/shoplist-gener/blob/main/dokumentaatio/Sekvenssikaavio.png">
 
