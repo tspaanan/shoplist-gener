@@ -3,6 +3,7 @@ package shoplistgener.ui;
 import shoplistgener.CreateTestData;
 import shoplistgener.dao.*;
 import shoplistgener.domain.Ingredient;
+import shoplistgener.domain.Recipe;
 import shoplistgener.domain.ShoplistgenerService;
 import shoplistgener.domain.Unit;
 
@@ -90,6 +91,8 @@ public class UIJavaFX extends Application {
         listRecipes.setFitToWidth(true); //does nothing?
         Button removeRecipe = new Button("Remove this recipe");
         removeRecipe.setVisible(false);
+        Button modifyRecipe = new Button("Modify this recipe");
+        modifyRecipe.setVisible(false);
 
         Button wholeMenu = new Button("Print Week's Menu and shopping list");
         wholeMenu.setOnAction((event) -> {
@@ -122,6 +125,7 @@ public class UIJavaFX extends Application {
                     listRecipes.setContent(new Text(allRecipesFetched));
                 }
                 removeRecipe.setVisible(false);
+                modifyRecipe.setVisible(false);
             } catch (Exception e) {
                 listRecipes.setContent(new Text("Exception occured (but shouldn't have)"));
             }
@@ -134,6 +138,7 @@ public class UIJavaFX extends Application {
                 String searchString = searchText.getText();
                 listRecipes.setContent(new Text(domainHandler.fetchRecipe(searchString)));
                 removeRecipe.setVisible(true);
+                modifyRecipe.setVisible(true);
             } catch (Exception e) {
                 listRecipes.setContent(new Text("error: no recipe by that name"));
             }
@@ -144,9 +149,11 @@ public class UIJavaFX extends Application {
                 domainHandler.removeRecipe(searchText.getText());
                 listRecipes.setContent(new Text("Recipe was removed!"));
                 removeRecipe.setVisible(false);
+                modifyRecipe.setVisible(false);
             } catch (Exception e) {
                 listRecipes.setContent(new Text("error: recipe could not be removed"));
                 removeRecipe.setVisible(false);
+                modifyRecipe.setVisible(false);
             }
         });
 
@@ -168,7 +175,10 @@ public class UIJavaFX extends Application {
         labelPlacement.getChildren().add(menuPlacement);
         labelPlacement.getChildren().add(listShoppingList);
         labelPlacement.getChildren().add(listRecipes);
-        labelPlacement.getChildren().add(removeRecipe);
+        VBox recipeModifications = new VBox();
+        recipeModifications.getChildren().addAll(removeRecipe, modifyRecipe);
+        labelPlacement.getChildren().add(recipeModifications);
+        
 
         BorderPane elementPlacement = new BorderPane();
         elementPlacement.setRight(labelPlacement);
@@ -181,7 +191,9 @@ public class UIJavaFX extends Application {
         HBox newRecipeFields = new HBox();
         newRecipeFields.setSpacing(10);
         newRecipeFields.getChildren().addAll(newRecipeName, newRecipeInstructions);
-        Label newIngredientsInList = new Label();
+        //Label newIngredientsInList = new Label();
+        ObservableList<String> ingredientItems = FXCollections.observableArrayList();
+        ListView<String> ingredientItemView = new ListView<String>(ingredientItems);
         List<Ingredient> listOfNewIngredients = new ArrayList<Ingredient>(); //mietitään Ingredient-olion käyttöä vielä tässä
 
         TextField newIngredientName = new TextField("Ingredient name");
@@ -190,7 +202,11 @@ public class UIJavaFX extends Application {
         ListView<Unit> listView = new ListView<Unit>(newIngredientUnit);
         listView.setPrefSize(80, 30);
         Button addNewIngredient = new Button("Add new ingredient");
+        Button removeSelectedIngredient = new Button("Remove selected ingredient");
         Button addNewRecipeButton = new Button("Add new recipe");
+        addNewRecipeButton.setVisible(false);
+        Button modifyExistingRecipeButton = new Button("Modify recipe");
+        modifyExistingRecipeButton.setVisible(false);
         HBox newIngredientFields = new HBox();
         newIngredientFields.getChildren().addAll(newIngredientName, newIngredientQuantity, listView);
         GridPane addRecipeSceneGridpane = new GridPane();
@@ -198,19 +214,49 @@ public class UIJavaFX extends Application {
         addRecipeSceneGridpane.add(newIngredientFields, 2, 2);
         addRecipeSceneGridpane.add(addNewIngredient, 2, 3);
         addRecipeSceneGridpane.add(addNewRecipeButton, 3, 3);
-        addRecipeSceneGridpane.add(newIngredientsInList, 2, 4);
-        addRecipeSceneGridpane.setAlignment(Pos.CENTER_LEFT);
+        addRecipeSceneGridpane.add(modifyExistingRecipeButton, 4, 3);
+        addRecipeSceneGridpane.add(ingredientItemView, 2, 5);
+        addRecipeSceneGridpane.add(removeSelectedIngredient, 2, 6);
+        addRecipeSceneGridpane.setAlignment(Pos.CENTER);
         
         Scene mainScene = new Scene(elementPlacement);
         //viewPort.setFill(Color.BLACK); //does nothing?
         Scene addRecipeScene = new Scene(addRecipeSceneGridpane);
         
         addRecipe.setOnAction((event) -> {
-           window.setScene(addRecipeScene); 
-            newIngredientsInList.setText("\nIngredients:");
+            addNewRecipeButton.setVisible(true);
+            window.setScene(addRecipeScene); 
+            //newIngredientsInList.setText("\nIngredients:");
+            ingredientItems.clear();
+            ingredientItems.add("Ingredients:"); //TODO: put this into component header instead
             listOfNewIngredients.clear();
         });
         
+        modifyRecipe.setOnAction((event) -> {
+            try {
+                //String[] modifiableRecipeList = domainHandler.fetchRecipe(searchText.getText()).split("\n");
+                Recipe modifiableRecipe = domainHandler.fetchRecipeObject(searchText.getText());
+                newRecipeName.setText(modifiableRecipe.getName());
+                newRecipeInstructions.setText(modifiableRecipe.getInstructions());
+                //newIngredientsInList.setText("\nIngredients:");
+                ingredientItems.clear();
+                ingredientItems.add("Ingredients:"); //TODO: put this into component header instead
+                listOfNewIngredients.clear();
+                for (Ingredient ing : modifiableRecipe.getIngredients()) {
+                    listOfNewIngredients.add(ing);
+                    //String oldText = newIngredientsInList.getText();
+                    //String newText = oldText + "\n" + ing.getName() + " " + Integer.valueOf(ing.getRequestedQuantity()) + " " + ing.getUnit().toString().toLowerCase();
+                    //newIngredientsInList.setText(newText);
+                    ingredientItems.add(ing.getName() + " " + Integer.valueOf(ing.getRequestedQuantity()) + " " + ing.getUnit().toString().toLowerCase());
+                }
+                modifyExistingRecipeButton.setVisible(true);
+                newRecipeName.setEditable(false);
+                window.setScene(addRecipeScene);
+            } catch (Exception e) {
+
+            }
+        });
+
         addNewRecipeButton.setOnAction((event) -> {
             List<String> newRecipeParts = new ArrayList<String>();
             newRecipeParts.add(newRecipeName.getText());
@@ -225,19 +271,53 @@ public class UIJavaFX extends Application {
             } else {
                 try {
                 listRecipes.setContent(new Text(domainHandler.fetchRecipe(newRecipeParts.get(0))));
+                removeRecipe.setVisible(true);
+                modifyRecipe.setVisible(true);
+                searchText.setText(newRecipeParts.get(0));
                 } catch (Exception e) {
                     listRecipes.setContent(new Text("error fetching recipe after successful creation"));
                 }
             };
             window.setScene(mainScene);
+            addNewRecipeButton.setVisible(false);
+        });
+
+        //TODO: refactor copy-pasted code below with addNewRecipeButton code above
+        modifyExistingRecipeButton.setOnAction((event) -> {
+            List<String> newRecipeParts = new ArrayList<String>();
+            newRecipeParts.add(newRecipeName.getText());
+            newRecipeParts.add(newRecipeInstructions.getText());
+            for (Ingredient ing : listOfNewIngredients) {
+                newRecipeParts.add(ing.getName() + ";" + ing.getUnit().toString().toLowerCase() + ";" + ing.getRequestedQuantity());
+            }
+            try {
+            domainHandler.modifyRecipe(newRecipeParts);
+            listRecipes.setContent(new Text(domainHandler.fetchRecipe(newRecipeParts.get(0))));
+            removeRecipe.setVisible(true);
+            modifyRecipe.setVisible(true);
+            searchText.setText(newRecipeParts.get(0));
+            } catch (Exception e) {
+                listRecipes.setContent(new Text("error fetching recipe after successful modification"));
+                System.out.println(e.getMessage());
+            }
+            window.setScene(mainScene);
+            modifyExistingRecipeButton.setVisible(false);
+            newRecipeName.setEditable(true);
         });
 
         addNewIngredient.setOnAction((event) -> {
-            String oldList = newIngredientsInList.getText();
-            String newList = oldList + "\n" + newIngredientName.getText() + " " + newIngredientQuantity.getText()
-                            + " " + listView.getSelectionModel().getSelectedItem().toString().toLowerCase();
+            //String oldList = newIngredientsInList.getText();
+            //String newList = oldList + "\n" + newIngredientName.getText() + " " + newIngredientQuantity.getText()
+                            //+ " " + listView.getSelectionModel().getSelectedItem().toString().toLowerCase();
+            ingredientItems.add(newIngredientName.getText() + " " + newIngredientQuantity.getText() + " " + listView.getSelectionModel().getSelectedItem().toString().toLowerCase());
             listOfNewIngredients.add(new Ingredient(newIngredientName.getText(), Unit.valueOf(listView.getSelectionModel().getSelectedItem().toString()), Integer.parseInt(newIngredientQuantity.getText())));
-            newIngredientsInList.setText(newList);
+            //newIngredientsInList.setText(newList);
+        });
+
+        removeSelectedIngredient.setOnAction((event) -> {
+            int ingIndexNo = ingredientItemView.getSelectionModel().getSelectedIndex();
+            ingredientItems.remove(ingIndexNo);
+            listOfNewIngredients.remove(ingIndexNo - 1);
         });
 
         randomizeCourse.setOnAction((event) -> {

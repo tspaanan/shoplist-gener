@@ -42,6 +42,7 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
 
     public void addRecipe(Recipe newRecipe) throws Exception {
         //check for duplicate recipe names, TODO: clashes with removed recipe names
+        //TODO: also, remember parametrization of SQL-quories
         PreparedStatement cs = this.db.prepareStatement("SELECT 1 FROM recipes WHERE name='" + newRecipe.getName() + "'");
         ResultSet ch = cs.executeQuery();
         if (ch.next()) {
@@ -83,6 +84,52 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
             String ingredientId = rIng.getString("id");
             String ingInRecipeInsert = "INSERT INTO ingredientsInRecipes (recipe_id,ingredient_id,quantity) VALUES ("
                                     + recipeId + "," + ingredientId + "," + ing.getRequestedQuantity().toString() + ")";
+            s.executeUpdate(ingInRecipeInsert);
+        }
+        this.db.commit();
+    }
+
+    public void modifyRecipe(Recipe modifiedRecipe) throws Exception {
+        //update instructions, TODO: parametrization!
+        PreparedStatement p = this.db.prepareStatement("UPDATE recipes SET instructions=? WHERE name='" + modifiedRecipe.getName() + "'");
+        p.setString(1, modifiedRecipe.getInstructions());
+        p.executeUpdate();
+        this.db.commit();
+        
+        //remove all old ingredients from ingredientsInRecipes table
+        int recipeId = this.fetchRecipeId(modifiedRecipe.getName());
+        PreparedStatement rm = this.db.prepareStatement("DELETE FROM ingredientsInRecipes WHERE recipe_id=?");
+        rm.setString(1, String.valueOf(recipeId));
+        rm.executeUpdate();
+        this.db.commit();
+
+        //add all ingredients
+        Statement s = this.db.createStatement();
+        for (Ingredient ing : modifiedRecipe.getIngredients()) {
+            //before adding, check if ingredient already exists
+            PreparedStatement ci = this.db.prepareStatement("SELECT 1 FROM ingredients WHERE name='" + ing.getName() + "'");
+            ResultSet ciResults = ci.executeQuery();
+            if (ciResults.next()) {
+                continue;
+            }
+            String insertIng = "INSERT INTO ingredients (name, unit) VALUES ('" + ing.getName() + "','"
+                            + ing.getUnit().toString().toLowerCase() + "')";
+            s.executeUpdate(insertIng);
+        }
+        this.db.commit();
+        
+        //add information for ingredientsInRecipes table
+        //PreparedStatement cip = this.db.prepareStatement("SELECT id FROM recipes WHERE name=?");
+        //cip.setString(1, modifiedRecipe.getName());
+        //ResultSet r = cip.executeQuery();
+        //String recipeId = r.getString("id");
+        for (Ingredient ing : modifiedRecipe.getIngredients()) {
+            PreparedStatement pIng = this.db.prepareStatement("SELECT id FROM ingredients WHERE name=?");
+            pIng.setString(1, ing.getName());
+            ResultSet rIng = pIng.executeQuery();
+            String ingredientId = rIng.getString("id");
+            String ingInRecipeInsert = "INSERT INTO ingredientsInRecipes (recipe_id,ingredient_id,quantity) VALUES ("
+                                    + String.valueOf(recipeId) + "," + ingredientId + "," + ing.getRequestedQuantity().toString() + ")";
             s.executeUpdate(ingInRecipeInsert);
         }
         this.db.commit();
@@ -138,6 +185,17 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
         ResultSet r = p.executeQuery();
         List<Ingredient> ingsInList = this.fetchIngredients(r.getInt("id"));
         return new Recipe(r.getString("name"), r.getString("instructions"), ingsInList);
+    }
+
+    public int fetchRecipeId(String name) {
+        try {
+            PreparedStatement p = this.db.prepareStatement("SELECT id FROM recipes WHERE name=? AND visible=TRUE");
+            p.setString(1, name);
+            ResultSet r = p.executeQuery();
+            return r.getInt("id");
+        } catch (Exception e) {
+            return -1;
+        }
     }
 
     public Recipe fetchRandomRecipe() throws SQLException {

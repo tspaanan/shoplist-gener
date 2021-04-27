@@ -45,6 +45,17 @@ public class ShoplistgenerService {
         }
     }
 
+    //TODO: refactor with addRecipe above
+    public void modifyRecipe(List<String> recipeParts) throws Exception {
+        List<Ingredient> ingredients = new ArrayList<Ingredient>();
+        for (int i = 2; i < recipeParts.size(); i++) {
+            String[] ingParts = recipeParts.get(i).split(";");
+            ingredients.add(new Ingredient(ingParts[0], Unit.valueOf(ingParts[1].toUpperCase()), Integer.valueOf(ingParts[2])));
+        }
+        Recipe modifiedRecipe = new Recipe(recipeParts.get(0), recipeParts.get(1), ingredients);
+        this.daoHandler.modifyRecipe(modifiedRecipe);
+    }
+
     public String fetchRecipe(String name) throws Exception {
         if (name.equals("")) {
             List<String> recipeNames = this.daoHandler.fetchAllRecipes();
@@ -68,6 +79,14 @@ public class ShoplistgenerService {
             }
             return recInString.toString();
         }
+    }
+
+    public int fetchRecipeId(String name) {
+        return this.daoHandler.fetchRecipeId(name);
+    }
+
+    public Recipe fetchRecipeObject(String name) throws Exception {
+        return this.daoHandler.fetchRecipe(name);
     }
     
     public List<String> fetchRecipeTUI(String name) throws Exception {

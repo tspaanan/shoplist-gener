@@ -10,4 +10,7 @@ public interface ShoplistgenerDAO {
     Recipe fetchRecipe(String name) throws Exception;
     void removeRecipe(String name) throws Exception;
     Recipe fetchRandomRecipe() throws Exception;
+    int fetchRecipeId(String name);
+    void modifyRecipe(Recipe modifiedRecipe) throws Exception;
+    //TODO: update this interface!
 }

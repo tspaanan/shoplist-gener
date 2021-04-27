@@ -1,4 +1,4 @@
-CREATE TABLE recipes (id INTEGER PRIMARY KEY,name TEXT UNIQUE,instructions TEXT,visible BOOLEAN);
+CREATE TABLE recipes (id INTEGER PRIMARY KEY,name TEXT UNIQUE,instructions TEXT,visible BOOLEAN,tags TEXT);
 
 CREATE TABLE ingredients (id INTEGER PRIMARY KEY,name TEXT UNIQUE,unit TEXT);
 
