@@ -29,18 +29,7 @@ public class ShoplistgenerService {
         try {
             this.daoHandler.addRecipe(newRecipe);
             return true;
-        } catch (SQLiteException el) { //TODO: tämä on hoidettu toisella tavalla DAOn toimesta, voinee poistaa kokonaan
-            if (el.getErrorCode() == 19) {
-                // errorCode 19 refers to UNIQUE-constraint violation, which is expected with ingredients
-                return true;
-            }
-            return false;
-        } catch (UnsupportedOperationException uoe) {
-            //this exception is raised if a recipe by that name already exists
-            return false;
         } catch (Exception e) {
-            System.out.println("tämä exc laukesi!");
-            e.printStackTrace();
             return false;
         }
     }
@@ -89,24 +78,6 @@ public class ShoplistgenerService {
         return this.daoHandler.fetchRecipe(name);
     }
     
-    public List<String> fetchRecipeTUI(String name) throws Exception {
-        if (name.equals("")) {
-            List<String> recipeNames = this.daoHandler.fetchAllRecipes();
-            return recipeNames;
-        } else {
-            name = name.trim().toLowerCase();
-            Recipe rec = this.daoHandler.fetchRecipe(name);
-            List<String> recipeInList = new ArrayList<String>();
-            recipeInList.add("\n***" + rec.getName() + "***\n");
-            recipeInList.add(rec.getInstructions());
-            recipeInList.add("");
-            for (Ingredient ing : rec.getIngredients()) {
-                recipeInList.add(ing.toString());
-            }
-            return recipeInList;
-        }
-    }
-
     public String fetchCourses() throws Exception {
         //StringBuilder menuInString = new StringBuilder();
         this.recipeList = this.daoHandler.fetchMenu(7);
@@ -131,7 +102,7 @@ public class ShoplistgenerService {
             menuInString.append(rec.getName());
             menuInString.append("\n"); //recipe instructions are not included at this point
             //recToString.add(rec.getInstructions());
-            List<Ingredient> ingredients = rec.getIngredients();
+            List<Ingredient> ingredients = rec.getIngredients(); //TODO: move this ingredients-related functionality somewhere else, maybe?
             for (Ingredient ing : ingredients) {
                 this.shoppingList.add(ing);
             }
@@ -169,26 +140,6 @@ public class ShoplistgenerService {
         return shoppingListinString.toString();
     }
     
-    public List<String> fetchMenuTUI() throws Exception {
-        List<String> menuToString = new ArrayList<String>();
-        List<Recipe> menu = this.daoHandler.fetchMenu(7);
-        List<Ingredient> ingredientsAll = new ArrayList<Ingredient>();
-        for (Recipe rec : menu) {
-            menuToString.add(rec.getName()); //recipe instructions are not included at this point
-            //recToString.add(rec.getInstructions());
-            List<Ingredient> ingredients = rec.getIngredients();
-            for (Ingredient ing : ingredients) {
-                ingredientsAll.add(ing);
-            }
-        }
-        List<Ingredient> ingredientsSorted = Ingredient.sortIngredients(ingredientsAll);
-        menuToString.add("");
-        for (Ingredient ing : ingredientsSorted) {
-            menuToString.add(ing.toString());
-        }
-        return menuToString;
-    }
-
     public void removeRecipe(String name) throws Exception {
         this.daoHandler.removeRecipe(name);
     }

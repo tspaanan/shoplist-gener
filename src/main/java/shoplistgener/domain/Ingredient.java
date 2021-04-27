@@ -71,6 +71,10 @@ public class Ingredient implements Comparable<Ingredient> {
     }
     
     public static List<Ingredient> sortIngredients(List<Ingredient> ingredients) {
+        //solve edge case that came up with unit testing:
+        if (ingredients.size() <= 1) {
+            return ingredients;
+        }
         List<Ingredient> ingredientsSorted = ingredients.stream()
                                                 //.distinct() not useful here
                                                 .sorted()

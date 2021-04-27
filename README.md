@@ -13,6 +13,15 @@
 ```
 mvn compile exec:java -Dexec.mainClass=shoplistgener.App
 ```
+**Vaihtoehtoisesti:**
+jar-paketin generointi:
+```
+mvn package
+```
+jar-paketin ajaminen:
+```
+java -jar target/shoplistgener-1.0-SNAPSHOT.jar
+```
 
 ## Ohjelman testaaminen
 Automaattiset testit:

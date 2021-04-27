@@ -391,6 +391,11 @@ public class UIJavaFX extends Application {
         }
     }
 
+    @Override
+    public void stop() throws Exception {
+        //TODO: check that database is fine for closing
+    }
+
     public static void main(String[] args) {
         launch(args);
     }

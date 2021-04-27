@@ -6,17 +6,19 @@ Sovellus luo siihen tallennettujen reseptien pohjalta satunnaisen ruokalistan ko
 
 ## Käyttäjät
 
-Sovelluksella on vain yksi käyttäjärooli. _Normaali käyttäjä_ voi muokata kaikkia sovelluksen osia monipuolisten asetusvaihtoehtojen avulla.
+Sovelluksella on vain yksi käyttäjärooli. _Normaali käyttäjä_ voi muokata kaikkia sovelluksen osia monipuolisten asetusvaihtoehtojen avulla. **[tehty: viikko 5]** *[tarkennus: toteutettu tietokannan alustaminen ja nimen valinta]*
 
 ## Toiminnallisuus
 
-- käyttäjä voi napin painalluksella luoda valmiin ruokalistan koko viikoksi, ja siihen kuuluvan kauppalistan **[perustoteutus OK]**
+- käyttäjä voi napin painalluksella luoda valmiin ruokalistan koko viikoksi, ja siihen kuuluvan kauppalistan
 	- ruokalista ja kauppalista on myös muotoiltu tulostusvalmiiksi, tai ne voidaan lähettää pikaviestimellä kännykkään
-	- käyttäjä voi myös arpoa tai valita halutuille päiville uudet ruokalajit **[halutun reseptin arpominen uudestaan: perustoteutus OK]** **[Viikko 4: uusi ominaisuus]**
+	- käyttäjä voi myös arpoa tai valita halutuille päiville uudet ruokalajit **[tehty: viikko 5]** *[tarkennus: halutun reseptin valinta toteutettu viikolla 5]*
 
-- käyttäjä voi tarkastella ruokalistaan kuuluvien ruokalajien reseptejä **[perustoteutus OK]**
+- käyttäjä voi tarkastella ruokalistaan kuuluvien ruokalajien reseptejä
 
-- käyttäjä voi lisätä tai poistaa reseptejä tietokannasta, tai etsiä hakukriteerien mukaisia reseptejä (esimerkiksi antamalla kourallinen ainesosia löydetään reseptejä, joihin nämä ainesosat voidaan käyttää) **[reseptien lisäys ja poistaminen: perustoteutus OK]** **[Viikko 4: uusi ominaisuus]**
+- käyttäjä voi lisätä tai poistaa reseptejä tietokannasta, tai etsiä hakukriteerien mukaisia reseptejä (esimerkiksi antamalla kourallinen ainesosia löydetään reseptejä, joihin nämä ainesosat voidaan käyttää)
+
+- käyttäjä voi muokata tietokannassa olevia reseptejä **[tehty: viikko 5]**
 
 - käyttäjä voi lisätä resepteihin tageja, joita voidaan käyttää resepteihin liittyvissä hauissa sekä ruokalistan luomisprosessin muokkaamisessa
 

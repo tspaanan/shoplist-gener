@@ -26,7 +26,7 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
                 System.out.println("IOException:" + i.getMessage());
             }
             try {
-            Statement s = this.db.createStatement();
+                Statement s = this.db.createStatement();
                 for (String tableCreation : schemaInString.split(";")) {
                     //System.out.print(tableCreation);
                     s.execute(tableCreation);
