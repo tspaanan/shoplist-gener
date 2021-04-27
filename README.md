@@ -23,6 +23,7 @@ jar-paketin ajaminen:
 ```
 java -jar target/shoplistgener-1.0-SNAPSHOT.jar
 ```
+huom! jar-paketin voi ajaa ainoastaan, mikäli cwd (current working directory) on tämän kloonatun projektin juuressa!
 
 ## Ohjelman testaaminen
 Automaattiset testit:

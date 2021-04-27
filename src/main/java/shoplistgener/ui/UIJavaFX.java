@@ -325,7 +325,7 @@ public class UIJavaFX extends Application {
                 databaseNameWriter.close();
                 Optional<ButtonType> chosenBT = chooseDatabasePopulationDialog.showAndWait();
                 if (chosenBT.get() == testDataBT) {
-                    CreateTestData.createRandomTestData(databaseName);
+                    CreateTestData.createRandomTestData(sqliteHandler);
                 }
             }
         }

@@ -12,4 +12,5 @@ public interface ShoplistgenerDAO {
     Recipe fetchRandomRecipe() throws Exception;
     int fetchRecipeId(String name);
     void modifyRecipe(Recipe modifiedRecipe) throws Exception;
+    void insertTestData();
 }
