@@ -62,7 +62,7 @@ public class Ingredient implements Comparable<Ingredient> {
 
     @Override
     public String toString() {
-        return this.name + ", " + String.valueOf(this.requestedQuantity) + " " + this.unit.toString().toLowerCase();
+        return this.name + ";" + String.valueOf(this.requestedQuantity) + ";" + this.unit.toString().toLowerCase();
     }
 
     @Override

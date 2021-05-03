@@ -15,27 +15,39 @@ public class ShoplistgenerService {
         this.shoppingList = new ArrayList<Ingredient>();
     }
 
-    public boolean addRecipe(List<String> recipeParts) {
+    public void addRecipe(List<String> recipeParts, List<String> ingredientParts) throws Exception {
         List<Ingredient> ingredients = new ArrayList<Ingredient>();
-        for (int i = 2; i < recipeParts.size(); i++) {
-            String[] ingParts = recipeParts.get(i).split(";");
-            ingredients.add(new Ingredient(ingParts[0], Unit.valueOf(ingParts[1].toUpperCase()), Integer.valueOf(ingParts[2])));
+        for (String singleIngPart : ingredientParts) {
+            String[] ingParts = singleIngPart.split(";");
+            ingredients.add(new Ingredient(ingParts[0], Unit.valueOf(ingParts[2].toUpperCase()), Integer.valueOf(ingParts[1])));
         }
         Recipe newRecipe = new Recipe(recipeParts.get(0), recipeParts.get(1), ingredients);
-        try {
-            this.daoHandler.addRecipe(newRecipe);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+        this.daoHandler.addRecipe(newRecipe);
     }
 
+    public String changeCourse(boolean randomized, String originalName, String replacedName) throws Exception {
+        Recipe newRecipe = new Recipe("", "", new ArrayList<Ingredient>());
+        if (randomized) {
+            newRecipe = this.daoHandler.fetchRandomRecipe();
+        } else {
+            newRecipe = this.daoHandler.fetchRecipe(replacedName);
+        }
+        for (Recipe recipe : this.recipeList) {
+            if (recipe.getName().equals(originalName)) {
+                recipe.setName(newRecipe.getName());
+                recipe.setInstructions(newRecipe.getInstructions());
+                recipe.setIngredients(newRecipe.getIngredients());
+            }
+        }
+        return this.buildMenuIntoString();
+    }
+    
     //TODO: refactor with addRecipe above
-    public void modifyRecipe(List<String> recipeParts) throws Exception {
+    public void modifyRecipe(List<String> recipeParts, List<String> ingredientParts) throws Exception {
         List<Ingredient> ingredients = new ArrayList<Ingredient>();
-        for (int i = 2; i < recipeParts.size(); i++) {
-            String[] ingParts = recipeParts.get(i).split(";");
-            ingredients.add(new Ingredient(ingParts[0], Unit.valueOf(ingParts[1].toUpperCase()), Integer.valueOf(ingParts[2])));
+        for (String singleInPart : ingredientParts) {
+            String[] ingParts = singleInPart.split(";");
+            ingredients.add(new Ingredient(ingParts[0], Unit.valueOf(ingParts[2].toUpperCase()), Integer.valueOf(ingParts[1])));
         }
         Recipe modifiedRecipe = new Recipe(recipeParts.get(0), recipeParts.get(1), ingredients);
         this.daoHandler.modifyRecipe(modifiedRecipe);
@@ -109,22 +121,6 @@ public class ShoplistgenerService {
         return menuInString.toString();
     }
     
-    public String changeCourse(String originalName, boolean randomized, String replacedName) throws Exception {
-        Recipe newRecipe = new Recipe("", "", new ArrayList<Ingredient>());
-        if (randomized) {
-            newRecipe = this.daoHandler.fetchRandomRecipe();
-        } else {
-            newRecipe = this.daoHandler.fetchRecipe(replacedName);
-        }
-        for (Recipe recipe : this.recipeList) {
-            if (recipe.getName().equals(originalName)) {
-                recipe.setName(newRecipe.getName());
-                recipe.setInstructions(newRecipe.getInstructions());
-                recipe.setIngredients(newRecipe.getIngredients());
-            }
-        }
-        return this.buildMenuIntoString();
-    }
 
     public String fetchShoppingList() {
         if (this.shoppingList.isEmpty()) {
@@ -140,6 +136,6 @@ public class ShoplistgenerService {
     }
     
     public void removeRecipe(String name) throws Exception {
-        this.daoHandler.removeRecipe(name);
+        this.daoHandler.removeRecipe(name.trim());
     }
 }
