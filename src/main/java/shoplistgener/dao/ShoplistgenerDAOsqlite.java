@@ -2,6 +2,7 @@ package shoplistgener.dao;
 
 import shoplistgener.domain.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -13,8 +14,8 @@ import java.util.Random;
 public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
     private Connection db;
 
-    public ShoplistgenerDAOsqlite(String databaseName) {
-        if (!databaseName.isEmpty()) {
+    public ShoplistgenerDAOsqlite(String databaseName) throws Exception {
+        if (!databaseName.isEmpty() && !new File(databaseName).isFile()) {
             String schemaInString = "";
             try {
                 this.db = DriverManager.getConnection("jdbc:sqlite:" + databaseName);
@@ -34,9 +35,12 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
                     this.db.commit(); //jdbc driver fails to commit all changes at once (line 36 below), so every change is committed here as its own transaction instead
                 }
             //this.db.commit();
-            } catch (SQLException e) {
-
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
             }
+        } else if (!databaseName.isEmpty() && new File(databaseName).isFile()) {
+            this.db = DriverManager.getConnection("jdbc:sqlite:" + databaseName);
+            this.db.setAutoCommit(false);
         }
     }
 

@@ -3,6 +3,7 @@ package shoplistgener.ui;
 import shoplistgener.CreateTestData;
 import shoplistgener.dao.*;
 import shoplistgener.domain.*;
+//import shoplistgener.ui.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -42,6 +43,7 @@ public class UIJavaFX extends Application {
     private String databaseName;
     private ShoplistgenerDAO sqliteHandler;
     private ShoplistgenerService domainHandler;
+    private HBox currentMenu;
 
     @Override
     public void init() throws Exception {
@@ -50,6 +52,7 @@ public class UIJavaFX extends Application {
         databaseName = properties.getProperty("databaseName");
         sqliteHandler = new ShoplistgenerDAOsqlite(properties.getProperty("databaseName")); //should this DAO be injected to domainHandler at all?
         domainHandler = new ShoplistgenerService(sqliteHandler);
+        currentMenu = new HBox();
     }
     
     @Override
@@ -61,6 +64,8 @@ public class UIJavaFX extends Application {
         ObservableList<String> menuItems = FXCollections.observableArrayList();
         ListView<String> menuItemView = new ListView<String>(menuItems);
         menuItemView.setPrefSize(100, 50);
+        Button quickViewCourse = new Button("View selected course");
+        Alert quickViewRecipe = new Alert(AlertType.INFORMATION);
         Button randomizeCourse = new Button("Randomize selected course");
         Button changeCourse = new Button("Replace selected course");
         TextField changeCourseSearchField = new TextField("choose new course (exact name for now)");
@@ -81,29 +86,32 @@ public class UIJavaFX extends Application {
         HBox menuPlacement = new HBox();
         VBox menuPlacement2ndColumn = new VBox();
         menuPlacement.getChildren().addAll(menuItemView, menuPlacement2ndColumn);
-        menuPlacement2ndColumn.getChildren().addAll(randomizeCourse, changeCourse, changeCourseSearchField);
-        menuPlacement.setVisible(false);
-        HBox labelPlacement = new HBox();
-        labelPlacement.setSpacing(10);
-        labelPlacement.setPadding(new Insets(10,300,10,10));
-        VBox buttonPlacement = new VBox();
-        buttonPlacement.setSpacing(10);
-        buttonPlacement.getChildren().add(wholeMenu);
-        buttonPlacement.getChildren().add(allRecipes);
-        buttonPlacement.getChildren().add(searchText);
-        buttonPlacement.getChildren().add(searchRecipes);
-        buttonPlacement.getChildren().add(addRecipe);
-        labelPlacement.getChildren().add(menuPlacement);
-        labelPlacement.getChildren().add(listShoppingList);
-        labelPlacement.getChildren().add(listRecipes);
+        menuPlacement2ndColumn.getChildren().addAll(quickViewCourse, randomizeCourse, changeCourse, changeCourseSearchField);
+        //menuPlacement.setVisible(false);
+        //HBox labelPlacement = new HBox();
+        //labelPlacement.setSpacing(10);
+        //labelPlacement.setPadding(new Insets(10,300,10,10));
+        VBox viewChoiceButtons = new VBox();
+        viewChoiceButtons.setSpacing(10);
+        viewChoiceButtons.setPadding(new Insets(10,10,10,10));
+        viewChoiceButtons.getChildren().add(wholeMenu);
+        viewChoiceButtons.getChildren().add(allRecipes);
+        //viewChoiceButtons.getChildren().add(searchText);
+        viewChoiceButtons.getChildren().add(searchRecipes);
+        viewChoiceButtons.getChildren().add(addRecipe);
+        //labelPlacement.getChildren().add(menuPlacement);
+        //labelPlacement.getChildren().add(listShoppingList);
+        //labelPlacement.getChildren().add(listRecipes);
         VBox recipeModifications = new VBox();
         recipeModifications.getChildren().addAll(removeRecipe, modifyRecipe);
-        labelPlacement.getChildren().add(recipeModifications);
+        //labelPlacement.getChildren().add(recipeModifications);
         
         //mainScene parent component
+        UIContructChangingView newViews = new UIContructChangingView();
+        BorderPane changingView = new BorderPane();
         BorderPane elementPlacement = new BorderPane();
-        elementPlacement.setRight(labelPlacement);
-        elementPlacement.setLeft(buttonPlacement);
+        elementPlacement.setCenter(changingView);
+        elementPlacement.setLeft(viewChoiceButtons);
         elementPlacement.setBackground(new Background(new BackgroundFill(Color.WHITESMOKE, null, null)));
         
         //lambdas for mainScene button presses
@@ -111,13 +119,17 @@ public class UIJavaFX extends Application {
             try {
                 String newCourses = domainHandler.fetchCourses();
                 String newShoppingList = domainHandler.fetchShoppingList();
-                listMenu.setText("Menu:\n" + newCourses);
-                listShoppingList.setText("Shopping List:\n" + newShoppingList);
-                menuItems.setAll(listMenu.getText().split("\\n"));
-                menuPlacement.setVisible(true);
+                currentMenu = newViews.createMenuView(newCourses, newShoppingList, listMenu, listShoppingList, menuItems, menuPlacement);
+                //listMenu.setText("Menu:\n" + newCourses);
+                //listShoppingList.setText("Shopping List:\n" + newShoppingList);
+                //menuItems.setAll(listMenu.getText().split("\\n"));
+                //menuPlacement.setVisible(true);
+                changingView.setCenter(currentMenu);
             } catch (Exception e) {
-                listRecipes.setContent(new Text("no recipes in database"));
-                System.out.println(e.getMessage());
+                //listRecipes.setContent(new Text("no recipes in database"));
+                //System.out.println(e.getMessage());
+                //HBox errorView = newViews.createErrorView(e.getMessage());
+                changingView.setCenter(newViews.createErrorView(e.getMessage()));
             }
         });
 
@@ -166,6 +178,19 @@ public class UIJavaFX extends Application {
 
         changeCourse.setOnAction((event) -> {
             this.changeSingleCourse(false, menuItemView, listMenu, listShoppingList, menuItems, changeCourseSearchField);
+        });
+
+        quickViewCourse.setOnAction((event) -> {
+            try {
+            String selectedCourse = menuItemView.getSelectionModel().getSelectedItem().toString();
+            List<String> recipeInList = domainHandler.fetchRecipeList(selectedCourse);
+            quickViewRecipe.setTitle(recipeInList.get(0));
+            quickViewRecipe.setContentText(recipeInList.get(1));
+            quickViewRecipe.setHeaderText(recipeInList.get(2));
+            quickViewRecipe.showAndWait();
+            } catch (Exception e) {
+                changingView.setCenter(newViews.createErrorView(e.getMessage()));
+            }
         });
         
         //addRecipeScene components
@@ -314,7 +339,8 @@ public class UIJavaFX extends Application {
         
         //ensure that a valid database exists before the program can be used
         //TODO: decide whether the lines below belong to domain or here
-        while (databaseName.isEmpty() || !new File(databaseName).isFile()) {
+        //TODO: fix the logic with OR operator below!
+        while (!new File(databaseName).isFile() || databaseName.isEmpty()) {
             Optional<String> newDatabaseName = setDatabaseNameDialog.showAndWait();
             if (newDatabaseName.isPresent()) {
                 databaseName = newDatabaseName.get();

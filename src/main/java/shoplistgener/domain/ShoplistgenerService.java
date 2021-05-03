@@ -66,6 +66,20 @@ public class ShoplistgenerService {
         }
     }
 
+    public List<String> fetchRecipeList(String name) throws Exception {
+        List<String> recipeInList = new ArrayList<String>();
+        Recipe rec = this.daoHandler.fetchRecipe(name);
+        recipeInList.add(rec.getName());
+        recipeInList.add(rec.getInstructions());
+        StringBuilder ingsInString = new StringBuilder();
+        for (Ingredient ing : rec.getIngredients()) {
+            ingsInString.append(ing.toString());
+            ingsInString.append("\n");
+        }
+        recipeInList.add(ingsInString.toString());
+        return recipeInList;
+    }
+
     public int fetchRecipeId(String name) {
         return this.daoHandler.fetchRecipeId(name);
     }
