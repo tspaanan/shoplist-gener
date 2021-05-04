@@ -38,3 +38,9 @@ Checkstyle-raportin luominen:
 ```
 mvn jxr:jxr checkstyle:checkstyle
 ```
+
+## Ohjelman dokumentaatio
+JavaDoc-dokumentaation luonti:
+```
+mvn javadoc:javadoc
+```

@@ -54,7 +54,6 @@
         <configuration>
           <excludes>
             <exclude>shoplistgener/ui/*</exclude>
-            <exclude>shoplistgener/UI*</exclude>
           </excludes>
         </configuration>
         <executions>
@@ -74,6 +73,14 @@
           <configLocation>checkstyle.xml</configLocation>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.10.3</version>
+        <configuration>
+          <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
+      </configuration>
+    </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jxr-plugin</artifactId>
