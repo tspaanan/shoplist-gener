@@ -14,15 +14,38 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import shoplistgener.domain.ShoplistgenerService;
 
+/**
+ * Returns HBox-objects that represent the changing view on the right side of the window
+ */
 public class UIContructChangingView {
     private HBox components;
 
+    /**
+     * Constructor, initializes HBox-object that is returned
+     */
     public UIContructChangingView() {
         this.components = new HBox();
         this.components.setSpacing(10);
         this.components.setPadding(new Insets(10, 10, 10, 10));
     }
 
+    /**
+     * Creates the view for editing recipes
+     * @param name pre-fetches recipe parts if not ""
+     * @param domainHandler object containing application logic
+     * @param recipeName pre-fetched recipe name
+     * @param recipeInstructions pre-fetched recipe instructions 
+     * @param ingredientItems pre-fetched ingredients
+     * @param ingredientItemView JavaFX component for viewing pre-fetched ingredients
+     * @param listOfIngredients pre-fetched ingredients
+     * @param ingredientName pre-fetched ingredient name(s)
+     * @param ingredientQuantity pre-fetched ingredient quanti
+     * @param editSceneGridPane JavaFX component for placement of other components
+     * @param addNewRecipeButton for adding new recipe
+     * @param modifyExistingRecipeButton for modifying existing recipe
+     * @return HBox-object representing the changing view on the right
+     * @throws Exception
+     */
     public HBox createEditView(String name, ShoplistgenerService domainHandler, TextField recipeName, TextField recipeInstructions, ObservableList<String> ingredientItems,
                                 ListView<String> ingredientItemView, List<String> listOfIngredients, TextField ingredientName, TextField ingredientQuantity,
                                 GridPane editSceneGridPane, Button addNewRecipeButton, Button modifyExistingRecipeButton) throws Exception {
@@ -58,6 +81,11 @@ public class UIContructChangingView {
         return this.components;
     }
 
+    /**
+     * Creates the view for error messages
+     * @param message error message to be displayed
+     * @return HBox-object representing the changing view on the right
+     */
     public HBox createErrorView(String message) {
         Label errorMessage = new Label();
         errorMessage.setText(message);
@@ -66,6 +94,17 @@ public class UIContructChangingView {
         return this.components;
     }
 
+    /**
+     * Creates the view for Menu
+     * @param newCourses names of the courses
+     * @param newShoppingList names and quantities of the ingredients
+     * @param listMenu JavaFX component for viewing Menu
+     * @param listShoppingList JavaFX component for viewing shopping list
+     * @param menuItems list of the courses
+     * @param menuPlacement JavaFX component for placement of other components
+     * @return HBox-object representing the changing view on the right
+     * @throws Exception
+     */
     public HBox createMenuView(String newCourses, String newShoppingList, Label listMenu, Label listShoppingList, ObservableList<String> menuItems,
                                 HBox menuPlacement) throws Exception {
         listMenu.setText("Menu:\n" + newCourses);
@@ -76,6 +115,15 @@ public class UIContructChangingView {
         return this.components;
     }
 
+    /**
+     * Creates the view for viewing recipes
+     * @param listRecipes list of all the recipes in the database
+     * @param recipeSearchOptions JavaFX component holding other components for recipe searches
+     * @param showRecipe space for displaying a single recipe
+     * @param recipeModifications JavaFX component holding other components for recipe modifications
+     * @return HBox-object representing the changing view on the right
+     * @throws Exception
+     */
     public HBox createRecipeView(ScrollPane listRecipes, VBox recipeSearchOptions, Label showRecipe, VBox recipeModifications) throws Exception {
         this.components.getChildren().clear();
         this.components.getChildren().addAll(listRecipes, recipeSearchOptions, recipeModifications);

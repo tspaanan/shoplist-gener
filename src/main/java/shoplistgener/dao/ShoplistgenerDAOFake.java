@@ -7,6 +7,9 @@ import shoplistgener.domain.Ingredient;
 import shoplistgener.domain.Recipe;
 import shoplistgener.domain.Unit;
 
+/**
+ * Implementation of ShoplistgenerDAO interface for unit tests
+ */
 public class ShoplistgenerDAOFake implements ShoplistgenerDAO {
 
     public ShoplistgenerDAOFake() {
@@ -25,11 +28,21 @@ public class ShoplistgenerDAOFake implements ShoplistgenerDAO {
         return null;
     }
 
+    /**
+     * Returns an empty list of Recipe-objects for testing
+     * @param days not used
+     * @throws Exception
+     */
     @Override
     public List<Recipe> fetchMenu(int days) throws Exception {
         return new ArrayList<Recipe>();
     }
 
+    /**
+     * Returns a Recipe-object for testing
+     * @param name not used
+     * @throws Exception
+     */
     @Override
     public Recipe fetchRecipe(String name) throws Exception {
         List<Ingredient> ings = new ArrayList<Ingredient>();
@@ -55,7 +68,7 @@ public class ShoplistgenerDAOFake implements ShoplistgenerDAO {
     }
 
     @Override
-    public int fetchRecipeId(String name) {
+    public int fetchRecipeId(String name) throws Exception {
         // TODO Auto-generated method stub
         return 0;
     }
@@ -67,7 +80,7 @@ public class ShoplistgenerDAOFake implements ShoplistgenerDAO {
     }
 
     @Override
-    public void insertTestData() {
+    public void insertTestData() throws Exception {
 
     }
 

@@ -3,7 +3,6 @@ package shoplistgener.dao;
 import shoplistgener.domain.*;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.*;
@@ -11,39 +10,41 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Implementation of ShoplistgenerDAO interface for SQLITE3
+ */
 public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
     private Connection db;
 
+    /**
+     * Constructor, which also initializes the database, if one is not already present
+     * @param databaseName User-defined name of the SQLITE-database, read from config.properties
+     * @throws Exception
+     */
     public ShoplistgenerDAOsqlite(String databaseName) throws Exception {
         if (!databaseName.isEmpty() && !new File(databaseName).isFile()) {
             String schemaInString = "";
-            try {
-                this.db = DriverManager.getConnection("jdbc:sqlite:" + databaseName);
-                this.db.setAutoCommit(false);
-                Path filePath = Path.of("./dokumentaatio/schema.sql"); //traditional schema.sql format was too hard to parse correctly, so atm all
-                //CREATE TABLE commands are on their own lines
-                schemaInString = Files.readString(filePath);
-            } catch (SQLException e) {
-                System.out.println("SQLException:" + e.getMessage());
-            } catch (IOException i) {
-                System.out.println("IOException:" + i.getMessage());
-            }
-            try {
-                Statement s = this.db.createStatement();
-                for (String tableCreation : schemaInString.split(";")) {
-                    s.execute(tableCreation);
-                    this.db.commit(); //jdbc driver fails to commit all changes at once (line 36 below), so every change is committed here as its own transaction instead
-                }
-            //this.db.commit();
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
+            this.db = DriverManager.getConnection("jdbc:sqlite:" + databaseName);
+            this.db.setAutoCommit(false);
+            Path filePath = Path.of("./dokumentaatio/schema.sql"); //traditional schema.sql format was too hard to parse correctly, so atm all
+            //CREATE TABLE commands are on their own lines
+            schemaInString = Files.readString(filePath);
+            Statement s = this.db.createStatement();
+            for (String tableCreation : schemaInString.split(";")) {
+                s.execute(tableCreation);
+                this.db.commit(); //jdbc driver fails here to commit all changes at once, so every table creation is committed as its own transaction
+            } 
         } else if (!databaseName.isEmpty() && new File(databaseName).isFile()) {
             this.db = DriverManager.getConnection("jdbc:sqlite:" + databaseName);
             this.db.setAutoCommit(false);
         }
     }
 
+    /**
+     * Writes new recipe to the database
+     * @param newRecipe Recipe-object
+     * @throws Exception
+     */
     public void addRecipe(Recipe newRecipe) throws Exception {
         //check for duplicate recipe names, TODO: clashes with removed recipe names
         //TODO: also, remember parametrization of SQL-quories
@@ -93,6 +94,11 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
         this.db.commit();
     }
 
+    /**
+     * Modifies data related to an existing recipe in the database
+     * @param modifiedRecipe Recipe-object
+     * @throws Exception
+     */
     public void modifyRecipe(Recipe modifiedRecipe) throws Exception {
         //update instructions, TODO: parametrization!
         //TODO: refactor with duplicate code from addRecipe above
@@ -136,6 +142,12 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
         this.db.commit();
     }
 
+    /**
+     * Returns a randomized menu of recipes
+     * @param days user-defined number of recipes to be returned
+     * @return List of recipe-objects
+     * @throws Exception
+     */
     public List<Recipe> fetchMenu(int days) throws Exception {
         List<Recipe> menu = new ArrayList<Recipe>();
         for (int i = 0; i < days; i++) {
@@ -159,7 +171,7 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
         return menu;
     }
 
-    private int randomNumberForRecipes() throws SQLException {
+    private int randomNumberForRecipes() throws Exception {
         Random rand = new Random();
         PreparedStatement c = this.db.prepareStatement("SELECT COUNT(*) FROM recipes");
         int recipesNo = c.executeQuery().getInt("COUNT(*)");
@@ -175,7 +187,13 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
         return rand.nextInt(recipesNo) + 1;
     }
 
-    public Recipe fetchRecipe(String name) throws SQLException {
+    /**
+     * Returns a single recipe
+     * @param name name of the recipe to be returned
+     * @return Recipe-object
+     * @throws Exception
+     */
+    public Recipe fetchRecipe(String name) throws Exception {
         PreparedStatement p = this.db.prepareStatement("SELECT id,name,instructions FROM recipes WHERE name=? AND visible=TRUE");
         p.setString(1, name);
         ResultSet r = p.executeQuery();
@@ -183,7 +201,13 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
         return new Recipe(r.getString("name"), r.getString("instructions"), ingsInList);
     }
 
-    public int fetchRecipeId(String name) {
+    /**
+     * Returns id number of a single recipe
+     * @param name name of the recipe to be looked for
+     * @return index number
+     * @throws Exception
+     */
+    public int fetchRecipeId(String name) throws Exception {
         try {
             PreparedStatement p = this.db.prepareStatement("SELECT id FROM recipes WHERE name=? AND visible=TRUE");
             p.setString(1, name);
@@ -194,14 +218,24 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
         }
     }
 
-    public Recipe fetchRandomRecipe() throws SQLException {
+    /**
+     * Returns a random recipe
+     * @return Recipe-object
+     * @throws Exception
+     */
+    public Recipe fetchRandomRecipe() throws Exception {
         PreparedStatement p = this.db.prepareStatement("SELECT name FROM recipes WHERE id=?");
         p.setString(1, String.valueOf(randomNumberForRecipes()));
         ResultSet r = p.executeQuery();
         return this.fetchRecipe(r.getString("name"));
     }
 
-    public List<String> fetchAllRecipes() throws SQLException {
+    /**
+     * Returns a list of all recipe names in the database
+     * @return List of Strings (names of all the recipes)
+     * @throws Exception
+     */
+    public List<String> fetchAllRecipes() throws Exception {
         PreparedStatement p = this.db.prepareStatement("SELECT name FROM recipes WHERE visible=TRUE");
         ResultSet r = p.executeQuery();
         List<String> recipeNames = new ArrayList<String>();
@@ -211,7 +245,7 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
         return recipeNames;
     }
 
-    private List<Ingredient> fetchIngredients(int id) throws SQLException {
+    private List<Ingredient> fetchIngredients(int id) throws Exception {
         PreparedStatement ings = this.db.prepareStatement("SELECT I.name,I.unit,IR.quantity FROM ingredients I,"
                                                         + "ingredientsInRecipes IR WHERE IR.recipe_id=? AND IR.ingredient_id=I.id");
         ings.setString(1, String.valueOf(id));
@@ -224,6 +258,11 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
         return ingsInList;
     }
 
+    /**
+     * Marks recipe as removed from the database
+     * @param name name of the recipe to be removed
+     * @throws Exception
+     */
     public void removeRecipe(String name) throws Exception {
         PreparedStatement p = this.db.prepareStatement("UPDATE recipes SET visible=FALSE WHERE name=?");
         p.setString(1, name);
@@ -231,39 +270,39 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
         this.db.commit();
     }
 
-    public void insertTestData() {
-        try {
-            Statement s = this.db.createStatement();
-            for (int i = 1; i <= 100; i++) {
-                String insert = "INSERT INTO recipes (name,instructions,visible) VALUES ('recipe#" + String.valueOf(i) 
-                                + "','default_instructions_for_this_recipe',TRUE)";
-                s.execute(insert);
-            }
-            Random r = new Random();
-            String[] units = {"dl", "ml", "g", "pcs", "cl", "kg"};
-            for (int i = 1; i <= 50; i++) {
-                String unit = units[r.nextInt(6)];
-                String insert = "INSERT INTO ingredients (name,unit) VALUES ('ingredient#" + String.valueOf(i)
-                                + "','" + unit + "')";
-                s.execute(insert);
-            }
-            for (int i = 1; i <= 100; i++) {
-                for (int j = 1; j <= 5; j++) {
-                    String insert = "INSERT INTO ingredientsInRecipes (recipe_id,ingredient_id,quantity) "
-                                    + "VALUES (" + String.valueOf(i) + "," + String.valueOf(r.nextInt(50) + 1)
-                                    + "," + String.valueOf(r.nextInt(9) + 1) + ")";
-                    s.execute(insert);
-                }
-            }
-            for (int i = 1; i <= 20; i++) {
-                String insert = "INSERT INTO ingredientsInKitchen (ingredient_id,quantity) VALUES "
-                                + "(" + String.valueOf(r.nextInt(50) + 1) + ","
-                                + String.valueOf(r.nextInt(9) + 1) + ")";
-                s.execute(insert);
-            }
-            db.commit();
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+    /**
+     * Inserts data meant for testing the program into the database
+     * @throws Exception 
+     */
+    public void insertTestData() throws Exception {
+        Statement s = this.db.createStatement();
+        for (int i = 1; i <= 100; i++) {
+            String insert = "INSERT INTO recipes (name,instructions,visible) VALUES ('recipe#" + String.valueOf(i) 
+                            + "','default_instructions_for_this_recipe',TRUE)";
+            s.execute(insert);
         }
+        Random r = new Random();
+        String[] units = {"dl", "ml", "g", "pcs", "cl", "kg"};
+        for (int i = 1; i <= 50; i++) {
+            String unit = units[r.nextInt(6)];
+            String insert = "INSERT INTO ingredients (name,unit) VALUES ('ingredient#" + String.valueOf(i)
+                            + "','" + unit + "')";
+            s.execute(insert);
+        }
+        for (int i = 1; i <= 100; i++) {
+            for (int j = 1; j <= 5; j++) {
+                String insert = "INSERT INTO ingredientsInRecipes (recipe_id,ingredient_id,quantity) "
+                                + "VALUES (" + String.valueOf(i) + "," + String.valueOf(r.nextInt(50) + 1)
+                                + "," + String.valueOf(r.nextInt(9) + 1) + ")";
+                s.execute(insert);
+            }
+        }
+        for (int i = 1; i <= 20; i++) {
+            String insert = "INSERT INTO ingredientsInKitchen (ingredient_id,quantity) VALUES "
+                            + "(" + String.valueOf(r.nextInt(50) + 1) + ","
+                            + String.valueOf(r.nextInt(9) + 1) + ")";
+            s.execute(insert);
+        }
+        db.commit();
     }
 }

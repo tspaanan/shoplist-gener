@@ -4,17 +4,32 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Ingredient encapsulates a single ingredient used in a recipe, and
+ * offers methods for manipulating them
+ */
 public class Ingredient implements Comparable<Ingredient> {
     private String name;
     private Unit unit;
     private Integer requestedQuantity;
     
+    /**
+     * Constructor
+     * @param name name of the ingredient
+     * @param unit Enum Type associated with an ingredient (e.g., KG)
+     */
     public Ingredient(String name, Unit unit) {
         this.name = name;
         this.unit = unit;
         this.requestedQuantity = null;
     }
 
+    /**
+     * Alternative constructor
+     * @param name name of the ingredient
+     * @param unit Enum Type associated with an ingredient (e.g., KG)
+     * @param quantity how much of a given unit the recipe calls for
+     */
     public Ingredient(String name, Unit unit, Integer quantity) {
         this(name, unit);
         this.setRequestedQuantity(quantity);
@@ -36,6 +51,13 @@ public class Ingredient implements Comparable<Ingredient> {
         this.requestedQuantity = quantity;
     }
 
+    /**
+     * Combines two Ingredient-objects into a single Ingredient-object
+     * @param first the first Ingredient-object to be merged
+     * @param second the second Ingredient-object to be merged
+     * @return Ingredient-object that retains the name and unit of the first, but
+     * combines the quantities of both
+     */
     public static Ingredient combineIngredients(Ingredient first, Ingredient second) {
         return new Ingredient(first.name, first.unit, first.requestedQuantity + second.requestedQuantity);
     }
@@ -70,6 +92,11 @@ public class Ingredient implements Comparable<Ingredient> {
         return this.name.compareTo(other.name);
     }
     
+    /**
+     * Returns an alphabetically sorted list of ingredients, in which duplicates have been combined
+     * @param ingredients List of Ingredient-objects
+     * @return sorted and duplicate-free List of Ingredient-objects
+     */
     public static List<Ingredient> sortIngredients(List<Ingredient> ingredients) {
         //solve edge case that came up with unit testing:
         if (ingredients.size() <= 1) {

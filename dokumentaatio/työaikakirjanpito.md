@@ -14,9 +14,10 @@ Pvm   | Tunnit	| Aihe | Näkyvät uudet ominaisuudet
 26.4 | 8 | harjoitustyön koodaamista | tallennustiedoston nimen valinta ja alustus; arvottujen reseptien vaihtaminen toiseen reseptiin; reseptinäytön skrollaus
 27.4 | 3 | harjoitustyön koodaamista | reseptien muokkaaminen
 27.4 | 3 | refaktorointia ja koodin siistimistä Koodikatselmusta varten
-
+3.5  | 2 | harjoitustyön koodaamista | uusi dialogi-ikkuna reseptien nopeaa tarkastelua varten
+3.5  | 7 | refaktorointia
 
 **Tunnit yhteensä:**
 ```
-54
+63
 ```

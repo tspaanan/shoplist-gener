@@ -2,11 +2,21 @@ package shoplistgener.domain;
 
 import java.util.List;
 
+/**
+ * Recipe encapsulates a single recipe, and
+ * offers methods for manipulating them
+ */
 public class Recipe {
     private String name;
     private String instructions;
     private List<Ingredient> ingredients;
     
+    /**
+     * Constructor
+     * @param name name of the recipe
+     * @param instructions instructions for the recipe
+     * @param ingredients List of Ingredient-objects required by the recipe
+     */
     public Recipe(String name, String instructions, List<Ingredient> ingredients) {
         this.name = name;
         this.instructions = instructions;

@@ -1,6 +1,5 @@
 package shoplistgener.ui;
 
-import shoplistgener.CreateTestData;
 import shoplistgener.dao.*;
 import shoplistgener.domain.*;
 
@@ -45,14 +44,19 @@ public class UIJavaFX extends Application {
     private HBox currentMenu;
 
     @Override
-    public void init() throws Exception {
+    public void init() {
         Properties properties = new Properties();
         //TODO: create config.properties if one does not exist
-        properties.load(new FileInputStream("config.properties"));
-        databaseName = properties.getProperty("databaseName");
-        sqliteHandler = new ShoplistgenerDAOsqlite(properties.getProperty("databaseName"));
-        domainHandler = new ShoplistgenerService(sqliteHandler);
-        currentMenu = new HBox();
+        try {
+            properties.load(new FileInputStream("config.properties"));
+            databaseName = properties.getProperty("databaseName");
+            sqliteHandler = new ShoplistgenerDAOsqlite(properties.getProperty("databaseName"));
+            domainHandler = new ShoplistgenerService(sqliteHandler);
+            currentMenu = new HBox();
+        } catch (Exception e) {
+            System.out.println("init() failed");
+            System.exit(1);
+        }
     }
     
     @Override
