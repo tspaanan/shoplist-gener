@@ -49,27 +49,14 @@ public class UIContructChangingView {
     public HBox createEditView(String name, ShoplistgenerService domainHandler, TextField recipeName, TextField recipeInstructions, ObservableList<String> ingredientItems,
                                 ListView<String> ingredientItemView, List<String> listOfIngredients, TextField ingredientName, TextField ingredientQuantity,
                                 GridPane editSceneGridPane, Button addNewRecipeButton, Button modifyExistingRecipeButton) throws Exception {
-        recipeName.clear();
-        recipeInstructions.clear();
+        recipeName.setText("Recipe name");
+        recipeInstructions.setText("Recipe instructions");
         listOfIngredients.clear();
         ingredientItems.clear();
         ingredientItems.add("Ingredients:");
         if (!name.equals("")) {
-            List<String> modifiedRecipeInList = domainHandler.fetchRecipeList(name);
-            recipeName.setText(modifiedRecipeInList.get(0));
-            recipeInstructions.setText(modifiedRecipeInList.get(1));
-            for (String ing : modifiedRecipeInList.get(2).split("\n")) {
-                if (ing.isEmpty()) {
-                    continue;
-                }
-                String toWhitespace = ing.replace(";", " ");
-                ingredientItems.add(toWhitespace);
-                listOfIngredients.add(ing);
-            }
-            System.out.println(ingredientItems);
-            System.out.println(listOfIngredients);
-            editSceneGridPane.getChildren().removeAll(addNewRecipeButton, modifyExistingRecipeButton);
-            editSceneGridPane.add(modifyExistingRecipeButton, 3, 3);
+            this.populateEditView(name, domainHandler, recipeName, recipeInstructions, ingredientItems, listOfIngredients, editSceneGridPane,
+                                    addNewRecipeButton, modifyExistingRecipeButton);
         } else {
             editSceneGridPane.getChildren().removeAll(addNewRecipeButton, modifyExistingRecipeButton);
             editSceneGridPane.add(addNewRecipeButton, 3, 3);
@@ -79,6 +66,24 @@ public class UIContructChangingView {
         this.components.getChildren().clear();
         this.components.getChildren().addAll(editSceneGridPane);
         return this.components;
+    }
+
+    private void populateEditView(String name, ShoplistgenerService domainHandler, TextField recipeName, TextField recipeInstructions,
+                                    ObservableList<String> ingredientItems, List<String> listOfIngredients, GridPane editSceneGridPane,
+                                    Button addNewRecipeButton, Button modifyExistingRecipeButton) throws Exception {
+        List<String> modifiedRecipeInList = domainHandler.fetchRecipeList(name);
+        recipeName.setText(modifiedRecipeInList.get(0));
+        recipeInstructions.setText(modifiedRecipeInList.get(1));
+        for (String ing : modifiedRecipeInList.get(2).split("\n")) {
+            if (ing.isEmpty()) {
+                continue;
+            }
+            String toWhitespace = ing.replace(";", " ");
+            ingredientItems.add(toWhitespace);
+            listOfIngredients.add(ing);
+        }
+        editSceneGridPane.getChildren().removeAll(addNewRecipeButton, modifyExistingRecipeButton);
+        editSceneGridPane.add(modifyExistingRecipeButton, 3, 3);
     }
 
     /**

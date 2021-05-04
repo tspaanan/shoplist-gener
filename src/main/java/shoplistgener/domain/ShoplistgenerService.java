@@ -94,16 +94,9 @@ public class ShoplistgenerService {
      */
     public String fetchRecipe(String name) throws Exception {
         if (name.equals("")) {
-            List<String> recipeNames = this.daoHandler.fetchAllRecipes();
-            StringBuilder recipeNamesInString = new StringBuilder("All Recipes:\n\n");
-            for (String recName : recipeNames) {
-                recipeNamesInString.append(recName);
-                recipeNamesInString.append("\n");
-            }
-            return recipeNamesInString.toString();
+            return this.fetchAllRecipes();
         } else {
             name = name.trim();
-            //.toLowerCase(); IDEA: maybe everything in the database should be lowercase, and domain could change them to be grammatically correct before passing them to UI
             Recipe rec = this.daoHandler.fetchRecipe(name);
             StringBuilder recInString = new StringBuilder();
             recInString.append("\n***" + rec.getName() + "***\n\n");
@@ -115,6 +108,16 @@ public class ShoplistgenerService {
             }
             return recInString.toString();
         }
+    }
+
+    private String fetchAllRecipes() throws Exception {
+        List<String> recipeNames = this.daoHandler.fetchAllRecipes();
+        StringBuilder recipeNamesInString = new StringBuilder("All Recipes:\n\n");
+        for (String recName : recipeNames) {
+            recipeNamesInString.append(recName);
+            recipeNamesInString.append("\n");
+        }
+        return recipeNamesInString.toString();
     }
 
     /**
