@@ -3,8 +3,6 @@ package shoplistgener.dao;
 import shoplistgener.domain.*;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +13,7 @@ import java.util.Random;
  */
 public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
     private Connection db;
+    public static boolean databaseIsEmpty;
 
     /**
      * Constructor, which also initializes the database, if one is not already present
@@ -23,20 +22,19 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
      */
     public ShoplistgenerDAOsqlite(String databaseName) throws Exception {
         if (!databaseName.isEmpty() && !new File(databaseName).isFile()) {
-            String schemaInString = "";
             this.db = DriverManager.getConnection("jdbc:sqlite:" + databaseName);
             this.db.setAutoCommit(false);
-            Path filePath = Path.of("./dokumentaatio/schema.sql"); //traditional schema.sql format was too hard to parse correctly, so atm all
-            //CREATE TABLE commands are on their own lines
-            schemaInString = Files.readString(filePath);
             Statement s = this.db.createStatement();
-            for (String tableCreation : schemaInString.split(";")) {
-                s.execute(tableCreation);
-                this.db.commit(); //jdbc driver fails here to commit all changes at once, so every table creation is committed as its own transaction
-            } 
+            s.execute("CREATE TABLE recipes (id INTEGER PRIMARY KEY,name TEXT UNIQUE,instructions TEXT,visible BOOLEAN,tags TEXT)");
+            s.execute("CREATE TABLE ingredients (id INTEGER PRIMARY KEY,name TEXT UNIQUE,unit TEXT)");
+            s.execute("CREATE TABLE ingredientsInRecipes (recipe_id INTEGER REFERENCES recipes,ingredient_id INTEGER REFERENCES ingredients,quantity INTEGER)");
+            s.execute("CREATE TABLE ingredientsInKitchen (ingredient_id INTEGER REFERENCES ingredients,quantity INTEGER)");
+            this.db.commit();
+            databaseIsEmpty = true;
         } else if (!databaseName.isEmpty() && new File(databaseName).isFile()) {
             this.db = DriverManager.getConnection("jdbc:sqlite:" + databaseName);
             this.db.setAutoCommit(false);
+            databaseIsEmpty = false;
         }
     }
 
@@ -303,6 +301,6 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
                             + String.valueOf(r.nextInt(9) + 1) + ")";
             s.execute(insert);
         }
-        db.commit();
+        this.db.commit();
     }
 }

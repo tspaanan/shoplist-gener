@@ -46,21 +46,25 @@ public class UIJavaFX extends Application {
     @Override
     public void init() {
         Properties properties = new Properties();
-        //TODO: create config.properties if one does not exist
         try {
+            if (!new File("config.properties").isFile()) {
+                FileWriter configWriter = new FileWriter(new File("config.properties"));
+                configWriter.write("databaseName=");
+                configWriter.close();
+            }
             properties.load(new FileInputStream("config.properties"));
             databaseName = properties.getProperty("databaseName");
-            sqliteHandler = new ShoplistgenerDAOsqlite(properties.getProperty("databaseName"));
+            sqliteHandler = new ShoplistgenerDAOsqlite(databaseName);
             domainHandler = new ShoplistgenerService(sqliteHandler);
             currentMenu = new HBox();
         } catch (Exception e) {
-            System.out.println("init() failed");
+            System.out.println("init() failed: " + e.getMessage());
             System.exit(1);
         }
     }
     
     @Override
-    public void start(Stage window) throws Exception {
+    public void start(Stage window) {
         window.setTitle("shoplist-gener");
         
         //sceneChange components
@@ -343,19 +347,25 @@ public class UIJavaFX extends Application {
         
         //ensure that a valid database exists before the program can be used
         //TODO: decide whether the lines below belong to domain or here
-        //TODO: fix the logic with OR operator below!
-        while (!new File(databaseName).isFile() || databaseName.isEmpty()) {
+        //TODO: think hard about the logic of the OR operators below! though it seems to be working as intended
+        while (!new File(databaseName).isFile() || databaseName.isEmpty() || ShoplistgenerDAOsqlite.databaseIsEmpty) {
             Optional<String> newDatabaseName = setDatabaseNameDialog.showAndWait();
             if (newDatabaseName.isPresent()) {
-                databaseName = newDatabaseName.get();
-                sqliteHandler = new ShoplistgenerDAOsqlite(databaseName);
-                domainHandler = new ShoplistgenerService(sqliteHandler);
-                FileWriter databaseNameWriter = new FileWriter(new File("config.properties"));
-                databaseNameWriter.write("databaseName=" + databaseName);
-                databaseNameWriter.close();
-                Optional<ButtonType> chosenBT = chooseDatabasePopulationDialog.showAndWait();
-                if (chosenBT.get() == testDataBT) {
-                    CreateTestData.createRandomTestData(sqliteHandler);
+                try {
+                    databaseName = newDatabaseName.get();
+                    sqliteHandler = new ShoplistgenerDAOsqlite(databaseName);
+                    domainHandler = new ShoplistgenerService(sqliteHandler);
+                    FileWriter databaseNameWriter = new FileWriter(new File("config.properties"));
+                    databaseNameWriter.write("databaseName=" + databaseName);
+                    databaseNameWriter.close();
+                    Optional<ButtonType> chosenBT = chooseDatabasePopulationDialog.showAndWait();
+                    if (chosenBT.get() == testDataBT) {
+                        CreateTestData.createRandomTestData(sqliteHandler);
+                    }
+                    ShoplistgenerDAOsqlite.databaseIsEmpty = false;
+                } catch (Exception e) {
+                    System.out.println("Exception in test data creation: " + e.getMessage());
+                    System.exit(1);
                 }
             }
         }

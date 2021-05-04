@@ -45,16 +45,8 @@ public class ShopListgenerServiceTest {
     @Test
     public void fetchRecipeRetainsAllIngredients() throws Exception {
         String fetched = object.fetchRecipe("name1");
-        assertEquals("ing1, 1 cl", fetched.split("\n")[7]);
-        assertEquals("ing2, 2 cl", fetched.split("\n")[8]);
-        assertEquals("ing3, 3 cl", fetched.split("\n")[9]);
-    }
-
-    @Test
-    public void addRecipeReturnTrueOnSuccess() {
-        List<String> recipeParts = new ArrayList<String>();
-        recipeParts.add("name1"); recipeParts.add("instructions1");
-        recipeParts.add("ing1;cl;1"); recipeParts.add("ing2;cl;2");
-        assertTrue(object.addRecipe(recipeParts));
+        assertEquals("ing1;1;cl", fetched.split("\n")[7]);
+        assertEquals("ing2;2;cl", fetched.split("\n")[8]);
+        assertEquals("ing3;3;cl", fetched.split("\n")[9]);
     }
 }
