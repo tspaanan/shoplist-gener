@@ -208,4 +208,12 @@ public class ShoplistgenerService {
     public void removeRecipe(String name) throws Exception {
         this.daoHandler.removeRecipe(name.trim());
     }
+
+    public void setRecipeList(List<Recipe> newList) {
+        this.recipeList = newList;
+    }
+
+    public void setShoppingList(List<Ingredient> newList) {
+        this.shoppingList = newList;
+    }
 }
