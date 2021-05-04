@@ -1,5 +1,7 @@
 # SHOPLIST-GENER
 
+Sovelluksella voi luoda siihen tallennettujen reseptien pohjalta satunnaisen ruokalistan koko viikoksi. Tämän jälkeen sovellus luo kauppalistan ruokalajien ainesosista. Sovelluksen tuntemia reseptejä voi muokata tai poistaa, ja uusia reseptejä voi lisätä.
+
 ## Dokumentaatio
 
 [Linkki harjoitustyön vaatimusmäärittelyyn](https://github.com/tspaanan/shoplist-gener/blob/main/dokumentaatio/vaatimusmaarittely.md)
@@ -7,6 +9,13 @@
 [Linkki harjoitustyön työaikakirjanpitoon](https://github.com/tspaanan/shoplist-gener/blob/main/dokumentaatio/ty%C3%B6aikakirjanpito.md)
 
 [Linkki harjoitustyön arkkitehtuurikuvaukseen](https://github.com/tspaanan/shoplist-gener/blob/main/dokumentaatio/arkkitehtuuri.md)
+
+[Linkki harjoitustyön käyttöohjeeseen](https://github.com/tspaanan/shoplist-gener/blob/main/dokumentaatio/kayttoohje.md)
+
+## Releaset
+
+[viikko5](https://github.com/tspaanan/shoplist-gener/releases/tag/viikko5)
+[viikko6](https://github.com/tspaanan/shoplist-gener/releases/tag/viikko6)
 
 ## Ohjelman suoritus
 
@@ -21,9 +30,8 @@ mvn package
 ```
 jar-paketin ajaminen:
 ```
-java -jar target/shoplistgener-1.0-SNAPSHOT.jar
+java -jar target/shoplistgener-2.0-SNAPSHOT.jar
 ```
-huom! jar-paketin voi ajaa ainoastaan, mikäli cwd (current working directory) on tämän kloonatun projektin juuressa!
 
 ## Ohjelman testaaminen
 Automaattiset testit:
