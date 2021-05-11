@@ -68,15 +68,16 @@ public class UIJavaFX extends Application {
         window.setTitle("shoplist-gener");
         
         //sceneChange components
-        Button wholeMenu = new Button("Print Week's Menu and shopping list");
+        Button viewMenu = new Button("View Menu");
         Button viewRecipes = new Button("View recipes");
         Button editRecipe = new Button("Add new recipe");
         VBox viewChoiceButtons = new VBox();
         viewChoiceButtons.setSpacing(10);
         viewChoiceButtons.setPadding(new Insets(10, 10, 10, 10));
-        viewChoiceButtons.getChildren().addAll(wholeMenu, viewRecipes, editRecipe);
+        viewChoiceButtons.getChildren().addAll(viewMenu, viewRecipes, editRecipe);
 
         //menuScene components
+        Button weekMenu = new Button("Print Week's Menu and shopping list");
         Label listMenu = new Label();
         ObservableList<String> menuItems = FXCollections.observableArrayList();
         ListView<String> menuItemView = new ListView<String>(menuItems);
@@ -89,7 +90,7 @@ public class UIJavaFX extends Application {
         Label listShoppingList = new Label();
         HBox menuPlacement = new HBox();
         VBox menuPlacement2ndColumn = new VBox();
-        menuPlacement.getChildren().addAll(menuItemView, menuPlacement2ndColumn);
+        menuPlacement.getChildren().addAll(weekMenu, menuItemView, menuPlacement2ndColumn);
         menuPlacement2ndColumn.getChildren().addAll(quickViewCourse, randomizeCourse, changeCourse, changeCourseSearchField);
 
         //recipeScene components
@@ -147,11 +148,9 @@ public class UIJavaFX extends Application {
         elementPlacement.setBackground(new Background(new BackgroundFill(Color.WHITESMOKE, null, null)));
         
         //lambdas for mainScene button presses
-        wholeMenu.setOnAction((event) -> {
+        viewMenu.setOnAction((event) -> {
             try {
-                String newCourses = domainHandler.fetchCourses();
-                String newShoppingList = domainHandler.fetchShoppingList();
-                currentMenu = newViews.createMenuView(newCourses, newShoppingList, listMenu, listShoppingList, menuItems, menuPlacement);
+                currentMenu = newViews.createMenuView("", "", listMenu, listShoppingList, menuItems, menuPlacement);
                 changingView.setCenter(currentMenu);
             } catch (Exception e) {
                 changingView.setCenter(newViews.createErrorView(e.getMessage()));
@@ -186,6 +185,17 @@ public class UIJavaFX extends Application {
         });
 
         //lambdas for menuScene button presses
+        weekMenu.setOnAction((event) -> {
+            try {
+                String newCourses = domainHandler.fetchCourses();
+                String newShoppingList = domainHandler.fetchShoppingList();
+                currentMenu = newViews.createMenuView(newCourses, newShoppingList, listMenu, listShoppingList, menuItems, menuPlacement);
+                changingView.setCenter(currentMenu);
+            } catch (Exception e) {
+                changingView.setCenter(newViews.createErrorView(e.getMessage()));
+            }
+        });
+
         randomizeCourse.setOnAction((event) -> {
             try {
                 String changedCourse = menuItemView.getSelectionModel().getSelectedItem().toString();
@@ -329,6 +339,8 @@ public class UIJavaFX extends Application {
         Scene mainScene = new Scene(elementPlacement);
         
         //window commands
+        window.setMinHeight(480);
+        window.setMinWidth(640);
         window.setScene(mainScene);
         window.show();
 

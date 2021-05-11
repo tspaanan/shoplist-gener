@@ -104,7 +104,7 @@ public class ShoplistgenerService {
             recInString.append("\n\n");
             recInString.append("Ingredients:\n\n");
             for (Ingredient ing : rec.getIngredients()) {
-                recInString.append(ing.toString() + "\n");
+                recInString.append(ing.toString().replace(";", " ") + "\n");
             }
             return recInString.toString();
         }
@@ -135,7 +135,7 @@ public class ShoplistgenerService {
         recipeInList.add(rec.getInstructions());
         StringBuilder ingsInString = new StringBuilder();
         for (Ingredient ing : rec.getIngredients()) {
-            ingsInString.append(ing.toString());
+            ingsInString.append(ing.toString().replace(";", " "));
             ingsInString.append("\n");
         }
         recipeInList.add(ingsInString.toString());
@@ -196,7 +196,7 @@ public class ShoplistgenerService {
         List<Ingredient> shoppingListSorted = Ingredient.sortIngredients(this.shoppingList);
         StringBuilder shoppingListinString = new StringBuilder();
         for (Ingredient ing : shoppingListSorted) {
-            shoppingListinString.append(ing.toString());
+            shoppingListinString.append(ing.toString().replace(";", " "));
             shoppingListinString.append("\n");
         }
         return shoppingListinString.toString();
