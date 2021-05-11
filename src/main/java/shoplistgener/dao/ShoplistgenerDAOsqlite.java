@@ -243,6 +243,27 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
         return recipeNames;
     }
 
+    public List<Ingredient> fetchAllIngredients() throws Exception {
+        PreparedStatement p = this.db.prepareStatement("SELECT name,unit FROM ingredients");
+        ResultSet r = p.executeQuery();
+        List<Ingredient> allIngredients = new ArrayList<Ingredient>();
+        while (r.next()) {
+            allIngredients.add(new Ingredient(r.getString("name"), Unit.valueOf(r.getString("unit").toUpperCase())));
+        }
+        return allIngredients;
+    }
+
+    public List<Ingredient> fetchKitchenIngredients() throws Exception {
+        PreparedStatement p = this.db.prepareStatement("SELECT I.name,I.unit,IK.quantity FROM ingredients I,"
+                                                    + "ingredientsInKitchen IK WHERE IK.ingredient_id=I.id");
+        ResultSet r = p.executeQuery();
+        List<Ingredient> kitchenIngredients = new ArrayList<Ingredient>();
+        while (r.next()) {
+            kitchenIngredients.add(new Ingredient(r.getString("name"), Unit.valueOf(r.getString("unit").toUpperCase()), Integer.valueOf(r.getString("quantity"))));
+        }
+        return kitchenIngredients;
+    }
+
     private List<Ingredient> fetchIngredients(int id) throws Exception {
         PreparedStatement ings = this.db.prepareStatement("SELECT I.name,I.unit,IR.quantity FROM ingredients I,"
                                                         + "ingredientsInRecipes IR WHERE IR.recipe_id=? AND IR.ingredient_id=I.id");

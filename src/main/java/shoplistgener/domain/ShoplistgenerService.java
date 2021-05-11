@@ -120,6 +120,26 @@ public class ShoplistgenerService {
         return recipeNamesInString.toString();
     }
 
+    public String fetchAllIngredients() throws Exception {
+        List<Ingredient> allIngredients = this.daoHandler.fetchAllIngredients();
+        StringBuilder allIngredientsInString = new StringBuilder("All Ingredients:\n\n");
+        for (Ingredient ing : allIngredients) {
+            allIngredientsInString.append(ing.getName() + " [" + ing.getUnit() + "]");
+            allIngredientsInString.append("\n");
+        }
+        return allIngredientsInString.toString();
+    }
+
+    public String fetchKitchenIngredients() throws Exception {
+        List<Ingredient> kitchenIngredients = this.daoHandler.fetchKitchenIngredients();
+        StringBuilder kitchenIngredientsInString = new StringBuilder("Ingredients in Kitchen:\n\n");
+        for (Ingredient ing : kitchenIngredients) {
+            kitchenIngredientsInString.append(ing.toString().replace(";", " "));
+            kitchenIngredientsInString.append("\n");
+        }
+        return kitchenIngredientsInString.toString();
+    }
+
     /**
      * Returns a single recipe in List of Strings
      * @param name name of the recipe

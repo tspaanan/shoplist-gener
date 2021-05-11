@@ -71,10 +71,11 @@ public class UIJavaFX extends Application {
         Button viewMenu = new Button("View Menu");
         Button viewRecipes = new Button("View recipes");
         Button editRecipe = new Button("Add new recipe");
+        Button viewKitchen = new Button("View ingredients in kitchen");
         VBox viewChoiceButtons = new VBox();
         viewChoiceButtons.setSpacing(10);
         viewChoiceButtons.setPadding(new Insets(10, 10, 10, 10));
-        viewChoiceButtons.getChildren().addAll(viewMenu, viewRecipes, editRecipe);
+        viewChoiceButtons.getChildren().addAll(viewMenu, viewRecipes, editRecipe, viewKitchen);
 
         //menuScene components
         Button weekMenu = new Button("Print Week's Menu and shopping list");
@@ -139,6 +140,20 @@ public class UIJavaFX extends Application {
         editSceneGridPane.add(removeSelectedIngredient, 2, 6);
         editSceneGridPane.setAlignment(Pos.CENTER);
 
+        //kitchenScene components
+        Alert IngredientKitchenInfo = new Alert(AlertType.INFORMATION);
+        ScrollPane listAllIngredients = new ScrollPane();
+        listAllIngredients.setFitToWidth(true);
+        ObservableList<String> allIngredientsInList = FXCollections.observableArrayList();
+        ListView<String> allIngredientsListView = new ListView<String>(allIngredientsInList);
+        ScrollPane listIngredientsInKitchen = new ScrollPane();
+        ObservableList<String> ingredientsInKitchenList = FXCollections.observableArrayList();
+        ListView<String> ingredientsInKitchenListView = new ListView<String>(ingredientsInKitchenList);
+        Button addSelectedIngredientToKitchen = new Button("Add selected ingredient");
+        Button removeSelectedIngredientInKitchen = new Button("Remove selected ingredient");
+        TextField newIngredientQuantityInKitchen = new TextField("New ingredient quantity");
+        Button modifyIngredientQuantityInKitchen = new Button("Update ingredient");
+
         //mainScene parent components
         UIContructChangingView newViews = new UIContructChangingView();
         BorderPane changingView = new BorderPane();
@@ -179,6 +194,32 @@ public class UIJavaFX extends Application {
                 changingView.setCenter(newViews.createEditView("", domainHandler, newRecipeName, newRecipeInstructions, ingredientItems, ingredientItemView,
                                                                 listOfNewIngredients, newIngredientName, newIngredientQuantity, editSceneGridPane,
                                                                 addNewRecipeButton, modifyExistingRecipeButton));
+            } catch (Exception e) {
+                changingView.setCenter(newViews.createErrorView(e.getMessage()));
+            }
+        });
+
+        viewKitchen.setOnAction((event) -> {
+            try {
+                String allIngredientsFetched = domainHandler.fetchAllIngredients();
+                if (allIngredientsFetched.equals("All Ingredients:\n\n")) {
+                    listAllIngredients.setContent(new Text("no ingredients in database"));
+                } else {
+                    for (String singleIngredient : allIngredientsFetched.split("\n")) {
+                        allIngredientsInList.add(singleIngredient);
+                    }
+                    listAllIngredients.setContent(allIngredientsListView);
+                }
+                String kitchenIngredientsFetched = domainHandler.fetchKitchenIngredients();
+                if (kitchenIngredientsFetched.equals("Ingredients in Kitchen:\n\n")) {
+                    listIngredientsInKitchen.setContent(new Text("no ingredients in kitchen"));
+                } else {
+                    for (String singleIngredient : kitchenIngredientsFetched.split("\n")) {
+                        ingredientsInKitchenList.add(singleIngredient);
+                    }
+                    listIngredientsInKitchen.setContent(ingredientsInKitchenListView);
+                }
+                changingView.setCenter(newViews.createKitchenView(listAllIngredients, addSelectedIngredientToKitchen, listIngredientsInKitchen));
             } catch (Exception e) {
                 changingView.setCenter(newViews.createErrorView(e.getMessage()));
             }

@@ -1,7 +1,7 @@
 package shoplistgener.dao;
 
 import java.util.*;
-import shoplistgener.domain.Recipe;
+import shoplistgener.domain.*;
 
 /**
  * DAO interface for accessing and storing data on disk
@@ -16,4 +16,6 @@ public interface ShoplistgenerDAO {
     int fetchRecipeId(String name) throws Exception;
     void modifyRecipe(Recipe modifiedRecipe) throws Exception;
     void insertTestData() throws Exception;
+    List<Ingredient> fetchAllIngredients() throws Exception;
+    List<Ingredient> fetchKitchenIngredients() throws Exception;
 }
