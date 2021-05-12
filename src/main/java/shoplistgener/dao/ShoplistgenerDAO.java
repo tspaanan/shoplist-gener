@@ -20,4 +20,5 @@ public interface ShoplistgenerDAO {
     List<Ingredient> fetchKitchenIngredients() throws Exception;
     void addIngredientToKitchen(String name) throws Exception;
     void removeIngredient(String name) throws Exception;
+    void updateIngredientQuantityInKitchen(String name, Integer quantity) throws Exception;
 }

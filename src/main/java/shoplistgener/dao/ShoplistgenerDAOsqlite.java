@@ -300,6 +300,14 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
         this.db.commit();
     }
 
+    public void updateIngredientQuantityInKitchen(String name, Integer quantity) throws Exception {
+        int id = this.fetchIngredientId(name);
+        PreparedStatement p = this.db.prepareStatement("UPDATE ingredientsInKitchen SET quantity=? WHERE ingredient_id=" + Integer.toString(id));
+        p.setString(1, Integer.toString(quantity));
+        p.executeUpdate();
+        this.db.commit();
+    }
+
     /**
      * Marks recipe as removed from the database
      * @param name name of the recipe to be removed

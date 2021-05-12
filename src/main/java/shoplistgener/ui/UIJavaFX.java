@@ -141,7 +141,6 @@ public class UIJavaFX extends Application {
         editSceneGridPane.setAlignment(Pos.CENTER);
 
         //kitchenScene components
-        Alert IngredientKitchenInfo = new Alert(AlertType.INFORMATION);
         ScrollPane listAllIngredients = new ScrollPane();
         listAllIngredients.setFitToWidth(true);
         ObservableList<String> allIngredientsInList = FXCollections.observableArrayList();
@@ -151,8 +150,11 @@ public class UIJavaFX extends Application {
         ListView<String> ingredientsInKitchenListView = new ListView<String>(ingredientsInKitchenList);
         Button addSelectedIngredientToKitchen = new Button("Add selected ingredient");
         Button removeSelectedIngredientInKitchen = new Button("Remove selected ingredient");
-        TextField newIngredientQuantityInKitchen = new TextField("New ingredient quantity");
-        Button modifyIngredientQuantityInKitchen = new Button("Update ingredient");
+        Button updateIngredientQuantityInKitchen = new Button("Update ingredient quantity");
+        TextInputDialog setIngredientKitchenQuantity = new TextInputDialog("Integer only");
+        setIngredientKitchenQuantity.setTitle("Set New Quantity");
+        setIngredientKitchenQuantity.setHeaderText("Set New Quantity for an Ingredient");
+        setIngredientKitchenQuantity.setContentText("Give an integer: ");
 
         //mainScene parent components
         UIContructChangingView newViews = new UIContructChangingView();
@@ -221,7 +223,7 @@ public class UIJavaFX extends Application {
                     }
                     listIngredientsInKitchen.setContent(ingredientsInKitchenListView);
                 }
-                changingView.setCenter(newViews.createKitchenView(listAllIngredients, addSelectedIngredientToKitchen, listIngredientsInKitchen, removeSelectedIngredientInKitchen));
+                changingView.setCenter(newViews.createKitchenView(listAllIngredients, addSelectedIngredientToKitchen, listIngredientsInKitchen, removeSelectedIngredientInKitchen, updateIngredientQuantityInKitchen));
             } catch (Exception e) {
                 changingView.setCenter(newViews.createErrorView(e.getMessage()));
             }
@@ -402,6 +404,27 @@ public class UIJavaFX extends Application {
                 //}
 
                 domainHandler.removeIngredientFromKitchen(selectedIngredientInKitchenToRemove);
+                viewKitchen.fire();
+            } catch (Exception e) {
+                changingView.setCenter(newViews.createErrorView(e.getMessage()));
+            }
+        });
+
+        updateIngredientQuantityInKitchen.setOnAction((event) -> {
+            String selectedIngredientInKitchenToUpdate = ingredientsInKitchenListView.getSelectionModel().getSelectedItem().toString().split(" ")[0];
+            Integer newQuantityInInteger = 0;
+            while (true) {
+                Optional<String> newQuantity = setIngredientKitchenQuantity.showAndWait();
+                try {
+                    newQuantityInInteger = Integer.parseInt(newQuantity.get());
+                    break;
+                } catch (Exception e) {
+                    setIngredientKitchenQuantity.setContentText("GIVE AN INTEGER! ");
+                    continue;
+                }
+            }
+            try {
+                domainHandler.updateIngredientQuantityInKitchen(selectedIngredientInKitchenToUpdate, newQuantityInInteger);
                 viewKitchen.fire();
             } catch (Exception e) {
                 changingView.setCenter(newViews.createErrorView(e.getMessage()));

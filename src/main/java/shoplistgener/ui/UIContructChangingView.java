@@ -135,9 +135,11 @@ public class UIContructChangingView {
         return this.components;
     }
 
-    public HBox createKitchenView(ScrollPane listAllIngredients, Button addselectedIngredientToKitchen, ScrollPane listIngredientsInKitchen, Button removeSelectedIngredientInKitchen) {
+    public HBox createKitchenView(ScrollPane listAllIngredients, Button addselectedIngredientToKitchen, ScrollPane listIngredientsInKitchen, Button removeSelectedIngredientInKitchen, Button updateSelectedIngredientInKitchen) {
+        VBox ingredientModifications = new VBox();
+        ingredientModifications.getChildren().addAll(removeSelectedIngredientInKitchen, updateSelectedIngredientInKitchen);
         this.components.getChildren().clear();
-        this.components.getChildren().addAll(listAllIngredients, addselectedIngredientToKitchen, listIngredientsInKitchen, removeSelectedIngredientInKitchen);
+        this.components.getChildren().addAll(listAllIngredients, addselectedIngredientToKitchen, listIngredientsInKitchen, ingredientModifications);
         return this.components;
     }
 }

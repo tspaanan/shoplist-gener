@@ -230,6 +230,10 @@ public class ShoplistgenerService {
         this.daoHandler.removeIngredient(name);
     }
 
+    public void updateIngredientQuantityInKitchen(String name, Integer quantity) throws Exception {
+        this.daoHandler.updateIngredientQuantityInKitchen(name, quantity);
+    }
+
     /**
      * Removes recipe, calls for DAO
      * @param name name of the recipe
