@@ -76,4 +76,16 @@ public class IngredientTest {
         List<Ingredient> listThree = Ingredient.sortIngredients(listOne);
         assertTrue(listThree.size() == 1);
     }
+
+    @Test
+    public void subtractIngredientsFunctionsWithEmptyLists() {
+        List<Ingredient> empty1 = new ArrayList<Ingredient>();
+        List<Ingredient> empty2 = new ArrayList<Ingredient>();
+        assertTrue(Ingredient.subtractIngredients(empty1, empty2).size() == 0);
+    }
+
+    @Test
+    public void subtractIngredientsRemovesUnnecessaryIngredients() {
+        assertTrue(Ingredient.subtractIngredients(listTwo, listOne).size() == 1);
+    }
 }

@@ -15,21 +15,21 @@ public class ShoplistgenerDAOFake implements ShoplistgenerDAO {
     private Ingredient one;
     private Ingredient two;
     private Ingredient three;
+    public Recipe oneRecipe;
 
     public ShoplistgenerDAOFake() {
-        ings = new ArrayList<Ingredient>();
-        one = new Ingredient("ing1", Unit.CL, 1);
-        two = new Ingredient("ing2", Unit.CL, 2);
-        three = new Ingredient("ing3", Unit.CL, 3);
-        ings.add(one);
-        ings.add(two);
-        ings.add(three);
+        this.ings = new ArrayList<Ingredient>();
+        this.one = new Ingredient("ing1", Unit.CL, 1);
+        this.two = new Ingredient("ing2", Unit.CL, 2);
+        this.three = new Ingredient("ing3", Unit.CL, 3);
+        this.ings.add(one);
+        this.ings.add(two);
+        this.ings.add(three);
     }
 
     @Override
     public void addRecipe(Recipe recipe) throws Exception {
-        // TODO Auto-generated method stub
-        
+        this.oneRecipe = recipe;
     }
 
     @Override
@@ -77,13 +77,42 @@ public class ShoplistgenerDAOFake implements ShoplistgenerDAO {
 
     @Override
     public void modifyRecipe(Recipe modifiedRecipe) throws Exception {
-        // TODO Auto-generated method stub
+        this.oneRecipe = modifiedRecipe;
         
     }
 
     @Override
     public void insertTestData() throws Exception {
 
+    }
+
+    @Override
+    public List<Ingredient> fetchAllIngredients() throws Exception {
+        return this.ings;
+    }
+
+    @Override
+    public List<Ingredient> fetchKitchenIngredients() throws Exception {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void addIngredientToKitchen(String name) throws Exception {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void removeIngredient(String name) throws Exception {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void updateIngredientQuantityInKitchen(String name, Integer quantity) throws Exception {
+        // TODO Auto-generated method stub
+        
     }
 
 }
