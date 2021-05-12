@@ -225,6 +225,17 @@ public class ShoplistgenerService {
         }
         return shoppingListinString.toString();
     }
+
+    public String subtractKitchenIngredients() throws Exception {
+        List<Ingredient> kitchenIngredients = this.daoHandler.fetchKitchenIngredients();
+        List<Ingredient> subtractedList = Ingredient.subtractIngredients(Ingredient.sortIngredients(this.shoppingList), kitchenIngredients);
+        StringBuilder subtractedListinString = new StringBuilder();
+        for (Ingredient ing : subtractedList) {
+            subtractedListinString.append(ing.toString().replace(";", " "));
+            subtractedListinString.append("\n");
+        }
+        return subtractedListinString.toString();
+    }
     
     public void removeIngredientFromKitchen(String name) throws Exception {
         this.daoHandler.removeIngredient(name);

@@ -110,13 +110,16 @@ public class UIContructChangingView {
      * @return HBox-object representing the changing view on the right
      * @throws Exception
      */
-    public HBox createMenuView(String newCourses, String newShoppingList, Label listMenu, Label listShoppingList, ObservableList<String> menuItems,
+    public HBox createMenuView(String newCourses, String newShoppingList, String newShoppingListModifiedByKitchenIngredients, Label listMenu, Label listShoppingList, Label listShoppingListwithKitchenIngredients, ObservableList<String> menuItems,
                                 HBox menuPlacement) throws Exception {
         listMenu.setText("Menu:\n" + newCourses);
-        listShoppingList.setText("Shopping List:\n" + newShoppingList);
+        listShoppingList.setText("Shopping List from Recipes:\n" + newShoppingList);
+        listShoppingListwithKitchenIngredients.setText("Shopping List without Kitchen Ingredients:\n" + newShoppingListModifiedByKitchenIngredients);
         menuItems.setAll(listMenu.getText().split("\\n"));
+        VBox shoppingListPlacement = new VBox();
+        shoppingListPlacement.getChildren().addAll(listShoppingList, listShoppingListwithKitchenIngredients);
         this.components.getChildren().clear();
-        this.components.getChildren().addAll(menuPlacement, listShoppingList);
+        this.components.getChildren().addAll(menuPlacement, shoppingListPlacement);
         return this.components;
     }
 

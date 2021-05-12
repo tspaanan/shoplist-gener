@@ -130,4 +130,30 @@ public class Ingredient implements Comparable<Ingredient> {
         }
         return combinedIngredients;
     }
+
+    public static List<Ingredient> subtractIngredients(List<Ingredient> original, List<Ingredient> subtract) {
+        //O(n^2) algorithm, no optimization required :)
+        List<Ingredient> removed = new ArrayList<Ingredient>();
+        for (Ingredient ing : subtract) {
+            for (Ingredient orig : original) {
+                if (ing.equals(orig)) {
+                    if (ing.getRequestedQuantity() > orig.getRequestedQuantity()) {
+                        removed.add(orig);
+                    } else {
+                        System.out.println("täällä");
+                        System.out.println(orig.getName() + " : " + ing.getName());
+                        System.out.println(orig.getRequestedQuantity() + " : " + ing.getRequestedQuantity());
+                        int leftoverQuantity = orig.getRequestedQuantity() - ing.getRequestedQuantity();
+                        System.out.println(leftoverQuantity);
+                        orig.setRequestedQuantity(leftoverQuantity);
+                        System.out.println("tulos: " + orig.getRequestedQuantity());
+                    }
+                }
+            }
+        }
+        for (Ingredient ing : removed) {
+            original.remove(ing);
+        }
+        return Ingredient.sortIngredients(original);
+    }
 }

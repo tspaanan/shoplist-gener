@@ -89,6 +89,9 @@ public class UIJavaFX extends Application {
         Button changeCourse = new Button("Replace selected course");
         TextField changeCourseSearchField = new TextField("choose new course by name");
         Label listShoppingList = new Label();
+        Label listShoppingListwithKitchenIngredients = new Label();
+        listShoppingList.setPadding(new Insets(0, 10, 10, 10));
+        listShoppingListwithKitchenIngredients.setPadding(new Insets(10, 10, 10, 10));
         HBox menuPlacement = new HBox();
         VBox menuPlacement2ndColumn = new VBox();
         menuPlacement.getChildren().addAll(weekMenu, menuItemView, menuPlacement2ndColumn);
@@ -167,7 +170,7 @@ public class UIJavaFX extends Application {
         //lambdas for mainScene button presses
         viewMenu.setOnAction((event) -> {
             try {
-                currentMenu = newViews.createMenuView("", "", listMenu, listShoppingList, menuItems, menuPlacement);
+                currentMenu = newViews.createMenuView("", "", "", listMenu, listShoppingList, listShoppingListwithKitchenIngredients, menuItems, menuPlacement);
                 changingView.setCenter(currentMenu);
             } catch (Exception e) {
                 changingView.setCenter(newViews.createErrorView(e.getMessage()));
@@ -234,7 +237,8 @@ public class UIJavaFX extends Application {
             try {
                 String newCourses = domainHandler.fetchCourses();
                 String newShoppingList = domainHandler.fetchShoppingList();
-                currentMenu = newViews.createMenuView(newCourses, newShoppingList, listMenu, listShoppingList, menuItems, menuPlacement);
+                String newShoppingListModifiedByKitchenIngredients = domainHandler.subtractKitchenIngredients();
+                currentMenu = newViews.createMenuView(newCourses, newShoppingList, newShoppingListModifiedByKitchenIngredients, listMenu, listShoppingList, listShoppingListwithKitchenIngredients, menuItems, menuPlacement);
                 changingView.setCenter(currentMenu);
             } catch (Exception e) {
                 changingView.setCenter(newViews.createErrorView(e.getMessage()));
@@ -246,7 +250,8 @@ public class UIJavaFX extends Application {
                 String changedCourse = menuItemView.getSelectionModel().getSelectedItem().toString();
                 String newCourses = this.domainHandler.changeCourse(true, changedCourse, "");
                 String newShoppingList = domainHandler.fetchShoppingList();
-                currentMenu = newViews.createMenuView(newCourses, newShoppingList, listMenu, listShoppingList, menuItems, menuPlacement);
+                String newShoppingListModifiedByKitchenIngredients = domainHandler.subtractKitchenIngredients();
+                currentMenu = newViews.createMenuView(newCourses, newShoppingList, newShoppingListModifiedByKitchenIngredients, listMenu, listShoppingList, listShoppingListwithKitchenIngredients, menuItems, menuPlacement);
                 changingView.setCenter(currentMenu);
             } catch (Exception e) {
                 changingView.setCenter(newViews.createErrorView(e.getMessage()));
@@ -259,7 +264,8 @@ public class UIJavaFX extends Application {
                 String newCourseName = changeCourseSearchField.getText();
                 String newCourses = this.domainHandler.changeCourse(false, changedCourse, newCourseName);
                 String newShoppingList = domainHandler.fetchShoppingList();
-                currentMenu = newViews.createMenuView(newCourses, newShoppingList, listMenu, listShoppingList, menuItems, menuPlacement);
+                String newShoppingListModifiedByKitchenIngredients = domainHandler.subtractKitchenIngredients();
+                currentMenu = newViews.createMenuView(newCourses, newShoppingList, newShoppingListModifiedByKitchenIngredients, listMenu, listShoppingList, listShoppingListwithKitchenIngredients, menuItems, menuPlacement);
                 changingView.setCenter(currentMenu);
             } catch (Exception e) {
                 changingView.setCenter(newViews.createErrorView(e.getMessage()));
