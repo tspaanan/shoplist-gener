@@ -3,9 +3,7 @@ package shoplistgener.dao;
 import java.util.ArrayList;
 import java.util.List;
 
-import shoplistgener.domain.Ingredient;
-import shoplistgener.domain.Recipe;
-import shoplistgener.domain.Unit;
+import shoplistgener.domain.*;
 
 /**
  * Implementation of ShoplistgenerDAO interface for unit tests
@@ -28,13 +26,35 @@ public class ShoplistgenerDAOFake implements ShoplistgenerDAO {
     }
 
     @Override
+    public void addIngredientToKitchen(String name) throws Exception {
+    }
+
+    /**
+     * Places a Recipe-object in public variable for testing
+     * @param recipe Recipe-object
+     * @throws Exception
+     */
+    @Override
     public void addRecipe(Recipe recipe) throws Exception {
         this.oneRecipe = recipe;
     }
 
+    /**
+     * Returns a list of Ingredients for testing
+     * @throws Exception
+     */
+    @Override
+    public List<Ingredient> fetchAllIngredients() throws Exception {
+        return this.ings;
+    }
+
     @Override
     public List<String> fetchAllRecipes() throws Exception {
-        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public List<Ingredient> fetchKitchenIngredients() throws Exception {
         return null;
     }
 
@@ -49,6 +69,15 @@ public class ShoplistgenerDAOFake implements ShoplistgenerDAO {
     }
 
     /**
+     * Return a Recipe-object for testing
+     * @throws Exception
+     */
+    @Override
+    public Recipe fetchRandomRecipe() throws Exception {
+        return new Recipe("random1", "instructions1", ings);
+    }
+
+    /**
      * Returns a Recipe-object for testing
      * @param name not used
      * @throws Exception
@@ -59,22 +88,19 @@ public class ShoplistgenerDAOFake implements ShoplistgenerDAO {
     }
 
     @Override
-    public void removeRecipe(String name) throws Exception {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public Recipe fetchRandomRecipe() throws Exception {
-        return new Recipe("random1", "instructions1", ings);
-    }
-
-    @Override
     public int fetchRecipeId(String name) throws Exception {
-        // TODO Auto-generated method stub
         return 0;
     }
 
+    @Override
+    public void insertTestData() throws Exception {
+    }
+
+    /**
+     * Places a Recipe-object in public variable for testing
+     * @param modifiedRecipe Recipe-object
+     * @throws Exception
+     */
     @Override
     public void modifyRecipe(Recipe modifiedRecipe) throws Exception {
         this.oneRecipe = modifiedRecipe;
@@ -82,37 +108,15 @@ public class ShoplistgenerDAOFake implements ShoplistgenerDAO {
     }
 
     @Override
-    public void insertTestData() throws Exception {
-
-    }
-
-    @Override
-    public List<Ingredient> fetchAllIngredients() throws Exception {
-        return this.ings;
-    }
-
-    @Override
-    public List<Ingredient> fetchKitchenIngredients() throws Exception {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void addIngredientToKitchen(String name) throws Exception {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
     public void removeIngredient(String name) throws Exception {
-        // TODO Auto-generated method stub
-        
+    }
+
+    @Override
+    public void removeRecipe(String name) throws Exception {
     }
 
     @Override
     public void updateIngredientQuantityInKitchen(String name, Integer quantity) throws Exception {
-        // TODO Auto-generated method stub
-        
     }
 
 }

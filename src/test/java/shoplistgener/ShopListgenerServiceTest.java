@@ -34,7 +34,7 @@ public class ShopListgenerServiceTest {
         recipeParts.add(rec.getName());
         recipeParts.add(rec.getInstructions());
         List<String> ingParts = new ArrayList<String>();
-        ingParts.add("ing1;1;cl");
+        ingParts.add("ing1 1 cl");
         object.addRecipe(recipeParts, ingParts);
         assertEquals("fakeRecipe1", fakeDAO.oneRecipe.getName());
         assertEquals("fakeRecipe1Instructions", fakeDAO.oneRecipe.getInstructions());
@@ -47,7 +47,7 @@ public class ShopListgenerServiceTest {
         recipeParts.add(rec.getName());
         recipeParts.add(rec.getInstructions());
         List<String> ingParts = new ArrayList<String>();
-        ingParts.add("ing1;1;cl");
+        ingParts.add("ing1 1 cl");
         object.modifyRecipe(recipeParts, ingParts);
         assertEquals("fakeRecipe1", fakeDAO.oneRecipe.getName());
         assertEquals("fakeRecipe1Instructions", fakeDAO.oneRecipe.getInstructions());

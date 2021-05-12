@@ -34,9 +34,12 @@ public class ShoplistgenerService {
      * @throws Exception
      */
     public void addRecipe(List<String> recipeParts, List<String> ingredientParts) throws Exception {
+        if (recipeParts.get(0).isEmpty()) {
+            throw new Exception("Recipe has to have a name!");
+        }
         List<Ingredient> ingredients = new ArrayList<Ingredient>();
         for (String singleIngPart : ingredientParts) {
-            String[] ingParts = singleIngPart.split(";");
+            String[] ingParts = singleIngPart.split(" ");
             ingredients.add(new Ingredient(ingParts[0], Unit.valueOf(ingParts[2].toUpperCase()), Integer.valueOf(ingParts[1])));
         }
         Recipe newRecipe = new Recipe(recipeParts.get(0), recipeParts.get(1), ingredients);
@@ -79,9 +82,11 @@ public class ShoplistgenerService {
      * @throws Exception
      */
     public void modifyRecipe(List<String> recipeParts, List<String> ingredientParts) throws Exception {
+        System.out.println(recipeParts);
+        System.out.println(ingredientParts);
         List<Ingredient> ingredients = new ArrayList<Ingredient>();
         for (String singleInPart : ingredientParts) {
-            String[] ingParts = singleInPart.split(";");
+            String[] ingParts = singleInPart.split(" ");
             ingredients.add(new Ingredient(ingParts[0], Unit.valueOf(ingParts[2].toUpperCase()), Integer.valueOf(ingParts[1])));
         }
         Recipe modifiedRecipe = new Recipe(recipeParts.get(0), recipeParts.get(1), ingredients);

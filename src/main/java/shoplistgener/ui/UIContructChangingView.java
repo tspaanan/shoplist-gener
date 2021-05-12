@@ -57,7 +57,9 @@ public class UIContructChangingView {
         if (!name.equals("")) {
             this.populateEditView(name, domainHandler, recipeName, recipeInstructions, ingredientItems, listOfIngredients, editSceneGridPane,
                                     addNewRecipeButton, modifyExistingRecipeButton);
+            recipeName.setDisable(true);
         } else {
+            recipeName.setDisable(false);
             editSceneGridPane.getChildren().removeAll(addNewRecipeButton, modifyExistingRecipeButton);
             editSceneGridPane.add(addNewRecipeButton, 3, 3);
         }
@@ -80,7 +82,7 @@ public class UIContructChangingView {
             }
             String toWhitespace = ing.replace(";", " ");
             ingredientItems.add(toWhitespace);
-            listOfIngredients.add(ing);
+            listOfIngredients.add(toWhitespace);
         }
         editSceneGridPane.getChildren().removeAll(addNewRecipeButton, modifyExistingRecipeButton);
         editSceneGridPane.add(modifyExistingRecipeButton, 3, 3);

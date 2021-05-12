@@ -369,8 +369,8 @@ public class UIJavaFX extends Application {
 
         addNewIngredient.setOnAction((event) -> {
             try {
-                ingredientItems.add(newIngredientName.getText() + ";" + newIngredientQuantity.getText() + ";" + listUnit.getSelectionModel().getSelectedItem().toString().toLowerCase());
-                listOfNewIngredients.add(newIngredientName.getText() + ";" + newIngredientQuantity.getText() + ";" + listUnit.getSelectionModel().getSelectedItem().toString().toLowerCase());
+                ingredientItems.add(newIngredientName.getText() + " " + newIngredientQuantity.getText() + " " + listUnit.getSelectionModel().getSelectedItem().toString().toLowerCase());
+                listOfNewIngredients.add(newIngredientName.getText() + " " + newIngredientQuantity.getText() + " " + listUnit.getSelectionModel().getSelectedItem().toString().toLowerCase());
             } catch (Exception e) {
                 changingView.setCenter(newViews.createErrorView(e.getMessage()));
             }
