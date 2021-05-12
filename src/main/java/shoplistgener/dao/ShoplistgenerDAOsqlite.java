@@ -200,8 +200,8 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
      * @throws Exception
      */
     public Recipe fetchRecipe(String name) throws Exception {
-        PreparedStatement p = this.db.prepareStatement("SELECT id,name,instructions FROM recipes WHERE name=? AND visible=TRUE");
-        p.setString(1, name);
+        PreparedStatement p = this.db.prepareStatement("SELECT id,name,instructions FROM recipes WHERE name LIKE ? AND visible=TRUE LIMIT 1");
+        p.setString(1, "%" + name + "%");
         ResultSet r = p.executeQuery();
         List<Ingredient> ingsInList = this.fetchIngredients(r.getInt("id"));
         return new Recipe(r.getString("name"), r.getString("instructions"), ingsInList);

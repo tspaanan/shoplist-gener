@@ -87,7 +87,7 @@ public class UIJavaFX extends Application {
         Alert quickViewRecipe = new Alert(AlertType.INFORMATION);
         Button randomizeCourse = new Button("Randomize selected course");
         Button changeCourse = new Button("Replace selected course");
-        TextField changeCourseSearchField = new TextField("choose new course (exact name for now)");
+        TextField changeCourseSearchField = new TextField("choose new course by name");
         Label listShoppingList = new Label();
         HBox menuPlacement = new HBox();
         VBox menuPlacement2ndColumn = new VBox();
@@ -102,7 +102,7 @@ public class UIJavaFX extends Application {
         Label showRecipe = new Label();
         Button modifyRecipe = new Button("Modify this recipe");
         Button searchRecipeSelection = new Button("View selected recipe");
-        TextField searchText = new TextField("...use exact name (for now)");
+        TextField searchText = new TextField("search by name");
         Button searchRecipeName = new Button("Search recipe by name");
         Button removeRecipe = new Button("Remove this recipe");
         Button addRecipeFromRecipeScene = new Button("Add new recipe");
