@@ -35,22 +35,6 @@ public class Ingredient implements Comparable<Ingredient> {
         this.setRequestedQuantity(quantity);
     }
 
-    public String getName() {
-        return this.name;
-    }
-
-    public Unit getUnit() {
-        return this.unit;
-    }
-
-    public Integer getRequestedQuantity() {
-        return this.requestedQuantity;
-    }
-
-    public void setRequestedQuantity(Integer quantity) {
-        this.requestedQuantity = quantity;
-    }
-
     /**
      * Combines two Ingredient-objects into a single Ingredient-object
      * @param first the first Ingredient-object to be merged
@@ -62,6 +46,11 @@ public class Ingredient implements Comparable<Ingredient> {
         return new Ingredient(first.name, first.unit, first.requestedQuantity + second.requestedQuantity);
     }
 
+    @Override
+    public int compareTo(Ingredient other) {
+        return this.name.compareTo(other.name);
+    }
+    
     @Override
     public boolean equals(Object other) {
         if (this == other) {
@@ -77,21 +66,27 @@ public class Ingredient implements Comparable<Ingredient> {
         return false;
     }
 
+    public String getName() {
+        return this.name;
+    }
+
+    public Unit getUnit() {
+        return this.unit;
+    }
+
+    public Integer getRequestedQuantity() {
+        return this.requestedQuantity;
+    }
+
     @Override
     public int hashCode() {
         return this.name.hashCode();
     }
 
-    @Override
-    public String toString() {
-        return this.name + ";" + String.valueOf(this.requestedQuantity) + ";" + this.unit.toString().toLowerCase();
+    public void setRequestedQuantity(Integer quantity) {
+        this.requestedQuantity = quantity;
     }
 
-    @Override
-    public int compareTo(Ingredient other) {
-        return this.name.compareTo(other.name);
-    }
-    
     /**
      * Returns an alphabetically sorted list of ingredients, in which duplicates have been combined
      * @param ingredients List of Ingredient-objects
@@ -102,9 +97,7 @@ public class Ingredient implements Comparable<Ingredient> {
         if (ingredients.size() <= 1) {
             return ingredients;
         }
-        //TODO: change this stream into one-line sorted()
         List<Ingredient> ingredientsSorted = ingredients.stream()
-                                                //.distinct() not useful here
                                                 .sorted()
                                                 .collect(Collectors.toCollection(ArrayList::new));
         List<Ingredient> combinedIngredients = new ArrayList<Ingredient>();
@@ -113,7 +106,6 @@ public class Ingredient implements Comparable<Ingredient> {
             if (ingredientsSorted.get(i).equals(ingredientsSorted.get(i - 1))) {
                 if (ingredientsSorted.get(i).equals(previous)) {
                     combinedIngredients.get(combinedIngredients.size() - 1).setRequestedQuantity(ingredientsSorted.get(i).getRequestedQuantity() + combinedIngredients.get(combinedIngredients.size() - 1).getRequestedQuantity());
-                    //TODO: fix the above line so that it can be understood by non-machines
                     continue;
                 }
                 combinedIngredients.add(Ingredient.combineIngredients(ingredientsSorted.get(i), ingredientsSorted.get(i - 1)));
@@ -131,6 +123,12 @@ public class Ingredient implements Comparable<Ingredient> {
         return combinedIngredients;
     }
 
+    /**
+     * Subtract the contents of the second parameter from the contents of the first parameter
+     * @param original list of Ingredient-objects
+     * @param subtract list of Ingredients-objects
+     * @return subtracted list of Ingredient-objects
+     */
     public static List<Ingredient> subtractIngredients(List<Ingredient> original, List<Ingredient> subtract) {
         //O(n^2) algorithm, no optimization required :)
         List<Ingredient> removed = new ArrayList<Ingredient>();
@@ -150,5 +148,10 @@ public class Ingredient implements Comparable<Ingredient> {
             original.remove(ing);
         }
         return Ingredient.sortIngredients(original);
+    }
+    
+    @Override
+    public String toString() {
+        return this.name + ";" + String.valueOf(this.requestedQuantity) + ";" + this.unit.toString().toLowerCase();
     }
 }

@@ -23,28 +23,28 @@ public class Recipe {
         this.ingredients = ingredients;
     }
 
-    public String getName() {
-        return this.name;
-    }
-    
-    public String getInstructions() {
-        return this.instructions;
-    }
-
     public List<Ingredient> getIngredients() {
         return this.ingredients;
     }
 
-    public void setName(String changedName) {
-        this.name = changedName;
+    public String getInstructions() {
+        return this.instructions;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+    
+    public void setIngredients(List<Ingredient> changedIngredients) {
+        this.ingredients = changedIngredients;
     }
 
     public void setInstructions(String changedInstructions) {
         this.instructions = changedInstructions;
     }
 
-    public void setIngredients(List<Ingredient> changedIngredients) {
-        this.ingredients = changedIngredients;
+    public void setName(String changedName) {
+        this.name = changedName;
     }
 
     @Override

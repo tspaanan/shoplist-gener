@@ -22,7 +22,15 @@ public class ShoplistgenerService {
         this.shoppingList = new ArrayList<Ingredient>();
     }
 
+    /**
+     * Adds new ingredient to the kitchen
+     * @param name name of the ingredient
+     * @throws Exception
+     */
     public void addIngredientToKitchen(String name) throws Exception {
+        if (name.equals("")) {
+            throw new Exception("Ingredient has to have a name!");
+        }
         this.daoHandler.addIngredientToKitchen(name);
     }
 
@@ -37,15 +45,24 @@ public class ShoplistgenerService {
         if (recipeParts.get(0).isEmpty()) {
             throw new Exception("Recipe has to have a name!");
         }
-        List<Ingredient> ingredients = new ArrayList<Ingredient>();
-        for (String singleIngPart : ingredientParts) {
-            String[] ingParts = singleIngPart.split(" ");
-            ingredients.add(new Ingredient(ingParts[0], Unit.valueOf(ingParts[2].toUpperCase()), Integer.valueOf(ingParts[1])));
-        }
-        Recipe newRecipe = new Recipe(recipeParts.get(0), recipeParts.get(1), ingredients);
+        Recipe newRecipe = this.encapsulateRecipe(recipeParts, ingredientParts);
         this.daoHandler.addRecipe(newRecipe);
     }
 
+    private String buildMenuIntoString() {
+        this.shoppingList.clear(); //shoppingList is always built anew following changes in recipeList
+        StringBuilder menuInString = new StringBuilder();
+        for (Recipe rec : this.recipeList) {
+            menuInString.append(rec.getName());
+            menuInString.append("\n");
+            List<Ingredient> ingredients = rec.getIngredients();
+            for (Ingredient ing : ingredients) {
+                this.shoppingList.add(ing);
+            }
+        }
+        return menuInString.toString();
+    }
+    
     /**
      * Replaces a single recipe in a previously fetched Menu (of recipes)
      * @param randomized boolean whether to pick new recipe randomly or not
@@ -72,25 +89,73 @@ public class ShoplistgenerService {
         }
         return this.buildMenuIntoString();
     }
-    
-    //TODO: refactor with addRecipe above
-    /**
-     * Encapsulates modified recipe into a Recipe-object and calls for DAO
-     * @param recipeParts name and instructions of modified recipe
-     * @param ingredientParts List of Ingredient-objects for modified recipe
-     * @see dao.ShoplistgenerDAO#modifyRecipe(Recipe)
-     * @throws Exception
-     */
-    public void modifyRecipe(List<String> recipeParts, List<String> ingredientParts) throws Exception {
-        System.out.println(recipeParts);
-        System.out.println(ingredientParts);
+
+    private Recipe encapsulateRecipe(List<String> recipeParts, List<String> ingredientParts) throws Exception {
         List<Ingredient> ingredients = new ArrayList<Ingredient>();
-        for (String singleInPart : ingredientParts) {
-            String[] ingParts = singleInPart.split(" ");
+        for (String singleIngPart : ingredientParts) {
+            String[] ingParts = singleIngPart.split(" ");
+            try {
+                Integer.valueOf(ingParts[1]);
+            } catch (Exception e) {
+                throw new Exception("All ingredient quantities have to be numbers!");
+            }
+            if (ingParts[0].isEmpty()) {
+                throw new Exception("All ingredients have to have a name!");
+            }
             ingredients.add(new Ingredient(ingParts[0], Unit.valueOf(ingParts[2].toUpperCase()), Integer.valueOf(ingParts[1])));
         }
-        Recipe modifiedRecipe = new Recipe(recipeParts.get(0), recipeParts.get(1), ingredients);
-        this.daoHandler.modifyRecipe(modifiedRecipe);
+        return new Recipe(recipeParts.get(0), recipeParts.get(1), ingredients);
+    }
+
+    /**
+     * Return all ingredients in the database
+     * @return ingredients in a String separated by '\n'
+     * @throws Exception
+     */
+    public String fetchAllIngredients() throws Exception {
+        List<Ingredient> allIngredients = this.daoHandler.fetchAllIngredients();
+        StringBuilder allIngredientsInString = new StringBuilder("All Ingredients:\n\n");
+        for (Ingredient ing : allIngredients) {
+            allIngredientsInString.append(ing.getName() + " [" + ing.getUnit() + "]");
+            allIngredientsInString.append("\n");
+        }
+        return allIngredientsInString.toString();
+    }
+
+    private String fetchAllRecipes() throws Exception {
+        List<String> recipeNames = this.daoHandler.fetchAllRecipes();
+        StringBuilder recipeNamesInString = new StringBuilder("All Recipes:\n\n");
+        for (String recName : recipeNames) {
+            recipeNamesInString.append(recName);
+            recipeNamesInString.append("\n");
+        }
+        return recipeNamesInString.toString();
+    }
+
+    /**
+     * Returns Menu for the week (7 days)
+     * @see dao.ShoplistgenerDAO#fetchMenu(int)
+     * @return Menu in String-object
+     * @throws Exception
+     */
+    public String fetchCourses() throws Exception {
+        this.recipeList = this.daoHandler.fetchMenu(7);
+        return this.buildMenuIntoString();
+    }
+
+    /**
+     * Returns all ingredients in the kitchen
+     * @return ingredients in a String separated by '\n'
+     * @throws Exception
+     */
+    public String fetchKitchenIngredients() throws Exception {
+        List<Ingredient> kitchenIngredients = this.daoHandler.fetchKitchenIngredients();
+        StringBuilder kitchenIngredientsInString = new StringBuilder("Ingredients in Kitchen:\n\n");
+        for (Ingredient ing : kitchenIngredients) {
+            kitchenIngredientsInString.append(ing.toString().replace(";", " "));
+            kitchenIngredientsInString.append("\n");
+        }
+        return kitchenIngredientsInString.toString();
     }
 
     /**
@@ -119,34 +184,15 @@ public class ShoplistgenerService {
         }
     }
 
-    private String fetchAllRecipes() throws Exception {
-        List<String> recipeNames = this.daoHandler.fetchAllRecipes();
-        StringBuilder recipeNamesInString = new StringBuilder("All Recipes:\n\n");
-        for (String recName : recipeNames) {
-            recipeNamesInString.append(recName);
-            recipeNamesInString.append("\n");
-        }
-        return recipeNamesInString.toString();
-    }
-
-    public String fetchAllIngredients() throws Exception {
-        List<Ingredient> allIngredients = this.daoHandler.fetchAllIngredients();
-        StringBuilder allIngredientsInString = new StringBuilder("All Ingredients:\n\n");
-        for (Ingredient ing : allIngredients) {
-            allIngredientsInString.append(ing.getName() + " [" + ing.getUnit() + "]");
-            allIngredientsInString.append("\n");
-        }
-        return allIngredientsInString.toString();
-    }
-
-    public String fetchKitchenIngredients() throws Exception {
-        List<Ingredient> kitchenIngredients = this.daoHandler.fetchKitchenIngredients();
-        StringBuilder kitchenIngredientsInString = new StringBuilder("Ingredients in Kitchen:\n\n");
-        for (Ingredient ing : kitchenIngredients) {
-            kitchenIngredientsInString.append(ing.toString().replace(";", " "));
-            kitchenIngredientsInString.append("\n");
-        }
-        return kitchenIngredientsInString.toString();
+    /**
+     * Returns id of recipe
+     * @param name name of the recipe
+     * @see dao.ShoplistgenerDAO#fetchRecipeId(String)
+     * @return index number
+     * @throws Exception
+     */
+    public int fetchRecipeId(String name) throws Exception {
+        return this.daoHandler.fetchRecipeId(name);
     }
 
     /**
@@ -172,49 +218,6 @@ public class ShoplistgenerService {
     }
 
     /**
-     * Returns id of recipe
-     * @param name name of the recipe
-     * @see dao.ShoplistgenerDAO#fetchRecipeId(String)
-     * @return index number
-     * @throws Exception
-     */
-    public int fetchRecipeId(String name) throws Exception {
-        return this.daoHandler.fetchRecipeId(name);
-    }
-
-    //TODO: depracated!
-    public Recipe fetchRecipeObject(String name) throws Exception {
-        return this.daoHandler.fetchRecipe(name);
-    }
-    
-    /**
-     * Returns Menu for the week (7 days)
-     * @see dao.ShoplistgenerDAO#fetchMenu(int)
-     * @return Menu in String-object
-     * @throws Exception
-     */
-    public String fetchCourses() throws Exception {
-        this.recipeList = this.daoHandler.fetchMenu(7);
-        return this.buildMenuIntoString();
-    }
-
-    private String buildMenuIntoString() {
-        this.shoppingList.clear(); //shoppingList is always built anew following changes in recipeList
-        StringBuilder menuInString = new StringBuilder();
-        for (Recipe rec : this.recipeList) {
-            menuInString.append(rec.getName());
-            menuInString.append("\n");
-            //recipe instructions are not included at this point
-            //recToString.add(rec.getInstructions());
-            List<Ingredient> ingredients = rec.getIngredients(); //TODO: move this ingredients-related functionality somewhere else, maybe?
-            for (Ingredient ing : ingredients) {
-                this.shoppingList.add(ing);
-            }
-        }
-        return menuInString.toString();
-    }
-    
-    /**
      * Returns shopping list generated from previously fetched Menu
      * @return shopping list in String-object
      */
@@ -231,23 +234,25 @@ public class ShoplistgenerService {
         return shoppingListinString.toString();
     }
 
-    public String subtractKitchenIngredients() throws Exception {
-        List<Ingredient> kitchenIngredients = this.daoHandler.fetchKitchenIngredients();
-        List<Ingredient> subtractedList = Ingredient.subtractIngredients(Ingredient.sortIngredients(this.shoppingList), kitchenIngredients);
-        StringBuilder subtractedListinString = new StringBuilder();
-        for (Ingredient ing : subtractedList) {
-            subtractedListinString.append(ing.toString().replace(";", " "));
-            subtractedListinString.append("\n");
-        }
-        return subtractedListinString.toString();
-    }
-    
-    public void removeIngredientFromKitchen(String name) throws Exception {
-        this.daoHandler.removeIngredient(name);
+    /**
+     * Encapsulates modified recipe into a Recipe-object and calls for DAO
+     * @param recipeParts name and instructions of modified recipe
+     * @param ingredientParts List of Ingredient-objects for modified recipe
+     * @see dao.ShoplistgenerDAO#modifyRecipe(Recipe)
+     * @throws Exception
+     */
+    public void modifyRecipe(List<String> recipeParts, List<String> ingredientParts) throws Exception {
+        Recipe modifiedRecipe = this.encapsulateRecipe(recipeParts, ingredientParts);
+        this.daoHandler.modifyRecipe(modifiedRecipe);
     }
 
-    public void updateIngredientQuantityInKitchen(String name, Integer quantity) throws Exception {
-        this.daoHandler.updateIngredientQuantityInKitchen(name, quantity);
+    /**
+     * Removes ingredient for the kitchen
+     * @param name name of the ingredient to be removed
+     * @throws Exception
+     */
+    public void removeIngredientFromKitchen(String name) throws Exception {
+        this.daoHandler.removeIngredient(name);
     }
 
     /**
@@ -266,5 +271,30 @@ public class ShoplistgenerService {
 
     public void setShoppingList(List<Ingredient> newList) {
         this.shoppingList = newList;
+    }
+    /**
+     * Removes ingredients already in the kitchen from the shopping list
+     * @return ingredients sans those already in the kitchen as a String-object
+     * @throws Exception
+     */
+    public String subtractKitchenIngredients() throws Exception {
+        List<Ingredient> kitchenIngredients = this.daoHandler.fetchKitchenIngredients();
+        List<Ingredient> subtractedList = Ingredient.subtractIngredients(Ingredient.sortIngredients(this.shoppingList), kitchenIngredients);
+        StringBuilder subtractedListinString = new StringBuilder();
+        for (Ingredient ing : subtractedList) {
+            subtractedListinString.append(ing.toString().replace(";", " "));
+            subtractedListinString.append("\n");
+        }
+        return subtractedListinString.toString();
+    }
+    
+    /**
+     * Updates the quantity of an ingredient in the kitchen
+     * @param name name of the ingredient to be updated
+     * @param quantity new quantity
+     * @throws Exception
+     */
+    public void updateIngredientQuantityInKitchen(String name, Integer quantity) throws Exception {
+        this.daoHandler.updateIngredientQuantityInKitchen(name, quantity);
     }
 }
