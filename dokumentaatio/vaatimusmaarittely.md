@@ -2,34 +2,33 @@
 
 ## Sovelluksen tarkoitus
 
-Sovellus luo siihen tallennettujen reseptien pohjalta satunnaisen ruokalistan koko viikoksi. Tämän jälkeen sovellus luo kauppalistan niistä ainesosista, joita kuivakaapista tai jääkaapista ei löydy. Sovelluksen satunnaisuutta on mahdollista räätälöidä, ja sen voi pyytää hakemaan internetistä yhden uuden yllätysreseptin, jolla viikon ruokalistaa monipuolistetaan.
+Sovellus luo siihen tallennettujen reseptien pohjalta satunnaisen ruokalistan koko viikoksi. Tämän jälkeen sovellus luo kauppalistan niistä ainesosista, joita keittiöstä ei jo löydy.
 
 ## Käyttäjät
 
-Sovelluksella on vain yksi käyttäjärooli. _Normaali käyttäjä_ voi muokata kaikkia sovelluksen osia monipuolisten asetusvaihtoehtojen avulla.
+Sovelluksella on vain yksi käyttäjärooli. _Normaali käyttäjä_ voi valita tallennukseen käytettävän tietokantatiedoston nimen.
 
 ## Toiminnallisuus
 
 - käyttäjä voi napin painalluksella luoda valmiin ruokalistan koko viikoksi, ja siihen kuuluvan kauppalistan
-	- ruokalista ja kauppalista on myös muotoiltu tulostusvalmiiksi, tai ne voidaan lähettää pikaviestimellä kännykkään
-	- käyttäjä voi myös arpoa tai valita halutuille päiville uudet ruokalajit
+	- kauppalista tarjoillaan kahtena versiona: reseptien perusteella muodostettu kauppalista, ja reseptien ja keittiöstä jo löytyvien ainesosien pohjalta muodostettu kauppalista
+	- käyttäjä voi myös arpoa tai valita halutuille päiville uudet ruokalajit: kauppalista päivittyvät automaattisesti
+	- ruokalista arpoo seitsemän ruokalajia, koska logiikka on seuraava: edellisen päivän päivällisen tähteet on tarkoitus syödä seuraavan päivän lounaaksi :)
 
-- käyttäjä voi tarkastella ruokalistaan kuuluvien ruokalajien reseptejä **[Tehty: viikko 6]** *[tarkennus: lisätty uusi pikanäkymä resepteihin edellisen koko ruudun näkymän lisäksi]*
+- käyttäjä voi tarkastella ruokalistaan kuuluvien ruokalajien reseptejä
 
-- käyttäjä voi lisätä tai poistaa reseptejä tietokannasta, tai etsiä hakukriteerien mukaisia reseptejä (esimerkiksi antamalla kourallinen ainesosia löydetään reseptejä, joihin nämä ainesosat voidaan käyttää)
+- käyttäjä voi lisätä tai poistaa reseptejä tietokannasta, tai etsiä reseptejä nimellä
 
 - käyttäjä voi muokata tietokannassa olevia reseptejä
 
-- käyttäjä voi lisätä resepteihin tageja, joita voidaan käyttää resepteihin liittyvissä hauissa sekä ruokalistan luomisprosessin muokkaamisessa
-
-- käyttäjä voi päivittää sovelluksen tuntemia kuivakaapin ja jääkaapin sisältöjä
-
-- käyttäjä voi muokata sovelluksen satunnaisuutta esimerkiksi rajaamalla tiettyjä reseptejä vain tietyille päiville (esimerkiksi tagilla 'pubiruoka' merkityt reseptit vain perjantain päivälliselle tai keittoja aina maanantain lounaalle) tai rajaamalla saman ruokalajin esiintymistä esimerkiksi vain yhteen kertaan kolmen viikon välein, tai rajaamalla esimerkiksi kalaruokien määrää vain kahteen kertaan viikossa
-
-- käyttäjä voi hakea esimerkiksi plainoldrecipe-sivustolta yhden satunnaisen uuden reseptin, joka lisätään sovelluksen resepteihin ja seuraavan viikon ruokalistaan
+- käyttäjä voi päivittää keittiöstä jo valmiiksi löytyvien ainesosien yksikkömääriä tai poistaa niitä
 
 ## Jatkokehitysideoita
 
+- kauppalistat on mahdollista tulostaa automaattisesti tai lähettää esim. Telegramilla kännykkään
+
 - käyttäjä voi hakea uusia reseptejä internetistä ja lisätä niitä sovelluksen käyttämään tietokantaan
+
+- ruokalistan luomista voi konfiguroida tarkemmin
 
 - sovellus ymmärtäisi esimerkiksi sen, että jos ruokalajiin vaaditaan vain puoli purkillista ranskankermaa, täytyy seuraavana päivänä olla ruokalistassa sellainen ruokalaji, johon sen toisen puolikkaan voi käyttää

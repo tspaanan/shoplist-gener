@@ -140,13 +140,8 @@ public class Ingredient implements Comparable<Ingredient> {
                     if (ing.getRequestedQuantity() > orig.getRequestedQuantity()) {
                         removed.add(orig);
                     } else {
-                        System.out.println("täällä");
-                        System.out.println(orig.getName() + " : " + ing.getName());
-                        System.out.println(orig.getRequestedQuantity() + " : " + ing.getRequestedQuantity());
                         int leftoverQuantity = orig.getRequestedQuantity() - ing.getRequestedQuantity();
-                        System.out.println(leftoverQuantity);
                         orig.setRequestedQuantity(leftoverQuantity);
-                        System.out.println("tulos: " + orig.getRequestedQuantity());
                     }
                 }
             }

@@ -1,6 +1,8 @@
 # SHOPLIST-GENER
 
-Sovelluksella voi luoda siihen tallennettujen reseptien pohjalta satunnaisen ruokalistan koko viikoksi. Tämän jälkeen sovellus luo kauppalistan ruokalajien ainesosista. Sovelluksen tuntemia reseptejä voi muokata tai poistaa, ja uusia reseptejä voi lisätä.
+Helsingin yliopiston tietojenkäsittelytieteen laitoksen keväällä 2021 järjestämän kurssin 'Ohjelmistotekniikka' harjoitustyö.
+
+Sovelluksella voi luoda siihen tallennettujen reseptien pohjalta satunnaisen ruokalistan koko viikoksi. Tämän jälkeen sovellus luo kauppalistan ruokalajien ainesosista. Sovelluksen tuntemia reseptejä voi muokata tai poistaa, ja uusia reseptejä voi lisätä. Keittiöstä jo löytyvät ainesosat vaikuttavat kauppalistan sisältöön.
 
 ## Dokumentaatio
 
@@ -15,7 +17,10 @@ Sovelluksella voi luoda siihen tallennettujen reseptien pohjalta satunnaisen ruo
 ## Releaset
 
 [viikko5](https://github.com/tspaanan/shoplist-gener/releases/tag/viikko5)
+
 [viikko6](https://github.com/tspaanan/shoplist-gener/releases/tag/viikko6)
+
+[Lopullinen palautus](https://github.com/tspaanan/shoplist-gener/releases/tag/lopullinenpalautus)
 
 ## Ohjelman suoritus
 

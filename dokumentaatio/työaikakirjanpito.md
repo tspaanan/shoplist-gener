@@ -15,10 +15,13 @@ Pvm   | Tunnit	| Aihe | Näkyvät uudet ominaisuudet
 27.4 | 3 | harjoitustyön koodaamista | reseptien muokkaaminen
 27.4 | 3 | refaktorointia ja koodin siistimistä Koodikatselmusta varten
 3.5  | 2 | harjoitustyön koodaamista | uusi dialogi-ikkuna reseptien nopeaa tarkastelua varten
-3.5  | 7 | refaktorointia
-4.5  | 3 | dokumentaation kirjoittamista
+3.5  | 7 | refaktorointia |
+4.5  | 3 | dokumentaation kirjoittamista |
 4.5  | 2 | harjoitustyön koodaamista | konfiguraatiotiedoston käyttö jar-paketin ajon yhteydessä toimii
-4.5  | 2 | yksikkötestien kirjoittamista
+4.5  | 2 | yksikkötestien kirjoittamista |
+10.5 | 3 | harjoitustyön koodaamista |
+11.5 | 4 | harjoitustyön koodaamista | keittiön kaapeissa sijaitsevien ainesosien tarkastelu
+12.5 | 3 | harjoitustyön koodaamista | ainesosien lisääminen, muokkaaminen ja poistaminen keittiössä; vaihtoehtoinen kauppalista, jossa huomioitu keittiöstä jo löytyvät ainesosat
 
 **Tunnit yhteensä:**
 ```
