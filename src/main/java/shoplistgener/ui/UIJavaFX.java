@@ -201,6 +201,7 @@ public class UIJavaFX extends Application {
 
         viewKitchen.setOnAction((event) -> {
             try {
+                allIngredientsListView.getItems().clear();
                 String allIngredientsFetched = domainHandler.fetchAllIngredients();
                 if (allIngredientsFetched.equals("All Ingredients:\n\n")) {
                     listAllIngredients.setContent(new Text("no ingredients in database"));
@@ -210,6 +211,7 @@ public class UIJavaFX extends Application {
                     }
                     listAllIngredients.setContent(allIngredientsListView);
                 }
+                ingredientsInKitchenListView.getItems().clear();
                 String kitchenIngredientsFetched = domainHandler.fetchKitchenIngredients();
                 if (kitchenIngredientsFetched.equals("Ingredients in Kitchen:\n\n")) {
                     listIngredientsInKitchen.setContent(new Text("no ingredients in kitchen"));
@@ -219,7 +221,7 @@ public class UIJavaFX extends Application {
                     }
                     listIngredientsInKitchen.setContent(ingredientsInKitchenListView);
                 }
-                changingView.setCenter(newViews.createKitchenView(listAllIngredients, addSelectedIngredientToKitchen, listIngredientsInKitchen));
+                changingView.setCenter(newViews.createKitchenView(listAllIngredients, addSelectedIngredientToKitchen, listIngredientsInKitchen, removeSelectedIngredientInKitchen));
             } catch (Exception e) {
                 changingView.setCenter(newViews.createErrorView(e.getMessage()));
             }
@@ -375,13 +377,43 @@ public class UIJavaFX extends Application {
                 changingView.setCenter(newViews.createErrorView(e.getMessage()));
             }
         });
+
+        //lambdas for kitchenScene button presses
+        addSelectedIngredientToKitchen.setOnAction((event) -> {
+            try {
+                String selectedIngredientInKitchen = allIngredientsListView.getSelectionModel().getSelectedItem().toString().split("\\[")[0].trim();
+                domainHandler.addIngredientToKitchen(selectedIngredientInKitchen);
+                viewKitchen.fire();
+            } catch (Exception e) {
+                changingView.setCenter(newViews.createErrorView(e.getMessage()));
+            }
+        });
+
+        removeSelectedIngredientInKitchen.setOnAction((event) -> {
+            try {
+                String selectedIngredientInKitchenToRemove = ingredientsInKitchenListView.getSelectionModel().getSelectedItem().toString().split(" ")[0];
+                //working against deadline: quick hack
+                //String removedName = "";
+                //for (int i = 0; i < selectedIngredientInKitchenToRemove.length(); i++) {
+                    //if (Character.isDigit(selectedIngredientInKitchenToRemove.charAt(i))) {
+                        //removedName = selectedIngredientInKitchenToRemove.split(Character.toString(selectedIngredientInKitchenToRemove.charAt(i)))[0];
+                        //break;
+                    //}
+                //}
+
+                domainHandler.removeIngredientFromKitchen(selectedIngredientInKitchenToRemove);
+                viewKitchen.fire();
+            } catch (Exception e) {
+                changingView.setCenter(newViews.createErrorView(e.getMessage()));
+            }
+        });
         
         //scene objects
         Scene mainScene = new Scene(elementPlacement);
         
         //window commands
-        window.setMinHeight(480);
-        window.setMinWidth(640);
+        window.setMinHeight(600);
+        window.setMinWidth(800);
         window.setScene(mainScene);
         window.show();
 

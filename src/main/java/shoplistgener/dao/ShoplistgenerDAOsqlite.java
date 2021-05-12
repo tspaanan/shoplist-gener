@@ -38,6 +38,14 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
         }
     }
 
+    public void addIngredientToKitchen(String name) throws Exception {
+        int id = this.fetchIngredientId(name);
+        String insert = "INSERT INTO ingredientsInKitchen (ingredient_id,quantity) VALUES (" + String.valueOf(id) + ",0)";
+        Statement s = this.db.createStatement();
+        s.executeUpdate(insert);
+        this.db.commit();
+    }
+
     /**
      * Writes new recipe to the database
      * @param newRecipe Recipe-object
@@ -253,6 +261,13 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
         return allIngredients;
     }
 
+    private int fetchIngredientId(String name) throws Exception {
+        PreparedStatement p = this.db.prepareStatement("SELECT id FROM ingredients WHERE name=?");
+        p.setString(1, name);
+        ResultSet r = p.executeQuery();
+        return r.getInt("id");
+    }
+
     public List<Ingredient> fetchKitchenIngredients() throws Exception {
         PreparedStatement p = this.db.prepareStatement("SELECT I.name,I.unit,IK.quantity FROM ingredients I,"
                                                     + "ingredientsInKitchen IK WHERE IK.ingredient_id=I.id");
@@ -275,6 +290,14 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
             ingsInList.add(ingObject);
         }
         return ingsInList;
+    }
+
+    public void removeIngredient(String name) throws Exception {
+        int id = this.fetchIngredientId(name);
+        String insert = "DELETE FROM ingredientsInKitchen WHERE ingredient_id=" + Integer.toString(id);
+        Statement s = this.db.createStatement();
+        s.executeUpdate(insert);
+        this.db.commit();
     }
 
     /**

@@ -18,4 +18,6 @@ public interface ShoplistgenerDAO {
     void insertTestData() throws Exception;
     List<Ingredient> fetchAllIngredients() throws Exception;
     List<Ingredient> fetchKitchenIngredients() throws Exception;
+    void addIngredientToKitchen(String name) throws Exception;
+    void removeIngredient(String name) throws Exception;
 }

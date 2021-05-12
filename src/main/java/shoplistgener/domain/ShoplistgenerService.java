@@ -22,6 +22,10 @@ public class ShoplistgenerService {
         this.shoppingList = new ArrayList<Ingredient>();
     }
 
+    public void addIngredientToKitchen(String name) throws Exception {
+        this.daoHandler.addIngredientToKitchen(name);
+    }
+
     /**
      * Encapsulates new recipe into a Recipe-object and calls for DAO
      * @param recipeParts name and instructions for the recipe
@@ -222,6 +226,10 @@ public class ShoplistgenerService {
         return shoppingListinString.toString();
     }
     
+    public void removeIngredientFromKitchen(String name) throws Exception {
+        this.daoHandler.removeIngredient(name);
+    }
+
     /**
      * Removes recipe, calls for DAO
      * @param name name of the recipe
