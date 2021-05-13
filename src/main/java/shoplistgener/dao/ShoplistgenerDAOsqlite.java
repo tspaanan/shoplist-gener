@@ -176,7 +176,7 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
             }
             p.setString(1, String.valueOf(randRecipeNo));
             ResultSet r = p.executeQuery();
-            if (r.getString("visible").equals("0")) {
+            if (!r.getBoolean("visible")) {
                 i--;
                 continue; //if randomly selected removed recipe, simply make another random selection instead
             }

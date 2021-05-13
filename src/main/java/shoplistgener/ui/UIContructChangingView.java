@@ -63,9 +63,7 @@ public class UIContructChangingView {
             editSceneGridPane.getChildren().removeAll(addNewRecipeButton, modifyExistingRecipeButton);
             editSceneGridPane.add(addNewRecipeButton, 3, 3);
         }
-        ingredientName.clear();
-        ingredientQuantity.clear();
-        this.components.getChildren().clear();
+        ingredientName.clear(); ingredientQuantity.clear(); this.components.getChildren().clear();
         this.components.getChildren().addAll(editSceneGridPane);
         return this.components;
     }
@@ -140,7 +138,17 @@ public class UIContructChangingView {
         return this.components;
     }
 
-    public HBox createKitchenView(ScrollPane listAllIngredients, Button addselectedIngredientToKitchen, ScrollPane listIngredientsInKitchen, Button removeSelectedIngredientInKitchen, Button updateSelectedIngredientInKitchen) {
+    /**
+     * Creates the view for manipulating ingredients in the kitchen
+     * @param listAllIngredients list of all ingredients in the database
+     * @param addselectedIngredientToKitchen JavaFX component for adding selected ingredient to the kitchen
+     * @param listIngredientsInKitchen list of ingredients in the kitchen
+     * @param removeSelectedIngredientInKitchen JavaFX component for removing ingredient from the kitchen
+     * @param updateSelectedIngredientInKitchen JavaFX component for updating the quantity of an ingredient in the kitchen
+     * @return HBox-object representing the changing view on the right
+     */
+    public HBox createKitchenView(ScrollPane listAllIngredients, Button addselectedIngredientToKitchen, ScrollPane listIngredientsInKitchen,
+                                    Button removeSelectedIngredientInKitchen, Button updateSelectedIngredientInKitchen) {
         VBox ingredientModifications = new VBox();
         ingredientModifications.getChildren().addAll(removeSelectedIngredientInKitchen, updateSelectedIngredientInKitchen);
         this.components.getChildren().clear();

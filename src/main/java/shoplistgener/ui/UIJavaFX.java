@@ -226,7 +226,8 @@ public class UIJavaFX extends Application {
                     }
                     listIngredientsInKitchen.setContent(ingredientsInKitchenListView);
                 }
-                changingView.setCenter(newViews.createKitchenView(listAllIngredients, addSelectedIngredientToKitchen, listIngredientsInKitchen, removeSelectedIngredientInKitchen, updateIngredientQuantityInKitchen));
+                changingView.setCenter(newViews.createKitchenView(listAllIngredients, addSelectedIngredientToKitchen, listIngredientsInKitchen,
+                                        removeSelectedIngredientInKitchen, updateIngredientQuantityInKitchen));
             } catch (Exception e) {
                 changingView.setCenter(newViews.createErrorView(e.getMessage()));
             }
@@ -236,9 +237,7 @@ public class UIJavaFX extends Application {
         weekMenu.setOnAction((event) -> {
             try {
                 String newCourses = domainHandler.fetchCourses();
-                String newShoppingList = domainHandler.fetchShoppingList();
-                String newShoppingListModifiedByKitchenIngredients = domainHandler.subtractKitchenIngredients();
-                currentMenu = newViews.createMenuView(newCourses, newShoppingList, newShoppingListModifiedByKitchenIngredients, listMenu, listShoppingList, listShoppingListwithKitchenIngredients, menuItems, menuPlacement);
+                HBox currentMenu = initializeMenuView(newViews, newCourses, listMenu, listShoppingList, listShoppingListwithKitchenIngredients, menuItems, menuPlacement);
                 changingView.setCenter(currentMenu);
             } catch (Exception e) {
                 changingView.setCenter(newViews.createErrorView(e.getMessage()));
@@ -249,9 +248,7 @@ public class UIJavaFX extends Application {
             try {
                 String changedCourse = menuItemView.getSelectionModel().getSelectedItem().toString();
                 String newCourses = this.domainHandler.changeCourse(true, changedCourse, "");
-                String newShoppingList = domainHandler.fetchShoppingList();
-                String newShoppingListModifiedByKitchenIngredients = domainHandler.subtractKitchenIngredients();
-                currentMenu = newViews.createMenuView(newCourses, newShoppingList, newShoppingListModifiedByKitchenIngredients, listMenu, listShoppingList, listShoppingListwithKitchenIngredients, menuItems, menuPlacement);
+                HBox currentMenu = initializeMenuView(newViews, newCourses, listMenu, listShoppingList, listShoppingListwithKitchenIngredients, menuItems, menuPlacement);
                 changingView.setCenter(currentMenu);
             } catch (Exception e) {
                 changingView.setCenter(newViews.createErrorView(e.getMessage()));
@@ -263,9 +260,7 @@ public class UIJavaFX extends Application {
                 String changedCourse = menuItemView.getSelectionModel().getSelectedItem().toString();
                 String newCourseName = changeCourseSearchField.getText();
                 String newCourses = this.domainHandler.changeCourse(false, changedCourse, newCourseName);
-                String newShoppingList = domainHandler.fetchShoppingList();
-                String newShoppingListModifiedByKitchenIngredients = domainHandler.subtractKitchenIngredients();
-                currentMenu = newViews.createMenuView(newCourses, newShoppingList, newShoppingListModifiedByKitchenIngredients, listMenu, listShoppingList, listShoppingListwithKitchenIngredients, menuItems, menuPlacement);
+                HBox currentMenu = initializeMenuView(newViews, newCourses, listMenu, listShoppingList, listShoppingListwithKitchenIngredients, menuItems, menuPlacement);
                 changingView.setCenter(currentMenu);
             } catch (Exception e) {
                 changingView.setCenter(newViews.createErrorView(e.getMessage()));
@@ -335,11 +330,7 @@ public class UIJavaFX extends Application {
         //lambdas for editScene button presses
         addNewRecipeButton.setOnAction((event) -> {
             try {
-                List<String> newRecipeParts = new ArrayList<String>();
-                newRecipeParts.add(newRecipeName.getText());
-                newRecipeParts.add(newRecipeInstructions.getText());
-                domainHandler.addRecipe(newRecipeParts, listOfNewIngredients);
-                showRecipe.setText(newRecipeName.getText() + "\n\n");
+                makeRecipeChanges(newRecipeName, newRecipeInstructions, listOfNewIngredients, showRecipe, true);
                 recipeModInfo.setTitle("Success!");
                 recipeModInfo.setHeaderText("New recipe added!");
                 recipeModInfo.setContentText("You have successfully added a new recipe!");
@@ -352,11 +343,7 @@ public class UIJavaFX extends Application {
 
         modifyExistingRecipeButton.setOnAction((event) -> {
             try {
-                List<String> newRecipeParts = new ArrayList<String>();
-                newRecipeParts.add(newRecipeName.getText());
-                newRecipeParts.add(newRecipeInstructions.getText());
-                domainHandler.modifyRecipe(newRecipeParts, listOfNewIngredients);
-                showRecipe.setText(newRecipeName.getText() + "\n\n");
+                makeRecipeChanges(newRecipeName, newRecipeInstructions, listOfNewIngredients, showRecipe, false);
                 recipeModInfo.setTitle("Success!");
                 recipeModInfo.setHeaderText("Recipe modification successful!");
                 recipeModInfo.setContentText("You have successfully modified an existing recipe!");
@@ -369,8 +356,10 @@ public class UIJavaFX extends Application {
 
         addNewIngredient.setOnAction((event) -> {
             try {
-                ingredientItems.add(newIngredientName.getText().replace(" ", "_") + " " + newIngredientQuantity.getText() + " " + listUnit.getSelectionModel().getSelectedItem().toString().toLowerCase());
-                listOfNewIngredients.add(newIngredientName.getText().replace(" ", "_") + " " + newIngredientQuantity.getText() + " " + listUnit.getSelectionModel().getSelectedItem().toString().toLowerCase());
+                ingredientItems.add(newIngredientName.getText().replace(" ", "_") + " " + newIngredientQuantity.getText() + " "
+                                    + listUnit.getSelectionModel().getSelectedItem().toString().toLowerCase());
+                listOfNewIngredients.add(newIngredientName.getText().replace(" ", "_") + " " + newIngredientQuantity.getText() + " "
+                                        + listUnit.getSelectionModel().getSelectedItem().toString().toLowerCase());
             } catch (Exception e) {
                 changingView.setCenter(newViews.createErrorView(e.getMessage()));
             }
@@ -400,15 +389,6 @@ public class UIJavaFX extends Application {
         removeSelectedIngredientInKitchen.setOnAction((event) -> {
             try {
                 String selectedIngredientInKitchenToRemove = ingredientsInKitchenListView.getSelectionModel().getSelectedItem().toString().split(" ")[0];
-                //working against deadline: quick hack
-                //String removedName = "";
-                //for (int i = 0; i < selectedIngredientInKitchenToRemove.length(); i++) {
-                    //if (Character.isDigit(selectedIngredientInKitchenToRemove.charAt(i))) {
-                        //removedName = selectedIngredientInKitchenToRemove.split(Character.toString(selectedIngredientInKitchenToRemove.charAt(i)))[0];
-                        //break;
-                    //}
-                //}
-
                 domainHandler.removeIngredientFromKitchen(selectedIngredientInKitchenToRemove);
                 viewKitchen.fire();
             } catch (Exception e) {
@@ -460,8 +440,6 @@ public class UIJavaFX extends Application {
         chooseDatabasePopulationDialog.getButtonTypes().setAll(testDataBT, emptyBT);
         
         //ensure that a valid database exists before the program can be used
-        //TODO: decide whether the lines below belong to domain or here
-        //TODO: think hard about the logic of the OR operators below! though it seems to be working as intended
         while (!new File(databaseName).isFile() || databaseName.isEmpty() || ShoplistgenerDAOsqlite.databaseIsEmpty) {
             Optional<String> newDatabaseName = setDatabaseNameDialog.showAndWait();
             if (newDatabaseName.isPresent()) {
@@ -485,9 +463,26 @@ public class UIJavaFX extends Application {
         }
     }
 
-    @Override
-    public void stop() throws Exception {
-        //TODO: check that database is fine for closing
+    private HBox initializeMenuView(UIContructChangingView newViews, String newCourses, Label listMenu, Label listShoppingList, Label listShoppingListwithKitchenIngredients,
+                                    ObservableList<String> menuItems, HBox menuPlacement) throws Exception {
+        String newShoppingList = domainHandler.fetchShoppingList();
+        String newShoppingListModifiedByKitchenIngredients = domainHandler.subtractKitchenIngredients();
+        currentMenu = newViews.createMenuView(newCourses, newShoppingList, newShoppingListModifiedByKitchenIngredients, listMenu, listShoppingList,
+                                                listShoppingListwithKitchenIngredients, menuItems, menuPlacement);
+        return currentMenu;
+    }
+
+    private void makeRecipeChanges(TextField newRecipeName, TextField newRecipeInstructions, List<String> listOfNewIngredients, Label showRecipe,
+                                    boolean useAddRecipe) throws Exception {
+        List<String> newRecipeParts = new ArrayList<String>();
+        newRecipeParts.add(newRecipeName.getText());
+        newRecipeParts.add(newRecipeInstructions.getText());
+        if (useAddRecipe) {
+            domainHandler.addRecipe(newRecipeParts, listOfNewIngredients);
+        } else {
+            domainHandler.modifyRecipe(newRecipeParts, listOfNewIngredients);
+        }
+        showRecipe.setText(newRecipeName.getText() + "\n\n");
     }
 
     public static void main(String[] args) {
