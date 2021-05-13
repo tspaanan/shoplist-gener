@@ -12,7 +12,7 @@ Pakkauksessa *shoplistgener.ui* sijaitsee kaikki käyttöliittymään liittyvä 
 
 Sovelluksen käyttöliittymä tarjoaa neljä näkymää:
 
-* ruokalistan ja kauppalista generoimiseen tarkoitettu näkymä
+* ruokalistan ja kauppalistan generoimiseen tarkoitettu näkymä
 * tietokannassa olevien reseptien tarkasteluun tarkoitettu näkymä
 * uusien reseptien luomiseen tai tietokannassa olevien reseptien muokkaamiseen tarkoitettu näkymä
 * keittiöstä jo valmiina löytyvien ainesosien hallintaan tarkoitettu näkymä
@@ -52,7 +52,7 @@ Lisäksi Ingredient-luokka käsittelee ainesosia mm. seuraavien staattisten meto
 
 * Ingredient combineIngredients(Ingredient first, Ingredient second)
 * List\<Ingredient> sortIngredients(List\<Ingredient> ingredients)
-* List\<Ingredient> subtractIngredients(List\<Ingredient> original, List\<Ingredient> subtract
+* List\<Ingredient> subtractIngredients(List\<Ingredient> original, List\<Ingredient> subtract)
 
 ## Pysyväistallennus levylle
 
@@ -85,4 +85,4 @@ Toisena sovelluslogiikkaa pyydetään poistamaan ostoslistalta kaikki ne ainesos
 
 Viimeisenä käyttöliittymä kutsuu UIContructChangingView-oliota asettamaan tiedot ruokalistan ja kauppalista generoimiseen tarkoitettuun näkymään.
 
-Kaikki ohjelman toiminnallisuus seuraa tätä mallia: käyttöliittymä kutsuu sovelluslogiikka toteuttamaan käyttäjän antaman ohjeistuksen, sovelluslogiikka kutsuu DAO-oliota tarvittavien tietojen lukemiseen ja muuttuneiden tietojen tallentamiseen levylle, ja lopuksi purkaa palautetulosteen sellaiseen muotoon, jonka käyttöliittymä voi esittää takaisin käyttäjälle.
+Kaikki ohjelman toiminnallisuus seuraa tätä mallia: käyttöliittymä kutsuu sovelluslogiikkaa toteuttamaan käyttäjän antaman ohjeistuksen, sovelluslogiikka kutsuu DAO-oliota tarvittavien tietojen lukemiseen ja muuttuneiden tietojen tallentamiseen levylle, ja lopuksi purkaa palautetulosteen sellaiseen muotoon, jonka käyttöliittymä voi esittää takaisin käyttäjälle.

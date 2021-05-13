@@ -33,9 +33,9 @@ jar-paketin generointi:
 ```
 mvn package
 ```
-jar-paketin ajaminen:
+syntyneen jar-paketin ajaminen:
 ```
-java -jar target/shoplistgener-2.0-SNAPSHOT.jar
+java -jar target/shoplistgener-3.0-SNAPSHOT.jar
 ```
 
 ## Ohjelman testaaminen

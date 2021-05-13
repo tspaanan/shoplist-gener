@@ -22,8 +22,9 @@ Pvm   | Tunnit	| Aihe | Näkyvät uudet ominaisuudet
 10.5 | 3 | harjoitustyön koodaamista |
 11.5 | 4 | harjoitustyön koodaamista | keittiön kaapeissa sijaitsevien ainesosien tarkastelu
 12.5 | 3 | harjoitustyön koodaamista | ainesosien lisääminen, muokkaaminen ja poistaminen keittiössä; vaihtoehtoinen kauppalista, jossa huomioitu keittiöstä jo löytyvät ainesosat
+12.5 | 5 | dokumentaation ja testien kirjoittamista |
 
 **Tunnit yhteensä:**
 ```
-70
+85
 ```
