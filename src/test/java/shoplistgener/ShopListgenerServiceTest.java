@@ -76,7 +76,6 @@ public class ShopListgenerServiceTest {
     @Test
     public void fetchCoursesReturnsString() throws Exception {
         assertTrue(object.fetchCourses() instanceof String);
-        //TODO: more useful tests
     }
 
     @Test
@@ -115,5 +114,11 @@ public class ShopListgenerServiceTest {
         object.setShoppingList(ingList);
         String sortedShoppingList = object.fetchShoppingList();
         assertEquals("abcIng 12 cl", sortedShoppingList.split("\n")[0]);
+    }
+
+    @Test
+    public void fetchKitchenIngredientsTransformsLastIngredientIntoString() throws Exception {
+        String fetchedIngredients = object.fetchKitchenIngredients();
+        assertEquals("ing3 3 cl", fetchedIngredients.split("\n")[4]);
     }
 }

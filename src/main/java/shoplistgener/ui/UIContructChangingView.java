@@ -63,7 +63,9 @@ public class UIContructChangingView {
             editSceneGridPane.getChildren().removeAll(addNewRecipeButton, modifyExistingRecipeButton);
             editSceneGridPane.add(addNewRecipeButton, 3, 3);
         }
-        ingredientName.clear(); ingredientQuantity.clear(); this.components.getChildren().clear();
+        ingredientName.clear();
+        ingredientQuantity.clear();
+        this.components.getChildren().clear();
         this.components.getChildren().addAll(editSceneGridPane);
         return this.components;
     }

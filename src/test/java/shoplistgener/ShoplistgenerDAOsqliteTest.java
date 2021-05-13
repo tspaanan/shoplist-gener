@@ -79,6 +79,62 @@ public class ShoplistgenerDAOsqliteTest {
         assertEquals(modifiedOneFetchedFromDatabase.getIngredients().get(1).getName(), ingTwo.getName());
     }
 
+    @Test
+    public void fetchMenuReturnsSixRecipes() throws Exception {
+        List<Recipe> fetchedMenu = object.fetchMenu(6);
+        assertTrue(fetchedMenu.size() == 6);
+    }
+
+    @Test
+    public void fetchMenuReturnsZeroRecipes() throws Exception {
+        List<Recipe> fetchedMenu = object.fetchMenu(0);
+        assertTrue(fetchedMenu.size() == 0);
+    }
+
+    @Test
+    public void fetchKitchenIngredientsReturnsAllInitialKitchenIngredients() throws Exception {
+        List<Ingredient> fetchedIngredients = object.fetchKitchenIngredients();
+        assertTrue(fetchedIngredients.size() == 20);
+    }
+
+    @Test
+    public void fetchKitchenIngredientsReturnsAllModifiedKitchenIngredients() {
+        try {
+            String insert = "INSERT INTO ingredientsInKitchen (ingredient_id,quantity) VALUES (1,1)";
+            Statement t = this.db.createStatement();
+            t.execute(insert);
+            this.db.commit();
+            List<Ingredient> fetchedIngredients = object.fetchKitchenIngredients();
+            assertTrue(fetchedIngredients.size() == 21);
+        } catch (Exception e) {
+        }
+    }
+
+    @Test
+    public void fetchAllIngredientsReturnsAllIngredients() throws Exception {
+        List<Ingredient> fetchedIngredients = object.fetchAllIngredients();
+        assertTrue(fetchedIngredients.size() == 50);
+    }
+
+    @Test
+    public void fetchAllIngredientsReturnsAllModifiedKitchenIngredients() {
+        try {
+            String insert = "INSERT INTO ingredients (name,unit) VALUES ('extraName','cl')";
+            Statement t = this.db.createStatement();
+            t.execute(insert);
+            this.db.commit();
+            List<Ingredient> fetchedIngredients = object.fetchAllIngredients();
+            assertTrue(fetchedIngredients.size() == 51);
+        } catch (Exception e) {
+        }
+    }
+
+    @Test
+    public void fetchAllRecipesReturnsHundrethRecipeAsHundreth() throws Exception {
+        List<String> fetchedRecipes = object.fetchAllRecipes();
+        assertEquals("recipe#100", fetchedRecipes.get(99));
+    }
+    
     @After
     public void cleanUp() {
         File toBeDeleted = new File("unittestDatabase.db");

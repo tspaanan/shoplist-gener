@@ -53,9 +53,12 @@ public class ShoplistgenerDAOFake implements ShoplistgenerDAO {
         return null;
     }
 
+    /**
+     * Returns a list of ingredients for testing
+     */
     @Override
     public List<Ingredient> fetchKitchenIngredients() throws Exception {
-        return null;
+        return this.ings;
     }
 
     /**
