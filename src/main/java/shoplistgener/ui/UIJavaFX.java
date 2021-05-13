@@ -99,7 +99,7 @@ public class UIJavaFX extends Application {
 
         //recipeScene components
         ScrollPane listRecipes = new ScrollPane();
-        listRecipes.setFitToWidth(true); //does nothing?
+        listRecipes.setFitToWidth(true);
         ObservableList<String> allRecipesInList = FXCollections.observableArrayList();
         ListView<String> allRecipesListView = new ListView<String>(allRecipesInList);
         Label showRecipe = new Label();
@@ -179,6 +179,7 @@ public class UIJavaFX extends Application {
 
         viewRecipes.setOnAction((event) -> {
             try {
+                allRecipesInList.clear();
                 String allRecipesFetched = domainHandler.fetchRecipe("");
                 if (allRecipesFetched.equals("All Recipes:\n\n")) {
                     listRecipes.setContent(new Text("no recipes in database"));
@@ -247,9 +248,11 @@ public class UIJavaFX extends Application {
         randomizeCourse.setOnAction((event) -> {
             try {
                 String changedCourse = menuItemView.getSelectionModel().getSelectedItem().toString();
-                String newCourses = this.domainHandler.changeCourse(true, changedCourse, "");
-                HBox currentMenu = initializeMenuView(newViews, newCourses, listMenu, listShoppingList, listShoppingListwithKitchenIngredients, menuItems, menuPlacement);
-                changingView.setCenter(currentMenu);
+                if (!changedCourse.equals("Menu:")) {
+                    String newCourses = this.domainHandler.changeCourse(true, changedCourse, "");
+                    HBox currentMenu = initializeMenuView(newViews, newCourses, listMenu, listShoppingList, listShoppingListwithKitchenIngredients, menuItems, menuPlacement);
+                    changingView.setCenter(currentMenu);
+                }
             } catch (NullPointerException n) {
                 changingView.setCenter(newViews.createErrorView("Remember to select an item from the list!"));
             } catch (Exception e) {
@@ -260,10 +263,12 @@ public class UIJavaFX extends Application {
         changeCourse.setOnAction((event) -> {
             try {
                 String changedCourse = menuItemView.getSelectionModel().getSelectedItem().toString();
-                String newCourseName = changeCourseSearchField.getText();
-                String newCourses = this.domainHandler.changeCourse(false, changedCourse, newCourseName);
-                HBox currentMenu = initializeMenuView(newViews, newCourses, listMenu, listShoppingList, listShoppingListwithKitchenIngredients, menuItems, menuPlacement);
-                changingView.setCenter(currentMenu);
+                if (!changedCourse.equals("Menu:")) {
+                    String newCourseName = changeCourseSearchField.getText();
+                    String newCourses = this.domainHandler.changeCourse(false, changedCourse, newCourseName);
+                    HBox currentMenu = initializeMenuView(newViews, newCourses, listMenu, listShoppingList, listShoppingListwithKitchenIngredients, menuItems, menuPlacement);
+                    changingView.setCenter(currentMenu);
+                }
             } catch (NullPointerException n) {
                 changingView.setCenter(newViews.createErrorView("Remember to select an item from the list!"));
             } catch (Exception e) {
