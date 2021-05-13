@@ -250,6 +250,8 @@ public class UIJavaFX extends Application {
                 String newCourses = this.domainHandler.changeCourse(true, changedCourse, "");
                 HBox currentMenu = initializeMenuView(newViews, newCourses, listMenu, listShoppingList, listShoppingListwithKitchenIngredients, menuItems, menuPlacement);
                 changingView.setCenter(currentMenu);
+            } catch (NullPointerException n) {
+                changingView.setCenter(newViews.createErrorView("Remember to select an item from the list!"));
             } catch (Exception e) {
                 changingView.setCenter(newViews.createErrorView(e.getMessage()));
             }
@@ -262,6 +264,8 @@ public class UIJavaFX extends Application {
                 String newCourses = this.domainHandler.changeCourse(false, changedCourse, newCourseName);
                 HBox currentMenu = initializeMenuView(newViews, newCourses, listMenu, listShoppingList, listShoppingListwithKitchenIngredients, menuItems, menuPlacement);
                 changingView.setCenter(currentMenu);
+            } catch (NullPointerException n) {
+                changingView.setCenter(newViews.createErrorView("Remember to select an item from the list!"));
             } catch (Exception e) {
                 changingView.setCenter(newViews.createErrorView(e.getMessage()));
             }
@@ -275,6 +279,8 @@ public class UIJavaFX extends Application {
             quickViewRecipe.setContentText(recipeInList.get(1));
             quickViewRecipe.setHeaderText(recipeInList.get(2));
             quickViewRecipe.showAndWait();
+            } catch (NullPointerException n) {
+                changingView.setCenter(newViews.createErrorView("Remember to select an item from the list!"));
             } catch (Exception e) {
                 changingView.setCenter(newViews.createErrorView(e.getMessage()));
             }
@@ -286,6 +292,8 @@ public class UIJavaFX extends Application {
                 String selectedRecipe = allRecipesListView.getSelectionModel().getSelectedItem().toString();
                 List<String> recipeInList = domainHandler.fetchRecipeList(selectedRecipe);
                 showRecipe.setText(String.join("\n\n", recipeInList));
+            } catch (NullPointerException n) {
+                changingView.setCenter(newViews.createErrorView("Remember to select an item from the list!"));
             } catch (Exception e) {
                 changingView.setCenter(newViews.createErrorView(e.getMessage()));
             }
@@ -304,9 +312,13 @@ public class UIJavaFX extends Application {
         removeRecipe.setOnAction((event) -> {
             try {
                 String removedRecipe = showRecipe.getText().split("\n\n")[0];
-                domainHandler.removeRecipe(removedRecipe);
-                allRecipesInList.remove(removedRecipe);
-                showRecipe.setText("\n\nrecipe was removed");
+                if (!removedRecipe.isEmpty()) {
+                    if (!removedRecipe.equals("could not find any matching recipes")) {
+                        domainHandler.removeRecipe(removedRecipe);
+                        allRecipesInList.remove(removedRecipe);
+                        showRecipe.setText("\n\nrecipe was removed");
+                    }
+                }
             } catch (Exception e) {
                 changingView.setCenter(newViews.createErrorView(e.getMessage()));
             }
@@ -315,9 +327,13 @@ public class UIJavaFX extends Application {
         modifyRecipe.setOnAction((event) -> {
             try {
                 String modifiableRecipe = showRecipe.getText().split("\n\n")[0];
-                changingView.setCenter(newViews.createEditView(modifiableRecipe, domainHandler, newRecipeName, newRecipeInstructions, ingredientItems, ingredientItemView,
+                if (!modifiableRecipe.isEmpty()) {
+                    if (!modifiableRecipe.equals("could not find any matching recipes")) {
+                        changingView.setCenter(newViews.createEditView(modifiableRecipe, domainHandler, newRecipeName, newRecipeInstructions, ingredientItems, ingredientItemView,
                                                                 listOfNewIngredients, newIngredientName, newIngredientQuantity, editSceneGridPane,
                                                                 addNewRecipeButton, modifyExistingRecipeButton));
+                    }
+                }
             } catch (Exception e) {
                 changingView.setCenter(newViews.createErrorView(e.getMessage()));
             }
@@ -356,10 +372,16 @@ public class UIJavaFX extends Application {
 
         addNewIngredient.setOnAction((event) -> {
             try {
-                ingredientItems.add(newIngredientName.getText().replace(" ", "_") + " " + newIngredientQuantity.getText() + " "
-                                    + listUnit.getSelectionModel().getSelectedItem().toString().toLowerCase());
-                listOfNewIngredients.add(newIngredientName.getText().replace(" ", "_") + " " + newIngredientQuantity.getText() + " "
-                                        + listUnit.getSelectionModel().getSelectedItem().toString().toLowerCase());
+                if (!newIngredientName.getText().isEmpty()) {
+                    if (!newIngredientQuantity.getText().isEmpty()) {
+                        ingredientItems.add(newIngredientName.getText().replace(" ", "_") + " " + newIngredientQuantity.getText() + " "
+                                            + listUnit.getSelectionModel().getSelectedItem().toString().toLowerCase());
+                        listOfNewIngredients.add(newIngredientName.getText().replace(" ", "_") + " " + newIngredientQuantity.getText() + " "
+                                                + listUnit.getSelectionModel().getSelectedItem().toString().toLowerCase());
+                    }
+                }
+            } catch (NullPointerException n) {
+                changingView.setCenter(newViews.createErrorView("Remember to select a UNIT from the list!"));
             } catch (Exception e) {
                 changingView.setCenter(newViews.createErrorView(e.getMessage()));
             }
@@ -368,8 +390,10 @@ public class UIJavaFX extends Application {
         removeSelectedIngredient.setOnAction((event) -> {
             try {
                 int ingIndexNo = ingredientItemView.getSelectionModel().getSelectedIndex();
-                ingredientItems.remove(ingIndexNo);
-                listOfNewIngredients.remove(ingIndexNo - 1);
+                if (ingIndexNo > 0) {
+                    ingredientItems.remove(ingIndexNo);
+                    listOfNewIngredients.remove(ingIndexNo - 1);
+                }
             } catch (Exception e) {
                 changingView.setCenter(newViews.createErrorView(e.getMessage()));
             }
@@ -379,8 +403,12 @@ public class UIJavaFX extends Application {
         addSelectedIngredientToKitchen.setOnAction((event) -> {
             try {
                 String selectedIngredientInKitchen = allIngredientsListView.getSelectionModel().getSelectedItem().toString().split("\\[")[0].trim();
-                domainHandler.addIngredientToKitchen(selectedIngredientInKitchen);
-                viewKitchen.fire();
+                if (!selectedIngredientInKitchen.equals("All Ingredients:")) {
+                    domainHandler.addIngredientToKitchen(selectedIngredientInKitchen);
+                    viewKitchen.fire();
+                }
+            } catch (NullPointerException n) {
+                changingView.setCenter(newViews.createErrorView("Remember to select an ingredient from the list!"));
             } catch (Exception e) {
                 changingView.setCenter(newViews.createErrorView(e.getMessage()));
             }
@@ -389,29 +417,41 @@ public class UIJavaFX extends Application {
         removeSelectedIngredientInKitchen.setOnAction((event) -> {
             try {
                 String selectedIngredientInKitchenToRemove = ingredientsInKitchenListView.getSelectionModel().getSelectedItem().toString().split(" ")[0];
-                domainHandler.removeIngredientFromKitchen(selectedIngredientInKitchenToRemove);
-                viewKitchen.fire();
+                if (!selectedIngredientInKitchenToRemove.isEmpty()) {
+                    if (!selectedIngredientInKitchenToRemove.equals("Ingredients")) {
+                        domainHandler.removeIngredientFromKitchen(selectedIngredientInKitchenToRemove);
+                        viewKitchen.fire();
+                    }
+                }
+            } catch (NullPointerException n) {
+                changingView.setCenter(newViews.createErrorView("Remember to select an ingredient from the list!"));
             } catch (Exception e) {
                 changingView.setCenter(newViews.createErrorView(e.getMessage()));
             }
         });
 
         updateIngredientQuantityInKitchen.setOnAction((event) -> {
-            String selectedIngredientInKitchenToUpdate = ingredientsInKitchenListView.getSelectionModel().getSelectedItem().toString().split(" ")[0];
             Integer newQuantityInInteger = 0;
-            while (true) {
-                Optional<String> newQuantity = setIngredientKitchenQuantity.showAndWait();
-                try {
-                    newQuantityInInteger = Integer.parseInt(newQuantity.get());
-                    break;
-                } catch (Exception e) {
-                    setIngredientKitchenQuantity.setContentText("GIVE AN INTEGER! ");
-                    continue;
-                }
-            }
             try {
-                domainHandler.updateIngredientQuantityInKitchen(selectedIngredientInKitchenToUpdate, newQuantityInInteger);
-                viewKitchen.fire();
+                String selectedIngredientInKitchenToUpdate = ingredientsInKitchenListView.getSelectionModel().getSelectedItem().toString().split(" ")[0];
+                if (!selectedIngredientInKitchenToUpdate.isEmpty()) {
+                    if (!selectedIngredientInKitchenToUpdate.equals("Ingredients")) {
+                        while (true) {
+                            try {
+                                Optional<String> newQuantity = setIngredientKitchenQuantity.showAndWait();
+                                newQuantityInInteger = Integer.parseInt(newQuantity.get());
+                                break;
+                            } catch (Exception e) {
+                                setIngredientKitchenQuantity.setContentText("GIVE AN INTEGER! ");
+                                continue;
+                            }
+                        }
+                        domainHandler.updateIngredientQuantityInKitchen(selectedIngredientInKitchenToUpdate, newQuantityInInteger);
+                        viewKitchen.fire();
+                    }
+                }
+            } catch (NullPointerException n) {
+                changingView.setCenter(newViews.createErrorView("Remember to select an ingredient from the list!"));
             } catch (Exception e) {
                 changingView.setCenter(newViews.createErrorView(e.getMessage()));
             }

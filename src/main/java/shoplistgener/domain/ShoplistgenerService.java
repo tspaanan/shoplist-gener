@@ -205,7 +205,12 @@ public class ShoplistgenerService {
      */
     public List<String> fetchRecipeList(String name) throws Exception {
         List<String> recipeInList = new ArrayList<String>();
-        Recipe rec = this.daoHandler.fetchRecipe(name);
+        Recipe rec = new Recipe("", "", new ArrayList<Ingredient>());
+        if (name.equals("Menu:")) {
+            rec = new Recipe("Menu: detected", "Please do not select menu heading!", new ArrayList<Ingredient>());
+        } else {
+            rec = this.daoHandler.fetchRecipe(name);
+        }
         recipeInList.add(rec.getName());
         recipeInList.add(rec.getInstructions());
         StringBuilder ingsInString = new StringBuilder();

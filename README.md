@@ -14,6 +14,8 @@ Sovelluksella voi luoda siihen tallennettujen reseptien pohjalta satunnaisen ruo
 
 [Linkki harjoitustyön käyttöohjeeseen](https://github.com/tspaanan/shoplist-gener/blob/main/dokumentaatio/kayttoohje.md)
 
+[Linkki harjoitustyön testausdokumenttiin](https://github.com/tspaanan/shoplist-gener/blob/main/dokumentaatio/testaus.md)
+
 ## Releaset
 
 [viikko5](https://github.com/tspaanan/shoplist-gener/releases/tag/viikko5)

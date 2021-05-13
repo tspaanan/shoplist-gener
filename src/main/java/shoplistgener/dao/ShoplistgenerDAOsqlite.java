@@ -209,6 +209,9 @@ public class ShoplistgenerDAOsqlite implements ShoplistgenerDAO {
         PreparedStatement p = this.db.prepareStatement("SELECT id,name,instructions FROM recipes WHERE name LIKE ? AND visible=TRUE LIMIT 1");
         p.setString(1, "%" + name + "%");
         ResultSet r = p.executeQuery();
+        if (!r.next()) {
+            return new Recipe("could not find any matching recipes", "", new ArrayList<Ingredient>());
+        }
         List<Ingredient> ingsInList = this.fetchIngredients(r.getInt("id"));
         return new Recipe(r.getString("name"), r.getString("instructions"), ingsInList);
     }

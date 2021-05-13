@@ -4,7 +4,7 @@ Sovelluksen testaus on toteutettu automatisoitujen yksikkötestien ja integraati
 
 ## Automatisoitu yksikkö- ja integraatiotestaus
 
-Automatisoitujen testausten rivikattavuus on 83% ja haarautumakattavuus 78%:
+Automatisoitujen testausten rivikattavuus on 82% ja haarautumakattavuus 77%:
 
 <img src="https://github.com/tspaanan/shoplist-gener/blob/main/dokumentaatio/testauskattavuus.png">
 
